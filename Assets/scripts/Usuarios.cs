@@ -10,9 +10,11 @@ public class Usuarios : MonoBehaviour
     string hermandad;
     bool tutorial_completo;
     Usuarios[] amigos;
-    //Personajes[] personajes;
+    Personajes[] personajes;
     Monedas[] monedas;
-    //Configuracion[] configuracion;
+    Configuracion[] configuracion;
+    Logros[] logros;
+    int puntos_logro;
 
     void Start()
     {
