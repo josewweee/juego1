@@ -1,0 +1,56 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class routing : MonoBehaviour
+{
+    
+    public void ir_principal(){
+        SceneManager.LoadScene("menu_principal");
+    }
+
+    public void ir_configuracion(){
+        SceneManager.LoadScene("menu_configuracion");
+    }
+
+    public void ir_equipamiento(){
+        SceneManager.LoadScene("menu_equipamiento");
+    }
+
+    public void ir_equipamiento_individual(){
+        SceneManager.LoadScene("menu_equipamiento_individual");
+    }
+
+    public void ir_hermandad(){
+        SceneManager.LoadScene("menu_hermandad");
+    }
+
+    public void ir_historia(){
+        SceneManager.LoadScene("menu_historia");
+    }
+
+    public void ir_logros(){
+        SceneManager.LoadScene("menu_logros");
+    }
+
+    public void ir_mis_personajes(){
+        SceneManager.LoadScene("menu_mis_personajes");
+    }
+
+    public void ir_personaje_individual(){
+        SceneManager.LoadScene("menu_personaje_individual");
+    }
+
+    public void ir_pvp(){
+        SceneManager.LoadScene("menu_pvp");
+    }
+
+    public void ir_seleccion_pre_combate(){
+        SceneManager.LoadScene("menu_seleccion_pre_combate");
+    }
+
+    public void ir_todos_personajes(){
+        SceneManager.LoadScene("menu_todos_personajes");
+    }
+}

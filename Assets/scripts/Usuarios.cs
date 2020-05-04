@@ -15,6 +15,7 @@ public class Usuarios : MonoBehaviour
     Configuracion[] configuracion;
     Logros[] logros;
     int puntos_logro;
+    int energia;
 
     void Start()
     {
