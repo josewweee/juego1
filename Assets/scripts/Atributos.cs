@@ -11,6 +11,7 @@ public class Atributos : MonoBehaviour
     float critico;
     float defensa_fisica;
     float defensa_magica; 
+    
     void Start()
     {
         

@@ -5,7 +5,23 @@ using UnityEngine.SceneManagement;
 
 public class routing : MonoBehaviour
 {
-    
+    private bool menu_activo;
+    private GameObject boton_menu;
+
+    void Start() {
+        boton_menu = GameObject.Find("contenedor");
+        menu_activo = true;
+    }
+    public void mostrar_menu(){
+        if (menu_activo){
+            boton_menu.SetActive(false);
+            menu_activo = false;
+        }else{
+            boton_menu.SetActive(true);
+            menu_activo = true;
+        }
+    }
+
     public void ir_principal(){
         SceneManager.LoadScene("menu_principal");
     }
