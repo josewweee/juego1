@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class Invocaciones : MonoBehaviour
 {
-    // Start is called before the first frame update
+    string tipo_invocacion;
+    float[] probabilidades;
+    Personajes resultado;
+    Usuarios usuario;
+
     void Start()
     {
         

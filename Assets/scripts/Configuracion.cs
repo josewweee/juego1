@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Configuracion : MonoBehaviour
 {
-    // Start is called before the first frame update
+    sring[] graficas;
+    string conexion_redes_sociales;
+    
     void Start()
     {
         

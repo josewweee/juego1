@@ -4,7 +4,17 @@ using UnityEngine;
 
 public class Personajes : MonoBehaviour
 {
-    // Start is called before the first frame update
+    string nombre;
+    int nivel;
+    int estrellas;
+    int despertadas;
+    Atributos[] atributos;
+    Equipo[] equipamiento;
+    int experiencia;
+    Poderes[] poderes;
+    Poderes[] poderesActivos;
+    string elemento;
+    string estado_alterado;
     void Start()
     {
         

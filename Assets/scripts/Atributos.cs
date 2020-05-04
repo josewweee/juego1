@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class Atributos : MonoBehaviour
 {
-    // Start is called before the first frame update
+    float fuerza;
+    float vitalidad;
+    float magia;
+    float velocidad;
+    float critico;
+    float defensa_fisica;
+    float defensa_magica; 
     void Start()
     {
         

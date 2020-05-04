@@ -4,7 +4,15 @@ using UnityEngine;
 
 public class Combate : MonoBehaviour
 {
-    // Start is called before the first frame update
+   
+    Personajes[] personajes;
+    Personajes[] enemigos;
+    string tipo_combate;
+    Recompenza[] recompenza;
+    Usuarios ganador;
+    Usuarios perdedor;
+    
+
     void Start()
     {
         

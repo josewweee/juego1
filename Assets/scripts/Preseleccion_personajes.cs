@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PreseleccionPersonajes : MonoBehaviour
+public class Preseleccion_personajes : MonoBehaviour
 {
-    // Start is called before the first frame update
+    Personajes[] personajes;
+    float bonus;
+    Usuarios usuario;
+    string tipo_combate;
+    
     void Start()
     {
         

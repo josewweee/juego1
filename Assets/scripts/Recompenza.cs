@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Reompenza : MonoBehaviour
+public class Recompenza : MonoBehaviour
 {
-    // Start is called before the first frame update
+    Mondeas[] monedas;
+    Equipo[] equipo;
+    string tipo_combate;
+
     void Start()
     {
         

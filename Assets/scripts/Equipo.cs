@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class Equipo : MonoBehaviour
 {
-    // Start is called before the first frame update
+    string nombre;
+    Atributos[] atributos;
+    Poderes[] poderes;
+    int nivel;
+    int experiencia;
+    
     void Start()
     {
         

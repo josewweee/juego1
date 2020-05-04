@@ -8,10 +8,10 @@ public class Usuarios : MonoBehaviour
     int nivel;
     int experiencia;
     string hermandad;
-    bool tutorialCompleto;
+    bool tutorial_completo;
     Usuarios[] amigos;
     //Personajes[] personajes;
-    //Monedas[] monedas;
+    Monedas[] monedas;
     //Configuracion[] configuracion;
 
     void Start()

@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class IA : MonoBehaviour
 {
-    // Start is called before the first frame update
+    Personajes[] personajes;
+    Personajes[] enemigo;
+    Personajes objetivo;
+
     void Start()
     {
         

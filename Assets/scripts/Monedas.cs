@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Monedas : MonoBehaviour
 {
-    // Start is called before the first frame update
+    int oro;
+    int diamantes;
+    int puntos_pvp;
     void Start()
     {
         

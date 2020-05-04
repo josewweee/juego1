@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class Poderes : MonoBehaviour
 {
-    // Start is called before the first frame update
+    string nombre;
+    string descripcion;
+    string tipo_daño;
+    float multiplicador_daño;
+    string tipo_poder;
+    int reutilizacion;
+    bool esta_en_reutilizacion = false;
     void Start()
     {
         
