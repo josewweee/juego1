@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Recompenza : MonoBehaviour
 {
-    Mondeas[] monedas;
+    Monedas[] monedas;
     Equipo[] equipo;
     string tipo_combate;
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Configuracion : MonoBehaviour
 {
-    sring[] graficas;
+    string[] graficas;
     string conexion_redes_sociales;
     
     void Start()
