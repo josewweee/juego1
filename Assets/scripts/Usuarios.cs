@@ -16,6 +16,11 @@ public class Usuarios : MonoBehaviour
     Logros[] logros;
     int puntos_logro;
     int energia;
+    string metodo_login;
+    int energia_pvp;
+    int puntos_pvp;
+    Personajes[] defensa_pvp;
+    int posicion_pvp;
 
     void Start()
     {
