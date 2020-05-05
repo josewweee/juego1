@@ -66,10 +66,6 @@ public class routing : MonoBehaviour
         SceneManager.LoadScene("menu_seleccion_pre_combate");
     }
 
-    public void ir_todos_personajes(){
-        SceneManager.LoadScene("menu_todos_personajes");
-    }
-
     public void ir_invocacion(){
         SceneManager.LoadScene("menu_invocacion");
     }
