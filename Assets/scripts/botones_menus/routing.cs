@@ -38,8 +38,8 @@ public class routing : MonoBehaviour
         SceneManager.LoadScene("menu_equipamiento_individual");
     }
 
-    public void ir_hermandad(){
-        SceneManager.LoadScene("menu_hermandad");
+    public void ir_tienda(){
+        SceneManager.LoadScene("menu_tienda");
     }
 
     public void ir_historia(){
