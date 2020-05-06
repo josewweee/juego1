@@ -11,6 +11,7 @@ public class routing : MonoBehaviour
     void Start() {
         boton_menu = GameObject.Find("contenedor");
         menu_activo = true;
+        Debug.Log(Usuarios.instancia.nombre);
     }
     public void mostrar_menu(){
         if (menu_activo){
