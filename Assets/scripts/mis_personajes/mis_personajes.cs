@@ -37,7 +37,6 @@ public class mis_personajes : MonoBehaviour
             if (filaActual < 6) // CADA 6 FILAS BAJAMOS 1 COLUMNA
             {
                 // NOS MOVEMOS 30F A LA DERECHA CADA PREFAB Y PONEMOS EL OBJETO COMO CHILD DEL CANVAS - CONTENIDO_SCROLL
-                pos_inicial_x += 30F;
                 GameObject recuadro_personaje = Instantiate(prefab, new Vector3(pos_inicial_x, pos_inicial_y, 0), Quaternion.identity);
                 recuadro_personaje.transform.SetParent(GameObject.Find("contenido_scroll").transform, false);
 
@@ -49,6 +48,7 @@ public class mis_personajes : MonoBehaviour
                 //ENTRAMOS EN EL CHILD #1 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO
                 GameObject texto_nivel = recuadro_personaje.transform.GetChild(1).gameObject;
                 texto_nivel.GetComponent<UnityEngine.UI.Text>().text = jugador.personajes[i].nivel.ToString();
+                pos_inicial_x += 30F;
                 filaActual++;
 
 
