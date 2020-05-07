@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Configuracion : MonoBehaviour
+public class Configuracion
 {
-    string[] graficas;
-    string conexion_redes_sociales;
-    
+    public string[] graficas;
+    public string conexion_redes_sociales;
+
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

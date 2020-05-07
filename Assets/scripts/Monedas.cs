@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class Monedas : MonoBehaviour
 {
-    int oro;
-    int diamantes;
-    int puntos_pvp;
+    public int oro = 0;
+    public int diamantes = 0;
+    public int puntos_pvp = 0;
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

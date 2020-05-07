@@ -6,17 +6,17 @@ public class Preseleccion_personajes : MonoBehaviour
 {
     Personajes[] personajes;
     float bonus;
-    Usuarios usuario;
+    Usuario usuario;
     string tipo_combate;
-    
+
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

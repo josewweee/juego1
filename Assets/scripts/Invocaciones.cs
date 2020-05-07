@@ -7,16 +7,16 @@ public class Invocaciones : MonoBehaviour
     string tipo_invocacion;
     float[] probabilidades;
     Personajes resultado;
-    Usuarios usuario;
+    Usuario usuario;
 
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
