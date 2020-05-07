@@ -8,7 +8,7 @@ public class Personajes
     public int nivel;
     public int estrellas;
     public int despertadas;
-    public Atributos[] atributos;
+    public Atributos atributos;
     public Equipo[] equipamiento;
     public int experiencia;
     public Poderes[] poderes;
@@ -17,14 +17,19 @@ public class Personajes
     public string estado_alterado;
     public string rareza;
 
-    void Start()
+
+    public Personajes Crear_personaje(string personaje)
     {
+        Personajes nuevo_personaje;
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        if (personaje == "roger")
+        {
+            nuevo_personaje = new roger();
+            return nuevo_personaje;
+        }
+        else
+        {
+            return null;
+        }
     }
 }

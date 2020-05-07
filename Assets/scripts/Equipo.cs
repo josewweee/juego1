@@ -2,22 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Equipo : MonoBehaviour
+public class Equipo
 {
-    string nombre;
-    Atributos[] atributos;
-    Poderes[] poderes;
-    int nivel;
-    int experiencia;
-    
-    void Start()
-    {
-        
-    }
+    public string nombre;
+    public Atributos[] atributos;
+    public Poderes[] poderes;
+    public int nivel;
+    public int experiencia;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }

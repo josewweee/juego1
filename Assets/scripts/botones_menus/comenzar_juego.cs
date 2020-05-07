@@ -18,7 +18,6 @@ public class comenzar_juego : MonoBehaviour
     {
         //creamos un usuario nuevo
         usuario_nuevo = Usuario.instancia;
-        // Instantiate(usuario_nuevo, new Vector3(2.0F, 0, 0), Quaternion.identity);
 
         //viajamos al menu principal
         SceneManager.LoadScene("menu_principal");
