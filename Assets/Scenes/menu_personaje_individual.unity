@@ -500,6 +500,7 @@ RectTransform:
   - {fileID: 2026562160}
   - {fileID: 1763941708}
   - {fileID: 394204287}
+  - {fileID: 2101455979}
   m_Father: {fileID: 1621698363}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1291,7 +1292,7 @@ GameObject:
   - component: {fileID: 230292300}
   - component: {fileID: 230292299}
   m_Layer: 5
-  m_Name: texto_atributo
+  m_Name: texto_magia
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2362,7 +2363,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 20 / 100
+  m_Text: 20
 --- !u!222 &394204289
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4746,7 +4747,7 @@ GameObject:
   - component: {fileID: 1112380493}
   - component: {fileID: 1112380492}
   m_Layer: 5
-  m_Name: texto_atributo
+  m_Name: texto_critico
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4904,7 +4905,7 @@ GameObject:
   - component: {fileID: 1129130971}
   - component: {fileID: 1129130970}
   m_Layer: 5
-  m_Name: texto_atributo
+  m_Name: texto_def_magica
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5062,7 +5063,7 @@ GameObject:
   - component: {fileID: 1165297417}
   - component: {fileID: 1165297416}
   m_Layer: 5
-  m_Name: atributo (2)
+  m_Name: magia
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5138,7 +5139,7 @@ GameObject:
   - component: {fileID: 1191460134}
   - component: {fileID: 1191460133}
   m_Layer: 5
-  m_Name: atributo (5)
+  m_Name: defensa_fisica
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5606,7 +5607,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1273320793
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5670,7 +5671,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 123.04999, y: -173.52992}
+  m_AnchoredPosition: {x: 365, y: -173.52992}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1290240868
@@ -5922,7 +5923,7 @@ GameObject:
   - component: {fileID: 1365893753}
   - component: {fileID: 1365893752}
   m_Layer: 5
-  m_Name: atributo (1)
+  m_Name: fuerza
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6413,7 +6414,7 @@ GameObject:
   - component: {fileID: 1427375738}
   - component: {fileID: 1427375737}
   m_Layer: 5
-  m_Name: texto_atributo
+  m_Name: texto_vitalidad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6491,7 +6492,7 @@ GameObject:
   - component: {fileID: 1494453941}
   - component: {fileID: 1494453940}
   m_Layer: 5
-  m_Name: texto_atributo
+  m_Name: texto_velocidad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6690,7 +6691,7 @@ GameObject:
   - component: {fileID: 1597404334}
   - component: {fileID: 1597404333}
   m_Layer: 5
-  m_Name: atributo
+  m_Name: vitalidad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6844,6 +6845,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7eb8d287992a10b88c14aff9f89ca9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nombre: {fileID: 2026562161}
+  nivel: {fileID: 394204288}
+  vitalidad: {fileID: 1427375737}
+  fuerza: {fileID: 1810743031}
+  magia: {fileID: 230292299}
+  velocidad: {fileID: 1494453940}
+  critico: {fileID: 1112380492}
+  def_fisica: {fileID: 1793010252}
+  def_magica: {fileID: 1129130970}
 --- !u!1 &1637924063
 GameObject:
   m_ObjectHideFlags: 0
@@ -6856,7 +6866,7 @@ GameObject:
   - component: {fileID: 1637924066}
   - component: {fileID: 1637924065}
   m_Layer: 5
-  m_Name: atributo (4)
+  m_Name: critico
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6880,7 +6890,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 362.85, y: -186.60994}
+  m_AnchoredPosition: {x: 125, y: -186.60994}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1637924065
@@ -7409,7 +7419,7 @@ GameObject:
   - component: {fileID: 1793010253}
   - component: {fileID: 1793010252}
   m_Layer: 5
-  m_Name: texto_atributo
+  m_Name: texto_def_fisica
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7617,7 +7627,7 @@ GameObject:
   - component: {fileID: 1810743032}
   - component: {fileID: 1810743031}
   m_Layer: 5
-  m_Name: texto_atributo
+  m_Name: texto_fuerza
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8478,7 +8488,7 @@ GameObject:
   - component: {fileID: 2036418878}
   - component: {fileID: 2036418877}
   m_Layer: 5
-  m_Name: atributo (3)
+  m_Name: velocidad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8554,7 +8564,7 @@ GameObject:
   - component: {fileID: 2040257308}
   - component: {fileID: 2040257307}
   m_Layer: 5
-  m_Name: atributo (6)
+  m_Name: defensa_magica
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8617,6 +8627,84 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2040257305}
+  m_CullTransparentMesh: 0
+--- !u!1 &2101455978
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2101455979}
+  - component: {fileID: 2101455981}
+  - component: {fileID: 2101455980}
+  m_Layer: 5
+  m_Name: texto_nivel_maximo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2101455979
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2101455978}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2.0681741, y: 1.9130403, z: 2.0681736}
+  m_Children: []
+  m_Father: {fileID: 39705740}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 470, y: 302}
+  m_SizeDelta: {x: 160, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2101455980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2101455978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_RaycastTarget: 1
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 20
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 2
+    m_MaxSize: 40
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: / 100
+--- !u!222 &2101455981
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2101455978}
   m_CullTransparentMesh: 0
 --- !u!1 &2114707615
 GameObject:

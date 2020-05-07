@@ -24,6 +24,7 @@ public class roger : Personajes
         Debug.Log(output);
     }
 
+
     public void Agregar_poderes()
     {
         this.poderes[0] = new Poderes("golpe", "roger golpea al enemigo", "fisico", 1f, "normal", 0);
