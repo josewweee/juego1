@@ -4,10 +4,17 @@ using UnityEngine;
 
 public class storage_script
 {
-   public string personaje;
+    public string personaje;
     public string equipo;
     public Personajes[] enemigos = {null, null, null, null};
-    private storage_script() { }
+    public string tipo_combate = "";
+
+
+    private storage_script() {
+
+     }
+
+
     // SINGLETON DE PERSONAJE O EQUIPO PARA REVISAR DE FORMA INDIVIDUAL
     public static storage_script _instancia = null;
     public static storage_script instancia
@@ -19,6 +26,7 @@ public class storage_script
             return _instancia;
         }
     }
+
 
     public void Agregar_enemigo(int index, Personajes personaje){
         if (index < 4 && index >= 0){
