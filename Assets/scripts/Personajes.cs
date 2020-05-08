@@ -32,4 +32,19 @@ public class Personajes
             return null;
         }
     }
+
+    public void Subir_nivel(int niveles){
+        nivel = niveles;
+        experiencia = 0;
+        atributos.fuerza += niveles;
+        atributos.vitalidad += niveles;
+        atributos.magia += niveles;
+        atributos.velocidad += niveles;
+        atributos.critico += niveles;
+        atributos.defensa_fisica += niveles;
+        atributos.defensa_magica += niveles;
+
+        // string output = JsonUtility.ToJson(atributos, true);
+        // Debug.Log(output);
+    }
 }

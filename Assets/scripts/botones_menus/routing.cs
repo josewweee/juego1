@@ -10,14 +10,14 @@ public class routing : MonoBehaviour
     // TRAEMOS LA INSTANCIA DEL USUARIO PARA PRUEBAS
     public Usuario usuario_nuevo;
     // INSTANCIA DE PERSONA O EQUIPO A BUSCAR
-    public singleton_equipo_personaje_individual equipo_personaje_objetivo;
+    public storage_script equipo_personaje_objetivo;
 
     void Start()
     {
         boton_menu = GameObject.Find("contenedor");
         menu_activo = true;
         usuario_nuevo = Usuario.instancia;
-        equipo_personaje_objetivo = singleton_equipo_personaje_individual.instancia;
+        equipo_personaje_objetivo = storage_script.instancia;
         Debug.Log(usuario_nuevo.personajesFavoritos); // IMPRIMIMOS EL NOMBRE PARA PRUEBAS
     }
     public void mostrar_menu()

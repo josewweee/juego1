@@ -20,8 +20,6 @@ public class roger : Personajes
         rareza = "comun";
         Agregar_poderes();
         Activar_poderes();
-        string output = JsonUtility.ToJson(poderes[2], true);
-        Debug.Log(output);
     }
 
 
