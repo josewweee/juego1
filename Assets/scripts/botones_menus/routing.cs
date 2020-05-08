@@ -10,14 +10,14 @@ public class routing : MonoBehaviour
     // TRAEMOS LA INSTANCIA DEL USUARIO PARA PRUEBAS
     public Usuario usuario_nuevo;
     // INSTANCIA DE PERSONA O EQUIPO A BUSCAR
-    public storage_script equipo_personaje_objetivo;
+    public storage_script storage_singleton;
 
     void Start()
     {
         boton_menu = GameObject.Find("contenedor");
         menu_activo = true;
         usuario_nuevo = Usuario.instancia;
-        equipo_personaje_objetivo = storage_script.instancia;
+        storage_singleton = storage_script.instancia;
         Debug.Log(usuario_nuevo.personajesFavoritos); // IMPRIMIMOS EL NOMBRE PARA PRUEBAS
     }
     public void mostrar_menu()
@@ -76,7 +76,7 @@ public class routing : MonoBehaviour
 
     public void ir_personaje_individual(string personaje_objetivo)
     {
-        equipo_personaje_objetivo.personaje = personaje_objetivo;
+        storage_singleton.personaje = personaje_objetivo;
         SceneManager.LoadScene("menu_personaje_individual");
     }
 
@@ -93,5 +93,10 @@ public class routing : MonoBehaviour
     public void ir_invocacion()
     {
         SceneManager.LoadScene("menu_invocacion");
+    }
+
+    public void ir_combate(string tipoCombate){
+        storage_singleton.tipo_combate = tipoCombate;
+        SceneManager.LoadScene("menu_combate");
     }
 }

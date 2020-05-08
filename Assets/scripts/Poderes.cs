@@ -10,9 +10,10 @@ public class Poderes
     public float multiplicador_daño;
     public string tipo_poder;
     public int reutilizacion;
+    public string multi_objetivo;
     public bool esta_en_reutilizacion;
 
-    public Poderes(string nombre, string descripcion, string tipo_daño, float multiplicador_daño, string tipo_poder, int reutilizacion)
+    public Poderes(string nombre, string descripcion, string tipo_daño, float multiplicador_daño, string tipo_poder, int reutilizacion, string multi_objetivo)
     {
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -20,6 +21,7 @@ public class Poderes
         this.multiplicador_daño = multiplicador_daño;
         this.tipo_poder = tipo_poder;
         this.reutilizacion = reutilizacion;
+        this.multi_objetivo = multi_objetivo;
         this.esta_en_reutilizacion = false;
     }
 }
