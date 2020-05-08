@@ -12,7 +12,7 @@ public class Usuario
     public bool tutorial_completo = false;
     public List<Usuario> amigos = new List<Usuario>();
     public List<Personajes> personajes = new List<Personajes>();
-    public Personajes[] personajesFavoritos = new Personajes[3];
+    public Personajes[] personajesFavoritos = {null, null, null, null};
     public Monedas monedas;
     public Configuracion configuracion = new Configuracion();
     public List<Logros> logros = new List<Logros>();
@@ -21,7 +21,7 @@ public class Usuario
     public string metodo_login = "";
     public int energia_pvp = 0;
     public int puntos_pvp = 0;
-    public Personajes[] defensa_pvp = new Personajes[3];
+    public Personajes[] defensa_pvp = new Personajes[4];
     public int posicion_pvp = 0;
     public int nivel_historia = 1;
 

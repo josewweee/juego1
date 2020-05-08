@@ -18,7 +18,7 @@ public class routing : MonoBehaviour
         menu_activo = true;
         usuario_nuevo = Usuario.instancia;
         equipo_personaje_objetivo = singleton_equipo_personaje_individual.instancia;
-        Debug.Log(usuario_nuevo.nombre); // IMPRIMIMOS EL NOMBRE PARA PRUEBAS
+        Debug.Log(usuario_nuevo.personajesFavoritos); // IMPRIMIMOS EL NOMBRE PARA PRUEBAS
     }
     public void mostrar_menu()
     {
