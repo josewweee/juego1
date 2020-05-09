@@ -55,7 +55,7 @@ public class Combate : MonoBehaviour
         
         //de prueba
         fabrica = new Personajes();
-        personajes = new Personajes[4]{fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("roger")};
+        personajes = new Personajes[4]{fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("roger")};
         enemigos = new Personajes[4]{fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("roger")};
 
         //COPIAMOS LOS PERSONAJES DEL USUARIO Y DE LOS ENEMIGOS LOCALMENTE
@@ -80,7 +80,7 @@ public class Combate : MonoBehaviour
         for(int i = 0; i < enemigos.Length; i++){
             turno.Add(enemigos[i]);
         }
-        turno.Sort((x, y) => x.atributos.velocidad.CompareTo(y.atributos.velocidad));
+        turno.Sort((x, y) => y.atributos.velocidad.CompareTo(x.atributos.velocidad));
         personaje_en_turno = turno[0];
 
         //IMPRIMIMOS LOS TURNOS
@@ -98,24 +98,26 @@ public class Combate : MonoBehaviour
         btn_poder_2 = poder_2.GetComponent<Button>();
         btn_poder_3 = poder_3.GetComponent<Button>();
         btn_poder_4 = poder_4.GetComponent<Button>();
+
+        // ASIGNAMOS LOS BOTONES AL PRIMER PERSONAJE
+        Asignar_botones_turno(personaje_en_turno);
         
     }
 
 
     void Update()
     {   
-        //SI ACABAMOS TURNO, EL SIGUIENTE SERA EL PRIMERO EN LA COLA
-        if (turno_finalizado) personaje_en_turno = turno[0];
+        //SI ACABAMOS TURNO, EL SIGUIENTE SERA EL PRIMERO EN LA COLA y ASIGNAMOS A LOS BOTONES LOS VALORES DEL NUEVO PERSONAJE EN TURNO
+        if (turno_finalizado){
+            //turno.Sort((x, y) => x.atributos.velocidad.CompareTo(y.atributos.velocidad)); 
+            personaje_en_turno = turno[0];
+            Asignar_botones_turno(personaje_en_turno);
+            turno_finalizado = false;
+        }
         Debug.Log("personaje en turno: " + personaje_en_turno.nombre);
-
-        //SI YA ACABAMOS TURNO, ASIGNAMOS A LOS BOTONES LOS VALORES DEL NUEVO PERSONAJE EN TURNO
-        if (cambiar_UI_poderes) Asignar_botones_turno(personaje_en_turno);
     }
 
     void Asignar_botones_turno(Personajes actual){
-        //CAMBIAMOS LA OPCION DE CAMBIAR UI HASTA NO FINALIZAR EL TURNO
-        cambiar_UI_poderes = false;
-
         //CAMBIAMOS TEXTOS EN LOS BOTONES
         GameObject texto_nivel;
         for(int i = 1; i < 5; i++){
@@ -128,6 +130,13 @@ public class Combate : MonoBehaviour
         btn_poder_2.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[1], actual); });
         btn_poder_3.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[2], actual); });
         btn_poder_4.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[3], actual); });
+    }
+
+    void Limpiar_botones_turno(){
+        btn_poder_1.onClick.RemoveAllListeners();
+        btn_poder_2.onClick.RemoveAllListeners();
+        btn_poder_3.onClick.RemoveAllListeners();
+        btn_poder_4.onClick.RemoveAllListeners();
     }
 
     void popular_personajes_mapa(Personajes[] personajes_jugador, Personajes[] enemigos, GameObject prefab){
@@ -166,6 +175,8 @@ public class Combate : MonoBehaviour
     }
 
     void AsignarPoder(Poderes poder, Personajes actual){
+
+        //MIRAMOS QUE PODER FUE LANZADO Y LLAMAMOS LA FUNCION CORRESPONDIENTE
         switch(poder.tipo_poder){
             case "ataque":
                 ataque();
@@ -187,6 +198,12 @@ public class Combate : MonoBehaviour
             default:
                 break;
         }
+
+        //PASAMOS TURNO
+        turno_finalizado = true;
+        turno.RemoveAt(0);
+        turno.Add(actual);
+        Limpiar_botones_turno();
     }
 
     void ataque(){}

@@ -10,7 +10,7 @@ public class roger : Personajes
         nivel = 1;
         estrellas = 0;
         despertadas = 0;
-        atributos = new Atributos(10f, 100f, 10f, 10f, 10f, 10f, 10f);
+        atributos = new Atributos(10f, 100f, 2f, 7f, 10f, 10f, 5f);
         equipamiento = new Equipo[1];
         experiencia = 0;
         poderes = new Poderes[8];

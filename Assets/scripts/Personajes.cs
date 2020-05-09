@@ -21,15 +21,15 @@ public class Personajes
     public Personajes Crear_personaje(string personaje)
     {
         Personajes nuevo_personaje;
-
-        if (personaje == "roger")
-        {
-            nuevo_personaje = new roger();
-            return nuevo_personaje;
-        }
-        else
-        {
-            return null;
+        switch(personaje){
+            case "roger":
+                nuevo_personaje = new roger();
+                return nuevo_personaje;
+            case "alicia":
+                nuevo_personaje = new alicia();
+                return nuevo_personaje;
+            default:
+                return null;
         }
     }
 
