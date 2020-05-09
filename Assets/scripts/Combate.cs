@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using System;
 
 public class Combate : MonoBehaviour
 {
@@ -20,6 +22,16 @@ public class Combate : MonoBehaviour
     public Recompenza[] recompenza;
     public Usuario ganador;
     public Usuario perdedor;
+
+    //TABLA DEFENSAS ELEMENTALES;
+    private Dictionary<string, float[]> defensas_elementales = new Dictionary<string, float[]>(){
+        {"agua", new float[] {1F, 1.5F, 1F, 0.5F, 1F, 1F} },
+        {"fuego", new float[] {0.5F, 1F, 1.5F, 1F, 1F, 1F} },
+        {"tierra", new float[] {1F, 0.5F, 1F, 1.5F, 1F, 1F} },
+        {"trueno", new float[] {1.5F, 1F, 0.5F, 1F, 1F, 1F} },
+        {"oscuridad", new float[] {1F, 1F, 1F, 1F, 0.5F, 1.5F} },
+        {"luz", new float[] {1F, 1F, 1F, 1F, 1.5F, 0.5F} },
+    };
 
     //PREFAB QUE INSTANCIAREMOS COMO PERSONAJE
     public GameObject prefab_personaje;
@@ -48,15 +60,22 @@ public class Combate : MonoBehaviour
     public Button btn_poder_3;
     public Button btn_poder_4;
 
+    //UI CON TEXTO DE SELECCIONAR OBJETIVO / OBJETIVOS
+    public GameObject objetivo_unico_txt;
+    public GameObject multiple_objetivo_txt;
+
+    public Poderes poder_a_ser_lanzado;
+
     void Start()
     {
+        //TRAEMOS LAS INSTANCIAS DEL JUGADOR Y LOS ENEMIGOS
         jugador = Usuario.instancia;
         storage_enemigos = storage_script.instancia;
         
         //de prueba
         fabrica = new Personajes();
         personajes = new Personajes[4]{fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("roger")};
-        enemigos = new Personajes[4]{fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("roger")};
+        enemigos = new Personajes[4]{fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("roger")};
 
         //COPIAMOS LOS PERSONAJES DEL USUARIO Y DE LOS ENEMIGOS LOCALMENTE
         //personajes = jugador.personajesFavoritos;
@@ -69,6 +88,12 @@ public class Combate : MonoBehaviour
         atributos_iniciales_enemigos = new Atributos[4]{};
         estados_alterados_iniciales_enemigos = new string[4]{};
         **/
+
+        //ASIGNAMOS EL UI DE LOS TEXTOS DE OBJETIVOS Y LOS DESHABILITAMOS POR AHORA
+        objetivo_unico_txt = GameObject.Find("texto_seleccion_objetivo");
+        multiple_objetivo_txt = GameObject.Find("texto_seleccion_objetivos");
+        objetivo_unico_txt.SetActive(false);
+        multiple_objetivo_txt.SetActive(false);
 
         //LLENAMOS EL CAMPO CON LOS PERSONAJES COPIADOS
         popular_personajes_mapa(personajes, enemigos, prefab_personaje);
@@ -101,6 +126,7 @@ public class Combate : MonoBehaviour
 
         // ASIGNAMOS LOS BOTONES AL PRIMER PERSONAJE
         Asignar_botones_turno(personaje_en_turno);
+         Debug.Log("personaje en turno: " + personaje_en_turno.nombre);
         
     }
 
@@ -113,8 +139,8 @@ public class Combate : MonoBehaviour
             personaje_en_turno = turno[0];
             Asignar_botones_turno(personaje_en_turno);
             turno_finalizado = false;
+            Debug.Log("personaje en turno: " + personaje_en_turno.nombre);
         }
-        Debug.Log("personaje en turno: " + personaje_en_turno.nombre);
     }
 
     void Asignar_botones_turno(Personajes actual){
@@ -126,12 +152,13 @@ public class Combate : MonoBehaviour
         }
 
         //AGREGAMOS UN LISTENER A CADA BOTON
-        btn_poder_1.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[0], actual); });
-        btn_poder_2.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[1], actual); });
-        btn_poder_3.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[2], actual); });
-        btn_poder_4.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[3], actual); });
+        btn_poder_1.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[0]); });
+        btn_poder_2.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[1]); });
+        btn_poder_3.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[2]); });
+        btn_poder_4.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[3]); });
     }
 
+    // BORRAMOS LOS LISTENERS DE LOS UI DE BOTONES AL ACABAR UN TURNO
     void Limpiar_botones_turno(){
         btn_poder_1.onClick.RemoveAllListeners();
         btn_poder_2.onClick.RemoveAllListeners();
@@ -148,6 +175,8 @@ public class Combate : MonoBehaviour
         for(int i = 0; i < personajes_jugador.Length; i++){
             if (personajes_jugador[i] != null){
                 GameObject personaje_creado = Instantiate(prefab, new Vector3(pos_inicial_x[i], pos_inicial_y[i], pos_inicial_z), Quaternion.identity);
+                
+                
                 //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
                 GameObject canvas_texto = GameObject.Find("vida_"+i);
                 Text texto_vida = canvas_texto.AddComponent<Text>();
@@ -155,6 +184,14 @@ public class Combate : MonoBehaviour
                 texto_vida.fontSize = 20;
                 texto_vida.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
                 texto_vida.color = Color.black;
+
+                //AGREGAMOS UN EVENTO CUANDO SE SELECCIONE EL EPRSONAJE
+                int index = i;
+                EventTrigger trigger = personaje_creado.GetComponent<EventTrigger>();
+                EventTrigger.Entry entry = new EventTrigger.Entry();
+                entry.eventID = EventTriggerType.PointerClick;
+                entry.callback.AddListener(delegate { Confirmar_poder(index.ToString()); });
+                trigger.triggers.Add(entry);
             }
             
         }
@@ -164,6 +201,7 @@ public class Combate : MonoBehaviour
         float[] pos_inicial_y_enemigos = {-2.61F, -3.48F, 0.89F, 0.12F};
         for(int i = 0; i < enemigos.Length; i++){
             GameObject personaje_creado = Instantiate(prefab, new Vector3(pos_inicial_x_enemigos[i], pos_inicial_y_enemigos[i], pos_inicial_z), Quaternion.identity);
+            
             //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
             GameObject canvas_texto = GameObject.Find("vida_enemigo_"+i);
             Text texto_vida = canvas_texto.AddComponent<Text>();
@@ -171,46 +209,204 @@ public class Combate : MonoBehaviour
             texto_vida.fontSize = 20;
             texto_vida.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
             texto_vida.color = Color.black;
+            
+            //AGREGAMOS UN EVENTO CUANDO SE SELECCIONE EL EPRSONAJE
+            int index = i;
+            EventTrigger trigger = personaje_creado.GetComponent<EventTrigger>();
+            EventTrigger.Entry entry = new EventTrigger.Entry();
+            entry.eventID = EventTriggerType.PointerClick;
+            entry.callback.AddListener(delegate { Confirmar_poder(index.ToString()); });
+            trigger.triggers.Add(entry);
         }
     }
 
-    void AsignarPoder(Poderes poder, Personajes actual){
+    void AsignarPoder(Poderes poder){
+        //ACTIVAMOS LOS UI DE TEXTO OBJETIVO
+        bool multi_objetivo = (poder.objetivos == "unico")? false : true; // UNICO = FALSE, MULTIPLE = TRUE
+        switch(multi_objetivo){
+            case false:
+                multiple_objetivo_txt.SetActive(false);
+                objetivo_unico_txt.SetActive(true);
+                break;
+            case true:
+                objetivo_unico_txt.SetActive(false);
+                multiple_objetivo_txt.SetActive(true);
+                break;
+        }
 
-        //MIRAMOS QUE PODER FUE LANZADO Y LLAMAMOS LA FUNCION CORRESPONDIENTE
-        switch(poder.tipo_poder){
-            case "ataque":
-                ataque();
+        //ASIGNAMOS DE FORMA GLOBAL EL PODER QUE LANZAREMOS
+        poder_a_ser_lanzado = poder;
+    }
+
+    void ataque(Poderes poder, string index_objetivo){
+        int index = int.Parse(index_objetivo);
+        Personajes[] target;
+        float atributo_;
+
+        // MIRAMOS CON QUE ATRIBUTO SE HARA EL DAÑO
+        switch(poder.atributo){
+            case "fuerza":
+                atributo_ = personaje_en_turno.atributos.fuerza;
                 break;
-            case "buff":
-                buff();
+            case "magia":
+                atributo_ = personaje_en_turno.atributos.magia;
                 break;
-            case "purgar":
-                purgar();
+            case "vitalidad":
+                atributo_ = personaje_en_turno.atributos.vitalidad;
                 break;
-            case "ataque_debuff":
-                ataque();
-                debuff();
+            case "defensa_fisica":
+                atributo_ = personaje_en_turno.atributos.defensa_fisica;
                 break;
-            case "ataque_buff":
-                ataque();
-                buff();
+            case "defensa_magica":
+                atributo_ = personaje_en_turno.atributos.defensa_magica;
+                break;
+            case "velocidad":
+                atributo_ = personaje_en_turno.atributos.velocidad;
                 break;
             default:
+                atributo_ = 1;
                 break;
         }
+        // TOMAMOS EL OBJETIVO DEPENDIENDO DE QUIEN HAYA SIDO SELECIONADO
+        if(poder.objetivos == "unico"){
+            target = new Personajes[1]{enemigos[index]};
+            float daño = (atributo_ * poder.multiplicador) + poder.daño_base;
+            HacerDaño(target, daño, personaje_en_turno.elemento, poder.atributo, index);
+        }else{
+            target = enemigos;
+            float daño = (atributo_ * poder.multiplicador) + poder.daño_base;
+            // 99 PARA INDICAR QUE AFECTAREMOS A TODOS
+            HacerDaño(target, daño, personaje_en_turno.elemento, poder.atributo, 99);
+        }
 
-        //PASAMOS TURNO
-        turno_finalizado = true;
-        turno.RemoveAt(0);
-        turno.Add(actual);
-        Limpiar_botones_turno();
     }
 
-    void ataque(){}
+
     void buff(){}
     void purgar(){}
     void debuff(){}
-    void seleccionarUnico(){}
+
+    public void Confirmar_poder(string index){
+        if(poder_a_ser_lanzado == null) return;
+        Poderes poder = poder_a_ser_lanzado;
+        bool bando_objetivo; // TRUE = AMIGOS, FALSE = ENEMIGOS
+
+        //MIRAMOS QUE PODER FUE LANZADO Y LLAMAMOS LA FUNCION CORRESPONDIENTE
+        //MIRAMOS SI ES POSIBLE TIRAR SEGUN EL TIEMPO DE COOLDOWN
+        if (poder.se_puede_usar){
+            switch(poder.tipo_poder){ 
+                case "ataque":
+                    ataque(poder, index);
+                    break;
+                case "buff":
+                    buff();
+                    break;
+                case "purgar":
+                    purgar();
+                    break;
+                case "ataque_debuff":
+                    ataque(poder, index);
+                    debuff();
+                    break;
+                case "ataque_buff":
+                    ataque(poder, index);
+                    buff();
+                    break;
+                default:
+                    break;
+            }
+
+            //PASAMOS TURNO
+            turno_finalizado = true;
+            turno.RemoveAt(0);
+            turno.Add(personaje_en_turno);
+            Limpiar_botones_turno();
+
+            //DESACTIVAMOS LOS UI DE TEXTO OBJETIVO
+            bool multi_objetivo = (poder.objetivos == "unico")? false : true; // UNICO = FALSE, MULTIPLE = TRUE
+            switch(multi_objetivo){
+                case false:
+                    objetivo_unico_txt.SetActive(false);
+                    break;
+                case true:
+                    multiple_objetivo_txt.SetActive(false);
+                    break;
+            }
+
+            //PONEMOS NULL EL PODER A SER LANZADO DE FORMA GLOBAL
+            poder_a_ser_lanzado = null;
+        }
+    }
+
+
+    void HacerDaño(Personajes[] target, float daño, string elementoAtacante, string atributo, int index_objetivo){
+        for (int i= 0; i < target.Length; i++){
+            string elementoDefensor = target[i].elemento;
+            if (elementoDefensor == "agua"){
+                daño = Critico(daño, personaje_en_turno.atributos.critico);
+                daño += daño * defensas_elementales[elementoAtacante][0];
+                if (atributo == "magia") daño -= (daño * (target[i].atributos.defensa_magica / 100));
+                else daño -= (daño * (target[i].atributos.defensa_fisica / 100));        
+            }else if (elementoDefensor == "fuego"){
+                daño = Critico(daño, personaje_en_turno.atributos.critico);
+                daño += daño * defensas_elementales[elementoAtacante][1];
+                if (atributo == "magia") daño -= (daño * (target[i].atributos.defensa_magica / 100));
+                else daño -= (daño * (target[i].atributos.defensa_fisica / 100));
+            }else if (elementoDefensor == "tierra"){
+                daño = Critico(daño, personaje_en_turno.atributos.critico);
+                daño += daño * defensas_elementales[elementoAtacante][2];
+                if (atributo == "magia") daño -= (daño * (target[i].atributos.defensa_magica / 100));
+                else daño -= (daño * (target[i].atributos.defensa_fisica / 100));
+            }else if (elementoDefensor == "trueno"){
+                daño = Critico(daño, personaje_en_turno.atributos.critico);
+                daño += daño * defensas_elementales[elementoAtacante][3];
+                if (atributo == "magia") daño -= (daño * (target[i].atributos.defensa_magica / 100));
+                else daño -= (daño * (target[i].atributos.defensa_fisica / 100));
+            }else if (elementoDefensor == "oscuridad"){
+                daño = Critico(daño, personaje_en_turno.atributos.critico);
+                daño += daño * defensas_elementales[elementoAtacante][4];
+                if (atributo == "magia") daño -= (daño * (target[i].atributos.defensa_magica / 100));
+                else daño -= (daño * (target[i].atributos.defensa_fisica / 100));
+            }else if (elementoDefensor == "luz"){
+                daño = Critico(daño, personaje_en_turno.atributos.critico);
+                daño += daño * defensas_elementales[elementoAtacante][6];
+                if (atributo == "magia") daño -= (daño * (target[i].atributos.defensa_magica / 100));
+                else daño -= (daño * (target[i].atributos.defensa_fisica / 100));
+            }else{
+                Debug.Log("elemento defensor erroneo");
+            }
+
+
+            target[i].atributos.vitalidad -= daño;
+            if (target[i].atributos.vitalidad <= 0){
+                target[i].estado_alterado["muerto"] = new float[]{0F, 9999F};
+            }
+            Cambiar_texto_vida(target[i], index_objetivo);
+        }
+        
+    }
+    
+    float Critico(float daño, float pro_critico){
+        return daño;
+    }
+
+    void Cambiar_texto_vida(Personajes target, int index_objetivo){
+
+        //MOSIFICAMOS LA VIDA DE TODOS LOS PERSONAJES SI NOS LLEGA 99 -> TODOS LOS OBJETIVOS
+        if (index_objetivo == 99){
+            for(int i = 0; i < enemigos.Length; i++){
+                GameObject canvas_texto = GameObject.Find("vida_enemigo_"+i);
+                canvas_texto.GetComponent<Text>().text = enemigos[i].atributos.vitalidad.ToString();
+            }
+        }else{
+            //MODIFICAMOS LA VIDA DE 1 PERSONAJE ARRIBA EN PANTALLA
+            GameObject canvas_texto = GameObject.Find("vida_enemigo_"+index_objetivo);
+            canvas_texto.GetComponent<Text>().text = target.atributos.vitalidad.ToString();
+        }
+    }
+
+
+
         
 }
 
@@ -232,17 +428,7 @@ if ataque_buff:
     ataque()
     buff()
 
-ataque(daño_base, atributo, multiplicador, tipo_elemento, reutilizacion, objetivos, sePuedeUsar, enemigos):
-    if objetivo == unico:
-        if (sePuedeUsar && reutilizacion == 0):
-            Personajes[] target = new Personajes[1]{seleccionarUnico()}
-            daño = (atributo * multiplicador) + daño_base;
-            hacerDaño(target, daño, elemento, atributo)
-                
-    else:
-        if (sePuedeUsar && reutilizacion == 0):
-            daño = atributo * multiplicador
-            hacerDaño(enemigos, daño, elemento, atributo)
+
 
 buff(daño_base, atributo, multiplicador_efecto, tipo_elemento, reutilizacion, duracion_efecto, objetivos, sePuedeUsar, aliados )
     if objetivo == unico:
@@ -314,51 +500,4 @@ debuff():
     "aturdir"
     "dormir"
     "silenciar"
-
-
-
-hacerDaño(personajes[] target, daño, elementoAtacante, atributo):
-    elementoDefensor = target.elemento
-    for (i < target.Length){
-        if inmunidad.magico
-         --> x6
-            if elementoAtacante = agua:
-                if elementoDefensor = agua:
-                    daño = Critico(daño, actual.atributos.critico)
-                    daño += daño * 1
-                    if (atributo == "magia"): daño -= (daño * (actual.atributo.defensa_magica / 100))
-                    else(): daño -= (daño * (actual.atributo.defensa_fisica / 100))
-                    
-                if elementoDefensor = fuego:
-                    daño = Critico(daño, actual.atributos.critico)
-                    daño += daño * 1.5
-                    if (atributo == "magia"): daño -= (daño * (actual.atributo.defensa_magica / 100))
-                    else(): daño -= (daño * (actual.atributo.defensa_fisica / 100))
-                if elementoDefensor = tierra:
-                    daño = Critico(daño, actual.atributos.critico)
-                    daño += daño * 1
-                    if (atributo == "magia"): daño -= (daño * (actual.atributo.defensa_magica / 100))
-                    else(): daño -= (daño * (actual.atributo.defensa_fisica / 100))
-                if elementoDefensor = trueno:
-                    daño = Critico(daño, actual.atributos.critico)
-                    daño += daño * 0.5
-                    if (atributo == "magia"): daño -= (daño * (actual.atributo.defensa_magica / 100))
-                    else(): daño -= (daño * (actual.atributo.defensa_fisica / 100))
-                if elementoDefensor = oscuridad:
-                    daño = Critico(daño, actual.atributos.critico)
-                    daño += daño * 1
-                    if (atributo == "magia"): daño -= (daño * (actual.atributo.defensa_magica / 100))
-                    else(): daño -= (daño * (actual.atributo.defensa_fisica / 100))
-                if elementoDefensor = luz:
-                    daño = Critico(daño, actual.atributos.critico)
-                    daño += daño * 1
-                    if (atributo == "magia"): daño -= (daño * (actual.atributo.defensa_magica / 100))
-                    else(): daño -= (daño * (actual.atributo.defensa_fisica / 100))
-
-
-            target.vitalidad -= daño
-            if (target.vitalidad <= 0):
-                destroy(target)
-        
-    }
-**/
+    **/

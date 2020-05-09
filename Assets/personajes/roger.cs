@@ -27,7 +27,7 @@ public class roger : Personajes
     {
         this.poderes[0] = new Poderes("golpe", "roger golpea al enemigo", "fuerza", 1f, 0f, "ataque", "tierra", 0, 0, "unico", true, new string[1]{"null"}, 10F);
         this.poderes[1] = new Poderes("curar", "roger cura a los aliados", "magia", 0f, 0.2f, "buff", "tierra", 2, 0, "multiple", true, new string[1]{"curar"}, 10F);
-        this.poderes[2] = new Poderes("quemar", "roger quema a los enemigos", "magia", 0f, 0.1f, "debuff", "tierra", 5, 3, "multiple", true, new string[1]{"quemar"}, 1F);
+        this.poderes[2] = new Poderes("quemar", "roger quema a los enemigos", "magia", 2f, 0f, "ataque", "tierra", 5, 0, "multiple", true, new string[1]{"null"}, 1F);
         this.poderes[3] = new Poderes("debuff", "roger quema a los enemigos", "magia", 0f, 0.1f, "debuff", "tierra", 3, 2, "multiple", true, new string[1]{"curar"}, 0F);
         this.poderes[4] = new Poderes("debuff", "roger quema a los enemigos", "magia", 0f, 0.1f, "debuff", "tierra", 3, 2, "multiple", true, new string[1]{"curar"}, 0F);
         this.poderes[5] = new Poderes("debuff", "roger quema a los enemigos", "magia", 0f, 0.1f, "debuff", "tierra", 3, 2, "multiple", true, new string[1]{"curar"}, 0F);
