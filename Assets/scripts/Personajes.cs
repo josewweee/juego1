@@ -14,7 +14,7 @@ public class Personajes
     public Poderes[] poderes;
     public Poderes[] poderesActivos;
     public string elemento;
-    public string estado_alterado;
+    public Dictionary<string, float[]> estado_alterado;
     public string rareza;
 
 

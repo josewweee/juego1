@@ -6,22 +6,32 @@ public class Poderes
 {
     public string nombre;
     public string descripcion;
-    public string tipo_daño;
-    public float multiplicador_daño;
-    public string tipo_poder;
+    public string atributo;
+    public float multiplicador;
+    public float multiplicador_efecto;
+    public string tipo_poder; // ataque, buff, debuff, purgar, ataque debuff, ataque buff
+    public string tipo_elemento;
     public int reutilizacion;
-    public string multi_objetivo;
-    public bool esta_en_reutilizacion;
+    public int duracion_efecto;
+    public string objetivos; // multiple, propio, unico
+    public bool se_puede_usar;
+    public string[] habilidades;
+    public float daño_base; // DAÑO BASE DEL PODER
 
-    public Poderes(string nombre, string descripcion, string tipo_daño, float multiplicador_daño, string tipo_poder, int reutilizacion, string multi_objetivo)
+    public Poderes(string nombre, string descripcion, string atributo, float multiplicador, float multiplicador_efecto, string tipo_poder, string tipo_elemento,int reutilizacion, int duracion_efecto, string objetivos, bool se_puede_usar, string[] habilidades, float daño_base)
     {
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.tipo_daño = tipo_daño;
-        this.multiplicador_daño = multiplicador_daño;
+        this.atributo = atributo; // cambiar el nombre de tipo de daño a atributo
+        this.multiplicador = multiplicador;
+        this.multiplicador_efecto = multiplicador_efecto;
         this.tipo_poder = tipo_poder;
+        this.tipo_elemento = tipo_elemento;
         this.reutilizacion = reutilizacion;
-        this.multi_objetivo = multi_objetivo;
-        this.esta_en_reutilizacion = false;
+        this.duracion_efecto = duracion_efecto;
+        this.objetivos = objetivos;
+        this.se_puede_usar = se_puede_usar;
+        this.habilidades = habilidades;
+        this.daño_base = daño_base;
     }
 }
