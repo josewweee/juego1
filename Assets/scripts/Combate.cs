@@ -38,6 +38,7 @@ public class Combate : MonoBehaviour
     //TURNOS DE PERSONAJES
     public Dictionary<string, Personajes> turno = new Dictionary<string, Personajes>();
     private Personajes personaje_en_turno;
+    public string key_personaje_turno;
     public bool turno_finalizado = false;
 
     //de pruebas locales
@@ -87,7 +88,7 @@ public class Combate : MonoBehaviour
             velocidades_personajes[i] = personajes[i].atributos.velocidad;
         }
         for(int i = 0; i < enemigos.Length; i++){
-            velocidades_personajes[i] = personajes[i].atributos.velocidad;
+            velocidades_enemigos[i] = enemigos[i].atributos.velocidad;
         }
 
         //ASIGNAMOS EL UI DE LOS TEXTOS DE OBJETIVOS Y LOS DESHABILITAMOS POR AHORA
@@ -113,6 +114,7 @@ public class Combate : MonoBehaviour
         foreach (KeyValuePair<string, Personajes> pj in turno)
         {
             personaje_en_turno = pj.Value;
+            key_personaje_turno = pj.Key;
             break;
         }
 
@@ -141,6 +143,11 @@ public class Combate : MonoBehaviour
             Asignar_botones_turno(personaje_en_turno);
             turno_finalizado = false;
             Debug.Log("personaje en turno: " + personaje_en_turno.nombre);
+        }
+        
+        if(key_personaje_turno.Contains("enemigo")){
+            Debug.Log("enemigo jugando...");
+            pasar_turno();
         }
     }
 
@@ -337,7 +344,7 @@ public class Combate : MonoBehaviour
 
     void pasar_turno(){
         //AUMENTAMOS TODAS LAS VELOCIDADES SEGUN EL ARREGLO DE VELOCIDADES INICIALES
-        for(int i = 0; i < personajes.Length; i++){
+        for(int i = 0; i < personajes.Length; i++){ 
             personajes[i].atributos.velocidad += velocidades_personajes[i];
         }
 
@@ -345,39 +352,29 @@ public class Combate : MonoBehaviour
              enemigos[i].atributos.velocidad += velocidades_enemigos[i];
         }
         //VEMOS SI TENEMOS UN ALIADO O UN ENEMIGO COMO JUGADOR EN TURNO
-        bool aliado = false; //TRUE = ALIADO, FALSE = ENEMIGO
+        bool aliado = (key_personaje_turno.Contains("aliado"))? true: false; //TRUE = ALIADO, FALSE = ENEMIGO
         string nombre_personaje_turno = personaje_en_turno.nombre;
-        foreach (KeyValuePair<string, Personajes> pj in turno)
-        {
-            string key_personaje_turno = pj.Key;
-            if(key_personaje_turno.Contains("aliado")){
-                 aliado = true;
-            }else{
-                aliado = false;
-            }
-            break;
-        }
         //BUSCAMOS SU NOMBRE EN EL ARREGLO CORRESPONDIENTE Y REDUCIMOS SU VELOCIDAD A 0
-            int j = 0;
-            bool velocidad_cambiada = false;
+        int j = 0;
+        bool velocidad_cambiada = false;
 
-            if (aliado == true){
-                while(j < personajes.Length && !velocidad_cambiada){
-                    if(nombre_personaje_turno.Contains(personajes[j].nombre)){
-                        velocidad_cambiada = true;
-                        personajes[j].atributos.velocidad = 0;
-                    }
-                    j++;
+        if (aliado == true){
+            while(j < personajes.Length && !velocidad_cambiada){
+                if(nombre_personaje_turno.Contains(personajes[j].nombre)){
+                    velocidad_cambiada = true;
+                    personajes[j].atributos.velocidad = 0;
                 }
-            }else{
-                 while(j < enemigos.Length && !velocidad_cambiada){
-                    if(nombre_personaje_turno.Contains(enemigos[j].nombre)){
-                        velocidad_cambiada = true;
-                        enemigos[j].atributos.velocidad = 0;
-                    }
-                    j++;
-                }
+                j++;
             }
+        }else{
+            while(j < enemigos.Length && !velocidad_cambiada){
+                if(nombre_personaje_turno.Contains(enemigos[j].nombre)){
+                    velocidad_cambiada = true;
+                    enemigos[j].atributos.velocidad = 0;
+                }
+                j++;
+            }
+        }
         //LIMPIAMOS EL MAPA
         turno.Clear();
         //AGREGAMOS TODOS LOS ALIADOS Y ENEMIGOS AL MAPA
@@ -398,6 +395,7 @@ public class Combate : MonoBehaviour
         foreach (KeyValuePair<string, Personajes> pj in turno)
         {
             personaje_en_turno = pj.Value;
+            key_personaje_turno = pj.Key;
             break;
         } 
     }
