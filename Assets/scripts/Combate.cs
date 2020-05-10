@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
+using System.Linq;
 
 public class Combate : MonoBehaviour
 {
@@ -11,11 +12,9 @@ public class Combate : MonoBehaviour
     public Personajes[] personajes;
     public Personajes[] enemigos;
 
-    //ESTADOS INICIALES DE LOS ATRIBUTOS Y ESTADOS ALTERADOS DE LOS PERSONAJES Y ENEMIGOS
-    private Atributos[] atributos_iniciales_personajes;
-    private string[] estados_alterados_iniciales_personajes;
-    private Atributos[] atributos_iniciales_enemigos;
-    private string[] estados_alterados_iniciales_enemigos;
+    //VELOCIDADES INICIALES DE LOS ALIADOS Y LOS ENEMIGOS
+    public float[] velocidades_personajes;
+    public float[] velocidades_enemigos;
 
     //¿HISTORIA, PVP?
     public string tipo_combate;
@@ -37,7 +36,7 @@ public class Combate : MonoBehaviour
     public GameObject prefab_personaje;
 
     //TURNOS DE PERSONAJES
-    public List<Personajes> turno = new List<Personajes>();
+    public Dictionary<string, Personajes> turno = new Dictionary<string, Personajes>();
     private Personajes personaje_en_turno;
     public bool turno_finalizado = false;
 
@@ -74,20 +73,22 @@ public class Combate : MonoBehaviour
         
         //de prueba
         fabrica = new Personajes();
-        personajes = new Personajes[4]{fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("roger")};
-        enemigos = new Personajes[4]{fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("roger")};
+        personajes = new Personajes[4]{fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("liliana"), fabrica.Crear_personaje("martis")};
+        enemigos = new Personajes[4]{fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("martis"), fabrica.Crear_personaje("liliana")};
 
         //COPIAMOS LOS PERSONAJES DEL USUARIO Y DE LOS ENEMIGOS LOCALMENTE
         //personajes = jugador.personajesFavoritos;
         //enemigos = storage_enemigos.enemigos;
 
-        //ASIGNAMOS LOS ATRIBUTOS INICIALES
-        /**
-        atributos_iniciales_personajes = new Atributos[4]{};
-        estados_alterados_iniciales_personajes = new string[4]{};
-        atributos_iniciales_enemigos = new Atributos[4]{};
-        estados_alterados_iniciales_enemigos = new string[4]{};
-        **/
+        //ASIGNAMOS LAS VELOCIDADES INCIALES DE LOS PERSONAJES Y ENEMIGOS
+        velocidades_personajes = new float[personajes.Length];
+        velocidades_enemigos = new float[enemigos.Length];
+        for(int i = 0; i < personajes.Length; i++){
+            velocidades_personajes[i] = personajes[i].atributos.velocidad;
+        }
+        for(int i = 0; i < enemigos.Length; i++){
+            velocidades_personajes[i] = personajes[i].atributos.velocidad;
+        }
 
         //ASIGNAMOS EL UI DE LOS TEXTOS DE OBJETIVOS Y LOS DESHABILITAMOS POR AHORA
         objetivo_unico_txt = GameObject.Find("texto_seleccion_objetivo");
@@ -100,20 +101,22 @@ public class Combate : MonoBehaviour
 
         //LLENAMOS EL PRIMER ORDEN DE TURNOS SEGUN LA VELOCIDAD DE LOS PERSONAJES
         for(int i = 0; i < personajes.Length; i++){
-            turno.Add(personajes[i]);
+            turno["aliado"+i] = personajes[i];
         }
         for(int i = 0; i < enemigos.Length; i++){
-            turno.Add(enemigos[i]);
-        }
-        turno.Sort((x, y) => y.atributos.velocidad.CompareTo(x.atributos.velocidad));
-        personaje_en_turno = turno[0];
-
-        //IMPRIMIMOS LOS TURNOS
-        for(int i = 0; i < turno.Count; i++){
-            Debug.Log(turno[i]);
+            turno["enemigo"+i] = enemigos[i];
         }
 
-        //NICIALIZAMOS LOS BOTONES
+
+        turno = turno.OrderByDescending(key => key.Value.atributos.velocidad).ToDictionary(x => x.Key, x => x.Value);
+        
+        foreach (KeyValuePair<string, Personajes> pj in turno)
+        {
+            personaje_en_turno = pj.Value;
+            break;
+        }
+
+        //INICIALIZAMOS LOS BOTONES
         poder_1 = GameObject.Find("poder_1");
         poder_2 = GameObject.Find("poder_2");
         poder_3 = GameObject.Find("poder_3");
@@ -126,17 +129,15 @@ public class Combate : MonoBehaviour
 
         // ASIGNAMOS LOS BOTONES AL PRIMER PERSONAJE
         Asignar_botones_turno(personaje_en_turno);
-         Debug.Log("personaje en turno: " + personaje_en_turno.nombre);
+        Debug.Log("personaje en turno: " + personaje_en_turno.nombre);
         
     }
 
 
     void Update()
     {   
-        //SI ACABAMOS TURNO, EL SIGUIENTE SERA EL PRIMERO EN LA COLA y ASIGNAMOS A LOS BOTONES LOS VALORES DEL NUEVO PERSONAJE EN TURNO
+        //SI ACABAMOS TURNO ASIGNAMOS A LOS BOTONES LOS VALORES DEL NUEVO PERSONAJE EN TURNO
         if (turno_finalizado){
-            //turno.Sort((x, y) => x.atributos.velocidad.CompareTo(y.atributos.velocidad)); 
-            personaje_en_turno = turno[0];
             Asignar_botones_turno(personaje_en_turno);
             turno_finalizado = false;
             Debug.Log("personaje en turno: " + personaje_en_turno.nombre);
@@ -197,8 +198,8 @@ public class Combate : MonoBehaviour
         }
 
         //INSTANCIAMOS LOS ENEMIGOS
-        float[] pos_inicial_x_enemigos = {7.39F, 5.15F, 4.63F, 6.76F};
-        float[] pos_inicial_y_enemigos = {-2.61F, -3.48F, 0.89F, 0.12F};
+        float[] pos_inicial_x_enemigos = {5.15F, 7.39F, 6.76F, 4.63F};
+        float[] pos_inicial_y_enemigos = {-3.48F, -2.61F, 0.12F, 0.89F};
         for(int i = 0; i < enemigos.Length; i++){
             GameObject personaje_creado = Instantiate(prefab, new Vector3(pos_inicial_x_enemigos[i], pos_inicial_y_enemigos[i], pos_inicial_z), Quaternion.identity);
             
@@ -317,11 +318,7 @@ public class Combate : MonoBehaviour
             }
 
             //PASAMOS TURNO
-            turno_finalizado = true;
-            turno.RemoveAt(0);
-            turno.Add(personaje_en_turno);
-            Limpiar_botones_turno();
-
+            pasar_turno();
             //DESACTIVAMOS LOS UI DE TEXTO OBJETIVO
             bool multi_objetivo = (poder.objetivos == "unico")? false : true; // UNICO = FALSE, MULTIPLE = TRUE
             switch(multi_objetivo){
@@ -336,6 +333,73 @@ public class Combate : MonoBehaviour
             //PONEMOS NULL EL PODER A SER LANZADO DE FORMA GLOBAL
             poder_a_ser_lanzado = null;
         }
+    }
+
+    void pasar_turno(){
+        //AUMENTAMOS TODAS LAS VELOCIDADES SEGUN EL ARREGLO DE VELOCIDADES INICIALES
+        for(int i = 0; i < personajes.Length; i++){
+            personajes[i].atributos.velocidad += velocidades_personajes[i];
+        }
+
+        for(int i = 0; i < enemigos.Length; i++){
+             enemigos[i].atributos.velocidad += velocidades_enemigos[i];
+        }
+        //VEMOS SI TENEMOS UN ALIADO O UN ENEMIGO COMO JUGADOR EN TURNO
+        bool aliado = false; //TRUE = ALIADO, FALSE = ENEMIGO
+        string nombre_personaje_turno = personaje_en_turno.nombre;
+        foreach (KeyValuePair<string, Personajes> pj in turno)
+        {
+            string key_personaje_turno = pj.Key;
+            if(key_personaje_turno.Contains("aliado")){
+                 aliado = true;
+            }else{
+                aliado = false;
+            }
+            break;
+        }
+        //BUSCAMOS SU NOMBRE EN EL ARREGLO CORRESPONDIENTE Y REDUCIMOS SU VELOCIDAD A 0
+            int j = 0;
+            bool velocidad_cambiada = false;
+
+            if (aliado == true){
+                while(j < personajes.Length && !velocidad_cambiada){
+                    if(nombre_personaje_turno.Contains(personajes[j].nombre)){
+                        velocidad_cambiada = true;
+                        personajes[j].atributos.velocidad = 0;
+                    }
+                    j++;
+                }
+            }else{
+                 while(j < enemigos.Length && !velocidad_cambiada){
+                    if(nombre_personaje_turno.Contains(enemigos[j].nombre)){
+                        velocidad_cambiada = true;
+                        enemigos[j].atributos.velocidad = 0;
+                    }
+                    j++;
+                }
+            }
+        //LIMPIAMOS EL MAPA
+        turno.Clear();
+        //AGREGAMOS TODOS LOS ALIADOS Y ENEMIGOS AL MAPA
+        for(int i = 0; i < personajes.Length; i++){
+            turno["aliado"+i] = personajes[i];
+        }
+
+        for(int i = 0; i < enemigos.Length; i++){   
+            turno["enemigo"+i] = enemigos[i];
+        }
+        //ORDENAMOS EL MAPA EN ORDEN DE VELOCIDADES
+         turno = turno.OrderByDescending(key => key.Value.atributos.velocidad).ToDictionary(x => x.Key, x => x.Value);
+        //ACTIVAMOS EL BOOLEANO DE TURNO FINALIZADO
+        turno_finalizado = true;
+        //LIMPIAMOS LOS BOTONES DE TURNO
+        Limpiar_botones_turno();
+        //retornamos el nuevo personaje en turno
+        foreach (KeyValuePair<string, Personajes> pj in turno)
+        {
+            personaje_en_turno = pj.Value;
+            break;
+        } 
     }
 
 

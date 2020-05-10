@@ -28,6 +28,12 @@ public class Personajes
             case "alicia":
                 nuevo_personaje = new alicia();
                 return nuevo_personaje;
+            case "liliana":
+                nuevo_personaje = new liliana();
+                return nuevo_personaje;
+            case "martis":
+                nuevo_personaje = new martis();
+                return nuevo_personaje;
             default:
                 return null;
         }
