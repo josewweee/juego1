@@ -23,12 +23,13 @@ public class liliana : Personajes
     }
 
 // nombre, descripcion, atributo, multiplicador, multiplicador_efecto, tipo_poder, tipo_elemento, reutilizacion, duracion_efecto, objetivos, se_puede_usar, habilidades, daño_base
+    // LA DURACION DE LOS PODERES, VA CON 1 VALOR DEMAS DEL QUE DEBE DURAR
     public void Agregar_poderes()
     {
         this.poderes[0] = new Poderes("torrente", "liliana ataca al enemigo", "magia", 1f, 0f, "ataque", "agua", 0, 0, "unico", true, new string[1]{"null"}, 10F);
         this.poderes[1] = new Poderes("congelar", "liliana congela a los enemigos", "magia", 0f, 0f, "debuff", "agua", 10, 2, "multiple", true, new string[1]{"congelar"}, 3F);
-        this.poderes[2] = new Poderes("vida +", "liliana aumenta la vitalidad del grupo", "magia", 0f, 1f, "buff", "agua", 5, 3, "multiple", true, new string[1]{"aumentar_vitalidad"}, 0F);
-        this.poderes[3] = new Poderes("magia +","liliana aumenta la magia del grupo", "magia", 0f, 1f, "buff", "agua", 5, 3, "multiple", true, new string[1]{"aumentar_magia"}, 0F);
+        this.poderes[2] = new Poderes("fuerza +", "liliana aumenta la vitalidad del grupo", "magia", 0f, 1f, "buff", "agua", 5, 3, "multiple", true, new string[1]{"aumentar_fuerza"}, 0F);
+        this.poderes[3] = new Poderes("magia +","liliana aumenta la fuerza del grupo", "magia", 0f, 1f, "buff", "agua", 5, 3, "multiple", true, new string[1]{"aumentar_fuerza"}, 0F);
         this.poderes[4] = new Poderes("debuff", "liliana quema a los enemigos", "magia", 0f, 0.1f, "debuff", "agua", 3, 2, "multiple", true, new string[1]{"curar"}, 0F);
         this.poderes[5] = new Poderes("debuff", "liliana quema a los enemigos", "magia", 0f, 0.1f, "debuff", "agua", 3, 2, "multiple", true, new string[1]{"curar"}, 0F);
         this.poderes[6] = new Poderes("debuff", "liliana quema a los enemigos", "magia", 0f, 0.1f, "debuff", "agua", 3, 2, "multiple", true, new string[1]{"curar"}, 0F);

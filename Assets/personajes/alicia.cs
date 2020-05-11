@@ -26,7 +26,7 @@ public class alicia : Personajes
     public void Agregar_poderes()
     {
         this.poderes[0] = new Poderes("incinerar", "alicia inciera al enemigo", "magia", 1f, 0f, "ataque", "fuego", 0, 0, "unico", true, new string[1]{"null"}, 10F);
-        this.poderes[1] = new Poderes("congelar", "alicia congela a los enemigos", "magia", 0f, 0f, "debuff", "agua", 10, 2, "multiple", true, new string[1]{"congelar"}, 3F);
+        this.poderes[1] = new Poderes("congelar", "alicia congela a los enemigos", "magia", 0f, 1f, "debuff", "agua", 10, 2, "multiple", true, new string[1]{"congelar"}, 3F);
         this.poderes[2] = new Poderes("quemar", "alicia quema a los enemigos", "magia", 0f, 0.1f, "debuff", "fuego", 5, 3, "multiple", true, new string[1]{"quemar"}, 1F);
         this.poderes[3] = new Poderes("debuff", "alicia quema a los enemigos", "magia", 0f, 0.1f, "debuff", "fuego", 3, 2, "multiple", true, new string[1]{"curar"}, 0F);
         this.poderes[4] = new Poderes("debuff", "alicia quema a los enemigos", "magia", 0f, 0.1f, "debuff", "fuego", 3, 2, "multiple", true, new string[1]{"curar"}, 0F);

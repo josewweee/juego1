@@ -139,11 +139,11 @@ public class Combate : MonoBehaviour
     {   
         //SI ACABAMOS TURNO
         if (turno_finalizado){
-            //ASIGNAMOS BOTONES AL JUGADOR EN TURNO
-            Asignar_botones_turno(personaje_en_turno);
             //SI ES ENEMIGO PASAMOS TURNO ( ACA VENDRA LA IA QUE REVISARA BUFFOS DEBUFFOS)
             if(key_personaje_turno.Contains("enemigo")){
                 Debug.Log("enemigo jugando...");
+                string output = JsonUtility.ToJson(personaje_en_turno.estado_alterado, true);
+                Debug.Log(output);
                 pasar_turno();
             }else{
                 //SI ES ALIADO, REVISAMOS QUIEN ES
@@ -158,6 +158,12 @@ public class Combate : MonoBehaviour
                 }
                 //Y REVISAMOS SI TOCA MODIFICARLE LOS BUFFOS / DEBUFFOS
                 buffear(personaje_para_revisar_buffos, index_personaje_en_turno);
+                //debuffear();
+                if(personaje_en_turno.estado_alterado.ContainsKey("dormir") || personaje_en_turno.estado_alterado.ContainsKey("congelar") || personaje_en_turno.estado_alterado.ContainsKey("aturdir")){
+                    pasar_turno();
+                } 
+                //ASIGNAMOS BOTONES AL JUGADOR EN TURNO
+                Asignar_botones_turno(personaje_en_turno);
                 turno_finalizado = false;
             }
         }
@@ -271,7 +277,8 @@ public class Combate : MonoBehaviour
                 break;
             }
         }
-
+        // string output = JsonUtility.ToJson(personajes[Int32.Parse(index)].atributos, true);
+        // Debug.Log(output);
         //MIRAMOS QUE PODER FUE LANZADO Y LLAMAMOS LA FUNCION CORRESPONDIENTE
         //MIRAMOS SI ES POSIBLE TIRAR SEGUN EL TIEMPO DE COOLDOWN
         if (poder.se_puede_usar){
@@ -285,9 +292,12 @@ public class Combate : MonoBehaviour
                 case "purgar":
                     purgar();
                     break;
+                case "debuff":
+                    debuff(poder, index, index_personaje_en_turno);
+                    break;
                 case "ataque_debuff":
                     ataque(poder, index, index_personaje_en_turno);
-                    debuff();
+                    debuff(poder, index, index_personaje_en_turno);
                     break;
                 case "ataque_buff":
                     ataque(poder, index, index_personaje_en_turno);
@@ -296,7 +306,8 @@ public class Combate : MonoBehaviour
                 default:
                     break;
             }
-
+            // output = JsonUtility.ToJson(personajes[Int32.Parse(index)].atributos, true);
+            // Debug.Log(output);
             //PASAMOS TURNO
             pasar_turno();
             //DESACTIVAMOS LOS UI DE TEXTO OBJETIVO
@@ -406,7 +417,50 @@ public class Combate : MonoBehaviour
     
 
     void purgar(){}
-    void debuff(){}
+    void debuff(Poderes poder, string index_objetivo, int index_personaje_en_turno){
+        
+        int index = int.Parse(index_objetivo);
+        Personajes[] target;
+        float atributo_;
+        string[] habilidades = poder.habilidades;
+
+        // MIRAMOS CON QUE ATRIBUTO SE HARA EL DAÑO
+        switch(poder.atributo){
+            case "fuerza":
+                atributo_ = personaje_en_turno.atributos.fuerza;
+                break;
+            case "magia":
+                atributo_ = personaje_en_turno.atributos.magia;
+                break;
+            case "vitalidad":
+                atributo_ = personaje_en_turno.atributos.vitalidad;
+                break;
+            case "defensa_fisica":
+                atributo_ = personaje_en_turno.atributos.defensa_fisica;
+                break;
+            case "defensa_magica":
+                atributo_ = personaje_en_turno.atributos.defensa_magica;
+                break;
+            case "velocidad":
+                atributo_ = personaje_en_turno.atributos.velocidad;
+                break;
+            default:
+                atributo_ = 1;
+                break;
+        }
+        // TOMAMOS EL OBJETIVO DEPENDIENDO DE QUIEN HAYA SIDO SELECIONADO
+        if(poder.objetivos == "unico"){
+            target = new Personajes[1]{enemigos[index]};
+            debuffear(target, index, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
+        }else if (poder.objetivos == "multiple"){
+            // 99 PARA INDICAR QUE AFECTAREMOS A TODOS
+            Debug.Log(enemigos[0].atributos.salud);
+            debuffear(enemigos, 99, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
+        }else{
+            target = new Personajes[1]{enemigos[index]};
+            debuffear(target, index_personaje_en_turno, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
+        }
+    }
 
     void pasar_turno(){
         //AUMENTAMOS TODAS LAS VELOCIDADES SEGUN EL ARREGLO DE VELOCIDADES INICIALES
@@ -482,7 +536,9 @@ public class Combate : MonoBehaviour
                         float porcentaje_reduccion_magia =  (personaje_en_turno.estado_alterado.ContainsKey("ignorar_defensa_magica")? personaje_en_turno.estado_alterado["ignorar_defensa_magica"][0] : 0F);
                         float porcentaje_reduccion_general = (personaje_en_turno.estado_alterado.ContainsKey("ignorar_defensas")? personaje_en_turno.estado_alterado["ignorar_defensas"][0] : 0F);
                         float reduccion_defensas = (porcentaje_reduccion_magia >= porcentaje_reduccion_general)? porcentaje_reduccion_magia : porcentaje_reduccion_general;
-                        daño -= daño * ((target[i].atributos.defensa_magica - reduccion_defensas) / 100);   
+                        if (reduccion_defensas <= target[i].atributos.defensa_magica){
+                            daño -= daño * ((target[i].atributos.defensa_magica / 100) - (reduccion_defensas / 100));
+                        }
                 }else{
                     detener_daño = true;
                 }
@@ -491,7 +547,9 @@ public class Combate : MonoBehaviour
                     float porcentaje_reduccion_magia =  (personaje_en_turno.estado_alterado.ContainsKey("ignorar_defensa_fisica")? personaje_en_turno.estado_alterado["ignorar_defensa_fisica"][0] : 0F);
                     float porcentaje_reduccion_general = (personaje_en_turno.estado_alterado.ContainsKey("ignorar_defensas")? personaje_en_turno.estado_alterado["ignorar_defensas"][0] : 0F);
                     float reduccion_defensas = (porcentaje_reduccion_magia >= porcentaje_reduccion_general)? porcentaje_reduccion_magia : porcentaje_reduccion_general;
-                    daño -= daño * ((target[i].atributos.defensa_fisica - reduccion_defensas) / 100);
+                    if (reduccion_defensas <= target[i].atributos.defensa_fisica){
+                        daño -= daño * ((target[i].atributos.defensa_fisica / 100) - (reduccion_defensas / 100));
+                    }
                 }else{
                     detener_daño = true;
                 }
@@ -518,19 +576,20 @@ public class Combate : MonoBehaviour
             }
             
             // SI TENEMOS ROBO DE VIDA, NOS ENCARGAMOS DE CURARNOS
-            target[i].atributos.vitalidad -= daño;
+            target[i].Daño(daño);
+
             if (personaje_en_turno.estado_alterado.ContainsKey("robo_vida")){
                 float robo_vida = daño * personaje_en_turno.estado_alterado["robo_vida"][0];
-                personajes[index_personaje_en_turno].atributos.vitalidad += robo_vida;
+                personajes[index_personaje_en_turno].Curar(robo_vida);
             } 
             
             //SI TENEMOS UN SOLO OBJETIVO, MODIFICAMOS EL ARREGLO DE ENEMIGOS DIRECTAMENTE
             if (target.Length < 2) enemigos[index_objetivo] = target[i];
 
-            //SI LLEGA A 0 DE VIDA, TENDRA ESTADO MUERTO POR 999 TURNOS
-            if (target[i].atributos.vitalidad <= 0){
-                target[i].estado_alterado["muerto"] = new float[]{0F, 9999F};
-            }
+            // //SI LLEGA A 0 DE VIDA, TENDRA ESTADO MUERTO POR 999 TURNOS
+            // if (target[i].atributos.vitalidad <= 0){
+            //     target[i].estado_alterado["muerto"] = new float[]{0F, 9999F};
+            // }
             Cambiar_texto_vida(target[i], index_objetivo, false);
         }
         
@@ -569,7 +628,7 @@ public class Combate : MonoBehaviour
                 switch (habilidad){
                     case "curacion":
                     //MODIFICACION NORMAL A LA VIDA
-                        target[i].atributos.vitalidad += efecto;
+                        target[i].Curar(efecto);
                         break;
                     case "revivir":
                     //REMOVEMOS UN ESTADO NEGATIVO
@@ -582,145 +641,52 @@ public class Combate : MonoBehaviour
                     //CONTANTE AUMENTO DE UN ATRIBUTO MIENTRAS LA DURACION SEA > 0
                         if (target[i].estado_alterado.ContainsKey("revitalizar")) target[i].estado_alterado.Remove("revitalizar");
                         target[i].estado_alterado["revitalizar"] = new float[]{efecto, duracion_efecto};
-                        target[i].atributos.vitalidad += efecto;
+                        target[i].Curar(efecto);
                         if(target[i].estado_alterado["revitalizar"][1] <= 0) target[i].estado_alterado.Remove("revitalizar");
                         break;
                     //AUMENTO UNICO DE UN ATRIBUTO MIENTRAS LA DURACION SEA > 0, LUEGO PONEMOS EL ATRIBUTO COMO ESTABA ANTES
                     case "aumentar_fuerza":
-                        if (target[i].estado_alterado.ContainsKey("aumentar_fuerza")){
-                            target[i].estado_alterado.Remove("aumentar_fuerza");
-                            target[i].estado_alterado["aumentar_fuerza"] = new float[]{efecto, duracion_efecto};
-                            if(target[i].estado_alterado["aumentar_fuerza"][1] <= 0){
-                                target[i].estado_alterado.Remove("aumentar_fuerza");
-                                target[i].atributos.fuerza -= efecto;
-                            }
-                        }else{
-                            target[i].atributos.fuerza += efecto;
-                            target[i].estado_alterado["aumentar_fuerza"] = new float[]{efecto, duracion_efecto};
-                        }
+                        // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                        target[i].Alteraciones_atributos("fuerza", "aumentar_fuerza", efecto, duracion_efecto, false);
                         break;
                     case "aumentar_vitalidad":
-                        if (target[i].estado_alterado.ContainsKey("aumentar_vitalidad")){
-                            target[i].estado_alterado.Remove("aumentar_vitalidad");
-                            target[i].estado_alterado["aumentar_vitalidad"] = new float[]{efecto, duracion_efecto};
-                            if(target[i].estado_alterado["aumentar_vitalidad"][1] <= 0){
-                                target[i].estado_alterado.Remove("aumentar_vitalidad");
-                                target[i].atributos.vitalidad -= efecto;
-                            }
-                        }else{
-                            target[i].atributos.vitalidad += efecto;
-                            target[i].estado_alterado["aumentar_vitalidad"] = new float[]{efecto, duracion_efecto};
-                        }
+                         // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                        target[i].Alteraciones_atributos("vitalidad", "aumentar_vitalidad", efecto, duracion_efecto, false);
                         break;
                     case "aumentar_magia":
-                        if (target[i].estado_alterado.ContainsKey("aumentar_magia")){
-                            target[i].estado_alterado.Remove("aumentar_magia");
-                            target[i].estado_alterado["aumentar_magia"] = new float[]{efecto, duracion_efecto};
-                            if(target[i].estado_alterado["aumentar_magia"][1] <= 0){
-                                target[i].estado_alterado.Remove("aumentar_magia");
-                                target[i].atributos.magia -= efecto;
-                            }
-                        }else{
-                            target[i].atributos.magia += efecto;
-                            target[i].estado_alterado["aumentar_magia"] = new float[]{efecto, duracion_efecto};
-                        }
+                        // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                        target[i].Alteraciones_atributos("magia", "aumentar_magia", efecto, duracion_efecto, false);
                         break;
                     case "aumentar_velocidad":
-                        if (target[i].estado_alterado.ContainsKey("aumentar_velocidad")){
-                            target[i].estado_alterado.Remove("aumentar_velocidad");
-                            target[i].estado_alterado["aumentar_velocidad"] = new float[]{efecto, duracion_efecto};
-                            if(target[i].estado_alterado["aumentar_velocidad"][1] <= 0){
-                                target[i].estado_alterado.Remove("aumentar_velocidad");
-                                target[i].atributos.velocidad -= efecto;
-                            }
-                        }else{
-                            target[i].atributos.velocidad += efecto;
-                            target[i].estado_alterado["aumentar_velocidad"] = new float[]{efecto, duracion_efecto};
-                        }
+                        // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                        target[i].Alteraciones_atributos("velocidad", "aumentar_velocidad", efecto, duracion_efecto, false);
                         break;
                     case "aumentar_critico":
-                        if (target[i].estado_alterado.ContainsKey("aumentar_critico")){
-                            target[i].estado_alterado.Remove("aumentar_critico");
-                            target[i].estado_alterado["aumentar_critico"] = new float[]{efecto, duracion_efecto};
-                            if(target[i].estado_alterado["aumentar_critico"][1] <= 0){
-                                target[i].estado_alterado.Remove("aumentar_critico");
-                                target[i].atributos.critico -= efecto;
-                            }
-                        }else{
-                            target[i].atributos.critico += efecto;
-                            target[i].estado_alterado["aumentar_critico"] = new float[]{efecto, duracion_efecto};
-                        }
+                         // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                        target[i].Alteraciones_atributos("critico", "aumentar_critico", efecto, duracion_efecto, false);
                         break;
                     case "aumentar_defensa_fisica":
-                        if (target[i].estado_alterado.ContainsKey("aumentar_defensa_fisica")){
-                            target[i].estado_alterado.Remove("aumentar_defensa_fisica");
-                            target[i].estado_alterado["aumentar_defensa_fisica"] = new float[]{efecto, duracion_efecto};
-                            if(target[i].estado_alterado["aumentar_defensa_fisica"][1] <= 0){
-                                target[i].estado_alterado.Remove("aumentar_defensa_fisica");
-                                target[i].atributos.defensa_fisica -= efecto;
-                            }
-                        }else{
-                            target[i].atributos.defensa_fisica += efecto;
-                            target[i].estado_alterado["aumentar_defensa_fisica"] = new float[]{efecto, duracion_efecto};
-                        }
+                         // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                        target[i].Alteraciones_atributos("defensa_fisica", "aumentar_defensa_fisica", efecto, duracion_efecto, false);
                         break;
                     case "aumentar_defensa_magica":
-                        if (target[i].estado_alterado.ContainsKey("aumentar_defensa_magica")){
-                            target[i].estado_alterado.Remove("aumentar_defensa_magica");
-                            target[i].estado_alterado["aumentar_defensa_magica"] = new float[]{efecto, duracion_efecto};
-                            if(target[i].estado_alterado["aumentar_defensa_magica"][1] <= 0){
-                                target[i].estado_alterado.Remove("aumentar_defensa_magica");
-                                target[i].atributos.defensa_magica -= efecto;
-                            }
-                        }else{
-                            target[i].atributos.defensa_magica += efecto;
-                            target[i].estado_alterado["aumentar_defensa_magica"] = new float[]{efecto, duracion_efecto};
-                        }
+                        // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                        target[i].Alteraciones_atributos("defensa_magica", "aumentar_defensa_magica", efecto, duracion_efecto, false);
                         break;
                     case "aumentar_fuerza_magia":
-                        if (target[i].estado_alterado.ContainsKey("aumentar_fuerza_magia")){
-                            target[i].estado_alterado.Remove("aumentar_fuerza_magia");
-                            target[i].estado_alterado["aumentar_fuerza_magia"] = new float[]{efecto, duracion_efecto};
-                            if(target[i].estado_alterado["aumentar_fuerza_magia"][1] <= 0){
-                                target[i].estado_alterado.Remove("aumentar_fuerza_magia");
-                                target[i].atributos.fuerza -= efecto;
-                                target[i].atributos.magia -= efecto;
-                            }
-                        }else{
-                            target[i].atributos.fuerza += efecto;
-                            target[i].atributos.magia += efecto;
-                            target[i].estado_alterado["aumentar_fuerza_magia"] = new float[]{efecto, duracion_efecto};
-                        }
+                        // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                        target[i].Alteraciones_atributos("fuerza", "aumentar_fuerza", efecto, duracion_efecto, false);
+                        target[i].Alteraciones_atributos("magia", "aumentar_magia", efecto, duracion_efecto, false);
                         break;
                     case "aumentar_defensas":
-                        if (target[i].estado_alterado.ContainsKey("aumentar_defensas")){
-                            target[i].estado_alterado.Remove("aumentar_defensas");
-                            target[i].estado_alterado["aumentar_defensas"] = new float[]{efecto, duracion_efecto};
-                            if(target[i].estado_alterado["aumentar_defensas"][1] <= 0){
-                                target[i].estado_alterado.Remove("aumentar_defensas");
-                                target[i].atributos.defensa_fisica -= efecto;
-                                target[i].atributos.defensa_magica -= efecto;
-                            }
-                        }else{
-                            target[i].atributos.defensa_fisica += efecto;
-                            target[i].atributos.defensa_magica += efecto;
-                            target[i].estado_alterado["aumentar_defensas"] = new float[]{efecto, duracion_efecto};
-                        }
+                        // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                        target[i].Alteraciones_atributos("defensa_fisica", "aumentar_defensa_fisica", efecto, duracion_efecto, false);
+                        target[i].Alteraciones_atributos("defensa_magica", "aumentar_defensa_magica", efecto, duracion_efecto, false);
                         break;
                     case "aumentar_velocidad_critico":
-                        if (target[i].estado_alterado.ContainsKey("aumentar_velocidad_critico")){
-                            target[i].estado_alterado.Remove("aumentar_velocidad_critico");
-                            target[i].estado_alterado["aumentar_velocidad_critico"] = new float[]{efecto, duracion_efecto};
-                            if(target[i].estado_alterado["aumentar_velocidad_critico"][1] <= 0){
-                                target[i].estado_alterado.Remove("aumentar_velocidad_critico");
-                                target[i].atributos.critico -= efecto;
-                                target[i].atributos.velocidad -= efecto;
-                            }
-                        }else{
-                            target[i].atributos.critico += efecto;
-                            target[i].atributos.velocidad += efecto;
-                            target[i].estado_alterado["aumentar_velocidad_critico"] = new float[]{efecto, duracion_efecto};
-                        }
+                        // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                        target[i].Alteraciones_atributos("velocidad", "aumentar_velocidad", efecto, duracion_efecto, false);
+                        target[i].Alteraciones_atributos("critico", "aumentar_critico", efecto, duracion_efecto, false);
                         break;
                     //PONEMOS UN ESTADO QUE NOS DARA CIERTOS BENEFICIOS EN OTRAS FUNCIONES DEL JUEGO
                     case "inmunidad_magica":
@@ -753,25 +719,12 @@ public class Combate : MonoBehaviour
                         break;
                     case "aumentar_estadisticas":
                      //AUMENTO UNICO DE UN ATRIBUTO MIENTRAS LA DURACION SEA > 0, LUEGO PONEMOS EL ATRIBUTO COMO ESTABA ANTES
-                        if (target[i].estado_alterado.ContainsKey("aumentar_estadisticas")){
-                            target[i].estado_alterado.Remove("aumentar_estadisticas");
-                            target[i].estado_alterado["aumentar_estadisticas"] = new float[]{efecto, duracion_efecto};
-                            if(target[i].estado_alterado["aumentar_estadisticas"][1] <= 0){
-                                target[i].estado_alterado.Remove("aumentar_estadisticas");
-                                target[i].atributos.fuerza -= efecto;
-                                target[i].atributos.vitalidad -= efecto;
-                                target[i].atributos.magia -= efecto;
-                                target[i].atributos.velocidad -= efecto;
-                                target[i].atributos.critico -= efecto;
-                            }
-                        }else{
-                            target[i].atributos.fuerza += efecto;
-                            target[i].atributos.vitalidad += efecto;
-                            target[i].atributos.magia += efecto;
-                            target[i].atributos.velocidad += efecto;
-                            target[i].atributos.critico += efecto;
-                            target[i].estado_alterado["aumentar_estadisticas"] = new float[]{efecto, duracion_efecto};
-                        }
+                        // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                        target[i].Alteraciones_atributos("velocidad", "aumentar_velocidad", efecto, duracion_efecto, false);
+                        target[i].Alteraciones_atributos("critico", "aumentar_critico", efecto, duracion_efecto, false);
+                        target[i].Alteraciones_atributos("fuerza", "aumentar_fuerza", efecto, duracion_efecto, false);
+                        target[i].Alteraciones_atributos("magia", "aumentar_magia", efecto, duracion_efecto, false);
+                        target[i].Alteraciones_atributos("vitalidad", "aumentar_vitalidad", efecto, duracion_efecto, false);
                         break;
                     case "ignorar_defensa_fisica":
                         if (target[i].estado_alterado.ContainsKey("ignorar_defensa_fisica")) target[i].estado_alterado.Remove("ignorar_defensa_fisica");
@@ -809,7 +762,178 @@ public class Combate : MonoBehaviour
         if(target.Length < 2) personajes[index_objetivo] = target[0];
 
     }
-    
+
+
+
+public void debuffear(Personajes[] target, int index_objetivo, string[] habilidades = null, float daño_base = 0f, float atributo = 0f, float multiplicador_efecto = 0f, int duracion_efecto_int = 0){
+    float efecto = 0F;
+    float duracion_efecto = 0F;
+    bool chequeando_debuffos = false;
+
+    //SI NOS PASAN TODOS LOS PARAMETROS, REVISAMOS CUANTO SERA EL EFECTO DEL BUFF
+    if (habilidades != null){
+        efecto = (atributo * multiplicador_efecto) + daño_base;
+        duracion_efecto = Convert.ToSingle(duracion_efecto_int);
+        duracion_efecto -= 1;
+    }
+    //REVISAMOS TODOS LOS PERSONAJES QUE NOS LLEGUEN
+    for(int i = 0; i < target.Length; i++){
+        // SI NO NOS LLEGAN TODOS LOS PARAMETROS, SIGNIFICA QUE ESTAMOS CHEQUEANDO BUFFOS, TOMAMOS UNA LISTA DE BUFFOS EN EL TARGET
+        if (habilidades == null){
+            habilidades = new string[target[i].estado_alterado.Count];
+            int k = 0;
+            foreach (KeyValuePair<string, float[]> estado in target[i].estado_alterado){
+                habilidades[k] = estado.Key;
+                k++;
+            }
+            chequeando_debuffos = true;
+        }
+        for(int j = 0; j < habilidades.Length; j++){
+            string habilidad = habilidades[j];
+            // SI ESTAMOS CHEQUEANDO BUFFOS AGARRAMOS EL EFECTO Y LA DURACION DEL TARGET
+            if (chequeando_debuffos == true){
+                efecto = target[i].estado_alterado[habilidades[j]][0];
+                duracion_efecto = (target[i].estado_alterado[habilidades[j]][1]) - 1;
+            }
+            switch (habilidad){
+                case "heridas_graves":
+                    if (target[i].estado_alterado.ContainsKey("heridas_graves")) target[i].estado_alterado.Remove("heridas_graves");
+                    target[i].estado_alterado["heridas_graves"] = new float[]{efecto, duracion_efecto};
+                    if(target[i].estado_alterado["heridas_graves"][1] <= 0){
+                        target[i].estado_alterado.Remove("heridas_graves");
+                    }
+                    break;
+                case "sangrado":
+                    if (target[i].estado_alterado.ContainsKey("sangrado")) target[i].estado_alterado.Remove("sangrado");
+                        target[i].estado_alterado["sangrado"] = new float[]{efecto, duracion_efecto};
+                        target[i].Daño(efecto);
+                        if(target[i].estado_alterado["sangrado"][1] <= 0) target[i].estado_alterado.Remove("revitalizar");
+                        break;
+                //REDUCCION UNICA DE UN ATRIBUTO MIENTRAS LA DURACION SEA > 0, LUEGO PONEMOS EL ATRIBUTO COMO ESTABA ANTES
+                case "reducir_fuerza":
+                    // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                    target[i].Alteraciones_atributos("fuerza", "reducir_fuerza", efecto, duracion_efecto, true);
+                    break;
+                case "reducir_vitalidad":
+                        // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                    target[i].Alteraciones_atributos("vitalidad", "reducir_vitalidad", efecto, duracion_efecto, true);
+                    break;
+                case "reducir_magia":
+                    // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                    target[i].Alteraciones_atributos("magia", "reducir_magia", efecto, duracion_efecto, true);
+                    break;
+                case "reducir_velocidad":
+                    // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                    target[i].Alteraciones_atributos("velocidad", "reducir_velocidad", efecto, duracion_efecto, true);
+                    break;
+                case "reducir_critico":
+                        // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                    target[i].Alteraciones_atributos("critico", "reducir_critico", efecto, duracion_efecto, true);
+                    break;
+                case "reducir_defensa_fisica":
+                        // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                    target[i].Alteraciones_atributos("defensa_fisica", "reducir_defensa_fisica", efecto, duracion_efecto, true);
+                    break;
+                case "reducir_defensa_magica":
+                    // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                    target[i].Alteraciones_atributos("defensa_magica", "reducir_defensa_magica", efecto, duracion_efecto, true);
+                    break;
+                case "reducir_fuerza_magia":
+                    // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                    target[i].Alteraciones_atributos("fuerza", "reducir_fuerza", efecto, duracion_efecto, true);
+                    target[i].Alteraciones_atributos("magia", "reducir_magia", efecto, duracion_efecto, true);
+                    break;
+                case "reducir_defensas":
+                    // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                    target[i].Alteraciones_atributos("defensa_fisica", "reducir_defensa_fisica", efecto, duracion_efecto, true);
+                    target[i].Alteraciones_atributos("defensa_magica", "reducir_defensa_magica", efecto, duracion_efecto, true);
+                    break;
+                case "reducir_velocidad_critico":
+                    // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                    target[i].Alteraciones_atributos("velocidad", "reducir_velocidad", efecto, duracion_efecto, true);
+                    target[i].Alteraciones_atributos("critico", "reducir_critico", efecto, duracion_efecto, true);
+                    break;
+                case "reducir_estadisticas":
+                    //AUMENTO UNICO DE UN ATRIBUTO MIENTRAS LA DURACION SEA > 0, LUEGO PONEMOS EL ATRIBUTO COMO ESTABA ANTES
+                    // ATRIBUTO - HABILIDAD - EFECTO - DURACION - REDUCIR ATRIBUTO
+                    target[i].Alteraciones_atributos("velocidad", "reducir_velocidad", efecto, duracion_efecto, true);
+                    target[i].Alteraciones_atributos("critico", "reducir_critico", efecto, duracion_efecto, true);
+                    target[i].Alteraciones_atributos("fuerza", "reducir_fuerza", efecto, duracion_efecto, true);
+                    target[i].Alteraciones_atributos("magia", "reducir_magia", efecto, duracion_efecto, true);
+                    target[i].Alteraciones_atributos("vitalidad", "reducir_vitalidad", efecto, duracion_efecto, true);
+                    break;
+
+                case "quemar":
+                    if (target[i].estado_alterado.ContainsKey("quemar")) target[i].estado_alterado.Remove("quemar");
+                        target[i].estado_alterado["quemar"] = new float[]{efecto, duracion_efecto};
+                        target[i].Daño(efecto);
+                        if(target[i].estado_alterado["quemar"][1] <= 0) target[i].estado_alterado.Remove("quemar");
+                        break;
+                case "quemar_grave":
+                    if (target[i].estado_alterado.ContainsKey("quemar_grave")) target[i].estado_alterado.Remove("quemar_grave");
+                        target[i].estado_alterado["quemar_grave"] = new float[]{efecto, duracion_efecto};
+                        target[i].estado_alterado["heridas_graves"] = new float[]{efecto, duracion_efecto};
+                        target[i].Daño(efecto);
+                        if(target[i].estado_alterado["quemar_grave"][1] <= 0) target[i].estado_alterado.Remove("quemar_grave");
+                        break;
+                case "congelar":
+                    if (target[i].estado_alterado.ContainsKey("congelar")){
+                        target[i].estado_alterado.Remove("congelar");
+                        target[i].estado_alterado["congelar"] = new float[]{efecto, duracion_efecto};
+                        if(target[i].estado_alterado["congelar"][1] <= 0){
+                            target[i].estado_alterado.Remove("congelar");
+                        }
+                    }else{
+                        target[i].Daño(efecto);
+                        target[i].estado_alterado["congelar"] = new float[]{efecto, duracion_efecto};
+                    }  
+                    break;
+                case "aturdir":
+                    if (target[i].estado_alterado.ContainsKey("aturdir")){
+                        target[i].estado_alterado.Remove("aturdir");
+                        target[i].estado_alterado["aturdir"] = new float[]{efecto, duracion_efecto};
+                        if(target[i].estado_alterado["aturdir"][1] <= 0){
+                            target[i].estado_alterado.Remove("aturdir");
+                        }
+                    }else{
+                        target[i].Daño(efecto);
+                        target[i].estado_alterado["aturdir"] = new float[]{efecto, duracion_efecto};
+                    }  
+                    break;
+                case "dormir":
+                    if (target[i].estado_alterado.ContainsKey("dormir")){
+                        // SI EL OBJETIVO RECIBE DAÑO EN ALGUN MOMENTO, LO DESPERTAMOS, REMOVIENDO EL EFECTO
+                        if(efecto == target[i].atributos.salud){
+                            target[i].estado_alterado.Remove("dormir");
+                            target[i].estado_alterado["dormir"] = new float[]{target[i].atributos.salud, duracion_efecto};
+                        }else{
+                            target[i].estado_alterado.Remove("dormir");
+                        }
+                        if(target[i].estado_alterado["dormir"][1] <= 0){
+                            target[i].estado_alterado.Remove("dormir");
+                        }
+                    }else{
+                        target[i].estado_alterado["dormir"] = new float[]{target[i].atributos.salud, duracion_efecto};
+                    }  
+                    break;
+                case "silenciar":
+                    break;
+                default:
+                    break;
+            }
+        }
+        //MODIFICAMOS LA VIDA DE LOS OBJETIVOS AFECTADOS
+        Cambiar_texto_vida(target[i], index_objetivo, false);
+    }
+
+    //SI ES PARA SOLO UN OJETIVO LO MODIFICAMOS EN EL ARREGLO DE PERSONAJES
+    if(target.Length < 2) enemigos[index_objetivo] = target[0];
+}
+
+
+
+
+
     float Critico(float daño, float pro_critico){
         var rand = new System.Random();
         float comparador_critico = rand.Next(0, 101);
@@ -828,24 +952,24 @@ public class Combate : MonoBehaviour
             if (index_objetivo == 99){
                 for(int i = 0; i < enemigos.Length; i++){
                     GameObject canvas_texto = GameObject.Find("vida_enemigo_"+i);
-                    canvas_texto.GetComponent<Text>().text = enemigos[i].atributos.vitalidad.ToString();
+                    canvas_texto.GetComponent<Text>().text = Convert.ToInt32(enemigos[i].atributos.salud).ToString();
                 }
             }else{
                 //MODIFICAMOS LA VIDA DE 1 PERSONAJE ARRIBA EN PANTALLA
                 GameObject canvas_texto = GameObject.Find("vida_enemigo_"+index_objetivo);
-                canvas_texto.GetComponent<Text>().text = target.atributos.vitalidad.ToString();
+                canvas_texto.GetComponent<Text>().text = Convert.ToInt32(target.atributos.salud).ToString();
             }
         }else{
             //MOSIFICAMOS LA VIDA DE TODOS LOS PERSONAJES SI NOS LLEGA (99 = TODOS LOS OBJETIVOS)
             if (index_objetivo == 99){
                 for(int i = 0; i < personajes.Length; i++){
                     GameObject canvas_texto = GameObject.Find("vida_"+i);
-                    canvas_texto.GetComponent<Text>().text = personajes[i].atributos.vitalidad.ToString();
+                    canvas_texto.GetComponent<Text>().text = Convert.ToInt32(personajes[i].atributos.salud).ToString();
                 }
             }else{
                 //MODIFICAMOS LA VIDA DE 1 PERSONAJE ARRIBA EN PANTALLA
                 GameObject canvas_texto = GameObject.Find("vida_"+index_objetivo);
-                canvas_texto.GetComponent<Text>().text = target.atributos.vitalidad.ToString();
+                canvas_texto.GetComponent<Text>().text = Convert.ToInt32(target.atributos.salud).ToString();
             }
         }
         
@@ -853,52 +977,14 @@ public class Combate : MonoBehaviour
 
 
 
+
+
+
+
         
 }
 
-/**
-actual = personaje_en_turno;
-
-if actual. ataque:
-    ataque()
-if buff:
-    buff()
-if debuff:
-    debuff()
-if purgar:
-    purgar()
-if ataque_debuff:
-    ataque()
-    debuff()
-if ataque_buff:
-    ataque()
-    buff()
 
 
 
-
-
-
-debuff():
-    duracion_efecto -= 1;
-    for(i < target.Length):
-        "heridas_graves":
-        "sangrado"
-        "reducir_fuerza"
-        "reducir_vitalidad"
-        "reducir_magia"
-        "reducir_velocidad"
-        "reducir_critico"
-        "reducir_defensa_fisica"
-        "reducir_defensa_magica"
-        "reducir_fuerza_magia"
-        "reducir_defensas"
-        "reducir_velocidad_critico"
-        "reducir_estadisticas"
-        "quemar"
-        "congelar"
-        "aturdir"
-        "dormir"
-        "silenciar"
-    **/
 
