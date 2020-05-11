@@ -262,7 +262,6 @@ public class Combate : MonoBehaviour
     public void Confirmar_poder(string index){
         if(poder_a_ser_lanzado == null) return;
         Poderes poder = poder_a_ser_lanzado;
-        bool bando_objetivo; // TRUE = AMIGOS, FALSE = ENEMIGOS
 
         // TOMAMOS EL INDEX DEL PERSONAJE EN TURNO PARA MODIFICARLO
         int index_personaje_en_turno = 0;

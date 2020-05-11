@@ -250,7 +250,7 @@ public class historia : MonoBehaviour
             case 10:
                 Fabricar_personajes_repetidos("roger", nivel, 4);
                 break;
-            defaul:
+            default:
                 break;
         }
     }
