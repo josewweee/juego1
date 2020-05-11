@@ -40,7 +40,6 @@ public class Combate : MonoBehaviour
     private Personajes personaje_en_turno;
     public string key_personaje_turno;
     public bool turno_finalizado = false;
-
     //de pruebas locales
     private Personajes fabrica;
 
@@ -138,18 +137,32 @@ public class Combate : MonoBehaviour
 
     void Update()
     {   
-        //SI ACABAMOS TURNO ASIGNAMOS A LOS BOTONES LOS VALORES DEL NUEVO PERSONAJE EN TURNO
+        //SI ACABAMOS TURNO
         if (turno_finalizado){
+            //ASIGNAMOS BOTONES AL JUGADOR EN TURNO
             Asignar_botones_turno(personaje_en_turno);
-            turno_finalizado = false;
-            Debug.Log("personaje en turno: " + personaje_en_turno.nombre);
-        }
-        
-        if(key_personaje_turno.Contains("enemigo")){
-            Debug.Log("enemigo jugando...");
-            pasar_turno();
+            //SI ES ENEMIGO PASAMOS TURNO ( ACA VENDRA LA IA QUE REVISARA BUFFOS DEBUFFOS)
+            if(key_personaje_turno.Contains("enemigo")){
+                Debug.Log("enemigo jugando...");
+                pasar_turno();
+            }else{
+                //SI ES ALIADO, REVISAMOS QUIEN ES
+                Debug.Log("personaje en turno: " + personaje_en_turno.nombre);
+                Personajes[] personaje_para_revisar_buffos = new Personajes[1]{personaje_en_turno};
+                int index_personaje_en_turno = 0;
+                for(int j = 0; j < personajes.Length; j++){
+                    if(personaje_en_turno.nombre.Contains(personajes[j].nombre)){
+                        index_personaje_en_turno = j;
+                        break;
+                    }
+                }
+                //Y REVISAMOS SI TOCA MODIFICARLE LOS BUFFOS / DEBUFFOS
+                buffear(personaje_para_revisar_buffos, index_personaje_en_turno);
+                turno_finalizado = false;
+            }
         }
     }
+
 
     void Asignar_botones_turno(Personajes actual){
         //CAMBIAMOS TEXTOS EN LOS BOTONES
@@ -246,7 +259,64 @@ public class Combate : MonoBehaviour
         poder_a_ser_lanzado = poder;
     }
 
-    void ataque(Poderes poder, string index_objetivo){
+    public void Confirmar_poder(string index){
+        if(poder_a_ser_lanzado == null) return;
+        Poderes poder = poder_a_ser_lanzado;
+        bool bando_objetivo; // TRUE = AMIGOS, FALSE = ENEMIGOS
+
+        // TOMAMOS EL INDEX DEL PERSONAJE EN TURNO PARA MODIFICARLO
+        int index_personaje_en_turno = 0;
+        for(int j = 0; j < personajes.Length; j++){
+            if(personaje_en_turno.nombre.Contains(personajes[j].nombre)){
+                index_personaje_en_turno = j;
+                break;
+            }
+        }
+
+        //MIRAMOS QUE PODER FUE LANZADO Y LLAMAMOS LA FUNCION CORRESPONDIENTE
+        //MIRAMOS SI ES POSIBLE TIRAR SEGUN EL TIEMPO DE COOLDOWN
+        if (poder.se_puede_usar){
+            switch(poder.tipo_poder){ 
+                case "ataque":
+                    ataque(poder, index, index_personaje_en_turno);
+                    break;
+                case "buff":
+                    buff(poder, index, index_personaje_en_turno);
+                    break;
+                case "purgar":
+                    purgar();
+                    break;
+                case "ataque_debuff":
+                    ataque(poder, index, index_personaje_en_turno);
+                    debuff();
+                    break;
+                case "ataque_buff":
+                    ataque(poder, index, index_personaje_en_turno);
+                    buff(poder, index, index_personaje_en_turno);
+                    break;
+                default:
+                    break;
+            }
+
+            //PASAMOS TURNO
+            pasar_turno();
+            //DESACTIVAMOS LOS UI DE TEXTO OBJETIVO
+            bool multi_objetivo = (poder.objetivos == "unico")? false : true; // UNICO = FALSE, MULTIPLE = TRUE
+            switch(multi_objetivo){
+                case false:
+                    objetivo_unico_txt.SetActive(false);
+                    break;
+                case true:
+                    multiple_objetivo_txt.SetActive(false);
+                    break;
+            }
+
+            //PONEMOS NULL EL PODER A SER LANZADO DE FORMA GLOBAL
+            poder_a_ser_lanzado = null;
+        }
+    }
+
+    void ataque(Poderes poder, string index_objetivo, int index_personaje_en_turno){
         int index = int.Parse(index_objetivo);
         Personajes[] target;
         float atributo_;
@@ -279,68 +349,65 @@ public class Combate : MonoBehaviour
         if(poder.objetivos == "unico"){
             target = new Personajes[1]{enemigos[index]};
             float daño = (atributo_ * poder.multiplicador) + poder.daño_base;
-            HacerDaño(target, daño, personaje_en_turno.elemento, poder.atributo, index);
+            HacerDaño(target, daño, personaje_en_turno.elemento, poder.atributo, index, index_personaje_en_turno);
         }else{
-            target = enemigos;
             float daño = (atributo_ * poder.multiplicador) + poder.daño_base;
             // 99 PARA INDICAR QUE AFECTAREMOS A TODOS
-            HacerDaño(target, daño, personaje_en_turno.elemento, poder.atributo, 99);
+            HacerDaño(enemigos, daño, personaje_en_turno.elemento, poder.atributo, 99, index_personaje_en_turno);
         }
 
     }
 
 
-    void buff(){}
+    void buff(Poderes poder, string index_objetivo, int index_personaje_en_turno){
+        
+        int index = int.Parse(index_objetivo);
+        Personajes[] target;
+        float atributo_;
+        string[] habilidades = poder.habilidades;
+
+        // MIRAMOS CON QUE ATRIBUTO SE HARA EL DAÑO
+        switch(poder.atributo){
+            case "fuerza":
+                atributo_ = personaje_en_turno.atributos.fuerza;
+                break;
+            case "magia":
+                atributo_ = personaje_en_turno.atributos.magia;
+                break;
+            case "vitalidad":
+                atributo_ = personaje_en_turno.atributos.vitalidad;
+                break;
+            case "defensa_fisica":
+                atributo_ = personaje_en_turno.atributos.defensa_fisica;
+                break;
+            case "defensa_magica":
+                atributo_ = personaje_en_turno.atributos.defensa_magica;
+                break;
+            case "velocidad":
+                atributo_ = personaje_en_turno.atributos.velocidad;
+                break;
+            default:
+                atributo_ = 1;
+                break;
+        }
+        // TOMAMOS EL OBJETIVO DEPENDIENDO DE QUIEN HAYA SIDO SELECIONADO
+        if(poder.objetivos == "unico"){
+            target = new Personajes[1]{personajes[index]};
+            //HacerDaño(target, daño, personaje_en_turno.elemento, poder.atributo, index, index_personaje_en_turno);
+            buffear(target, index, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
+        }else if (poder.objetivos == "multiple"){
+            // 99 PARA INDICAR QUE AFECTAREMOS A TODOS
+            //HacerDaño(enemigos, daño, personaje_en_turno.elemento, poder.atributo, 99, index_personaje_en_turno);
+            buffear(personajes, 99, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
+        }else{
+            target = new Personajes[1]{personajes[index]};
+            buffear(target, index_personaje_en_turno, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
+        }
+    }
+    
+
     void purgar(){}
     void debuff(){}
-
-    public void Confirmar_poder(string index){
-        if(poder_a_ser_lanzado == null) return;
-        Poderes poder = poder_a_ser_lanzado;
-        bool bando_objetivo; // TRUE = AMIGOS, FALSE = ENEMIGOS
-
-        //MIRAMOS QUE PODER FUE LANZADO Y LLAMAMOS LA FUNCION CORRESPONDIENTE
-        //MIRAMOS SI ES POSIBLE TIRAR SEGUN EL TIEMPO DE COOLDOWN
-        if (poder.se_puede_usar){
-            switch(poder.tipo_poder){ 
-                case "ataque":
-                    ataque(poder, index);
-                    break;
-                case "buff":
-                    buff();
-                    break;
-                case "purgar":
-                    purgar();
-                    break;
-                case "ataque_debuff":
-                    ataque(poder, index);
-                    debuff();
-                    break;
-                case "ataque_buff":
-                    ataque(poder, index);
-                    buff();
-                    break;
-                default:
-                    break;
-            }
-
-            //PASAMOS TURNO
-            pasar_turno();
-            //DESACTIVAMOS LOS UI DE TEXTO OBJETIVO
-            bool multi_objetivo = (poder.objetivos == "unico")? false : true; // UNICO = FALSE, MULTIPLE = TRUE
-            switch(multi_objetivo){
-                case false:
-                    objetivo_unico_txt.SetActive(false);
-                    break;
-                case true:
-                    multiple_objetivo_txt.SetActive(false);
-                    break;
-            }
-
-            //PONEMOS NULL EL PODER A SER LANZADO DE FORMA GLOBAL
-            poder_a_ser_lanzado = null;
-        }
-    }
 
     void pasar_turno(){
         //AUMENTAMOS TODAS LAS VELOCIDADES SEGUN EL ARREGLO DE VELOCIDADES INICIALES
@@ -401,70 +468,388 @@ public class Combate : MonoBehaviour
     }
 
 
-    void HacerDaño(Personajes[] target, float daño, string elementoAtacante, string atributo, int index_objetivo){
+    void HacerDaño(Personajes[] target, float daño, string elementoAtacante, string atributo, int index_objetivo, int index_personaje_en_turno){
+
+        //REVISAMOS TODOS LOS ENEMIGOS O SOLO UNO
         for (int i= 0; i < target.Length; i++){
             string elementoDefensor = target[i].elemento;
-            if (elementoDefensor == "agua"){
-                daño = Critico(daño, personaje_en_turno.atributos.critico);
-                daño += daño * defensas_elementales[elementoAtacante][0];
-                if (atributo == "magia") daño -= (daño * (target[i].atributos.defensa_magica / 100));
-                else daño -= (daño * (target[i].atributos.defensa_fisica / 100));        
-            }else if (elementoDefensor == "fuego"){
-                daño = Critico(daño, personaje_en_turno.atributos.critico);
-                daño += daño * defensas_elementales[elementoAtacante][1];
-                if (atributo == "magia") daño -= (daño * (target[i].atributos.defensa_magica / 100));
-                else daño -= (daño * (target[i].atributos.defensa_fisica / 100));
-            }else if (elementoDefensor == "tierra"){
-                daño = Critico(daño, personaje_en_turno.atributos.critico);
-                daño += daño * defensas_elementales[elementoAtacante][2];
-                if (atributo == "magia") daño -= (daño * (target[i].atributos.defensa_magica / 100));
-                else daño -= (daño * (target[i].atributos.defensa_fisica / 100));
-            }else if (elementoDefensor == "trueno"){
-                daño = Critico(daño, personaje_en_turno.atributos.critico);
-                daño += daño * defensas_elementales[elementoAtacante][3];
-                if (atributo == "magia") daño -= (daño * (target[i].atributos.defensa_magica / 100));
-                else daño -= (daño * (target[i].atributos.defensa_fisica / 100));
-            }else if (elementoDefensor == "oscuridad"){
-                daño = Critico(daño, personaje_en_turno.atributos.critico);
-                daño += daño * defensas_elementales[elementoAtacante][4];
-                if (atributo == "magia") daño -= (daño * (target[i].atributos.defensa_magica / 100));
-                else daño -= (daño * (target[i].atributos.defensa_fisica / 100));
-            }else if (elementoDefensor == "luz"){
-                daño = Critico(daño, personaje_en_turno.atributos.critico);
-                daño += daño * defensas_elementales[elementoAtacante][6];
-                if (atributo == "magia") daño -= (daño * (target[i].atributos.defensa_magica / 100));
-                else daño -= (daño * (target[i].atributos.defensa_fisica / 100));
+            bool detener_daño = false;
+            // REVISAMOS SI EL GOLPE SERA CRITICO
+            daño = Critico(daño, personaje_en_turno.atributos.critico);
+            
+            // REDUCIMOS DEFENSAS
+            if (atributo == "magia"){
+                if (!(target[i].estado_alterado.ContainsKey("inmunidad_magica")) && !(target[i].estado_alterado.ContainsKey("inmunidad"))){
+                        float porcentaje_reduccion_magia =  (personaje_en_turno.estado_alterado.ContainsKey("ignorar_defensa_magica")? personaje_en_turno.estado_alterado["ignorar_defensa_magica"][0] : 0F);
+                        float porcentaje_reduccion_general = (personaje_en_turno.estado_alterado.ContainsKey("ignorar_defensas")? personaje_en_turno.estado_alterado["ignorar_defensas"][0] : 0F);
+                        float reduccion_defensas = (porcentaje_reduccion_magia >= porcentaje_reduccion_general)? porcentaje_reduccion_magia : porcentaje_reduccion_general;
+                        daño -= daño * ((target[i].atributos.defensa_magica - reduccion_defensas) / 100);   
+                }else{
+                    detener_daño = true;
+                }
             }else{
-                Debug.Log("elemento defensor erroneo");
+                if (!(target[i].estado_alterado.ContainsKey("inmunidad_fisica")) && !(target[i].estado_alterado.ContainsKey("inmunidad"))){
+                    float porcentaje_reduccion_magia =  (personaje_en_turno.estado_alterado.ContainsKey("ignorar_defensa_fisica")? personaje_en_turno.estado_alterado["ignorar_defensa_fisica"][0] : 0F);
+                    float porcentaje_reduccion_general = (personaje_en_turno.estado_alterado.ContainsKey("ignorar_defensas")? personaje_en_turno.estado_alterado["ignorar_defensas"][0] : 0F);
+                    float reduccion_defensas = (porcentaje_reduccion_magia >= porcentaje_reduccion_general)? porcentaje_reduccion_magia : porcentaje_reduccion_general;
+                    daño -= daño * ((target[i].atributos.defensa_fisica - reduccion_defensas) / 100);
+                }else{
+                    detener_daño = true;
+                }
             }
-
-
+            // SI NO HAY INMUNIDADES, REVISAMOS CADA ELEMENTO PARA VER SU MULTIPLICADOR DE DAÑO
+            if (!detener_daño){
+                if (elementoDefensor == "agua"){
+                    daño += daño * defensas_elementales[elementoAtacante][0];
+                }else if (elementoDefensor == "fuego"){
+                    daño += daño * defensas_elementales[elementoAtacante][1];
+                }else if (elementoDefensor == "tierra"){
+                    daño += daño * defensas_elementales[elementoAtacante][2];
+                }else if (elementoDefensor == "trueno"){
+                    daño += daño * defensas_elementales[elementoAtacante][3];
+                }else if (elementoDefensor == "oscuridad"){
+                    daño += daño * defensas_elementales[elementoAtacante][4];
+                }else if (elementoDefensor == "luz"){
+                    daño += daño * defensas_elementales[elementoAtacante][6];
+                }else{
+                    Debug.Log("elemento defensor erroneo");
+                }
+            }else{
+                daño = 0;
+            }
+            
+            // SI TENEMOS ROBO DE VIDA, NOS ENCARGAMOS DE CURARNOS
             target[i].atributos.vitalidad -= daño;
+            if (personaje_en_turno.estado_alterado.ContainsKey("robo_vida")){
+                float robo_vida = daño * personaje_en_turno.estado_alterado["robo_vida"][0];
+                personajes[index_personaje_en_turno].atributos.vitalidad += robo_vida;
+            } 
+            
+            //SI TENEMOS UN SOLO OBJETIVO, MODIFICAMOS EL ARREGLO DE ENEMIGOS DIRECTAMENTE
+            if (target.Length < 2) enemigos[index_objetivo] = target[i];
+
+            //SI LLEGA A 0 DE VIDA, TENDRA ESTADO MUERTO POR 999 TURNOS
             if (target[i].atributos.vitalidad <= 0){
                 target[i].estado_alterado["muerto"] = new float[]{0F, 9999F};
             }
-            Cambiar_texto_vida(target[i], index_objetivo);
+            Cambiar_texto_vida(target[i], index_objetivo, false);
         }
         
     }
+    //LOS PRIMEROS DOS PARAMETROS SON OBLIGATORIOS, EL RESTO SON OPCIONALES
+    void buffear(Personajes[] target, int index_objetivo, string[] habilidades = null, float daño_base = 0f, float atributo = 0f, float multiplicador_efecto = 0f, int duracion_efecto_int = 0){
+        float efecto = 0F;
+        float duracion_efecto = 0F;
+        bool chequeando_bufos = false;
+
+        //SI NOS PASAN TODOS LOS PARAMETROS, REVISAMOS CUANTO SERA EL EFECTO DEL BUFF
+        if (habilidades != null){
+            efecto = (atributo * multiplicador_efecto) + daño_base;
+            duracion_efecto = Convert.ToSingle(duracion_efecto_int);
+            duracion_efecto -= 1;
+        }
+        //REVISAMOS TODOS LOS PERSONAJES QUE NOS LLEGUEN
+        for(int i = 0; i < target.Length; i++){
+            // SI NO NOS LLEGAN TODOS LOS PARAMETROS, SIGNIFICA QUE ESTAMOS CHEQUEANDO BUFFOS, TOMAMOS UNA LISTA DE BUFFOS EN EL TARGET
+            if (habilidades == null){
+                habilidades = new string[target[i].estado_alterado.Count];
+                int k = 0;
+                foreach (KeyValuePair<string, float[]> estado in target[i].estado_alterado){
+                    habilidades[k] = estado.Key;
+                    k++;
+                }
+                chequeando_bufos = true;
+            }
+            for(int j = 0; j < habilidades.Length; j++){
+                string habilidad = habilidades[j];
+                // SI ESTAMOS CHEQUEANDO BUFFOS AGARRAMOS EL EFECTO Y LA DURACION DEL TARGET
+                if (chequeando_bufos == true){
+                    efecto = target[i].estado_alterado[habilidades[j]][0];
+                    duracion_efecto = (target[i].estado_alterado[habilidades[j]][1]) - 1;
+                }
+                switch (habilidad){
+                    case "curacion":
+                    //MODIFICACION NORMAL A LA VIDA
+                        target[i].atributos.vitalidad += efecto;
+                        break;
+                    case "revivir":
+                    //REMOVEMOS UN ESTADO NEGATIVO
+                        if(target[i].estado_alterado.ContainsKey("muerto")){
+                            target[i].estado_alterado.Remove("muerto");
+                            target[i].atributos.vitalidad = efecto;
+                        }
+                        break;
+                    case "revitalizar":
+                    //CONTANTE AUMENTO DE UN ATRIBUTO MIENTRAS LA DURACION SEA > 0
+                        if (target[i].estado_alterado.ContainsKey("revitalizar")) target[i].estado_alterado.Remove("revitalizar");
+                        target[i].estado_alterado["revitalizar"] = new float[]{efecto, duracion_efecto};
+                        target[i].atributos.vitalidad += efecto;
+                        if(target[i].estado_alterado["revitalizar"][1] <= 0) target[i].estado_alterado.Remove("revitalizar");
+                        break;
+                    //AUMENTO UNICO DE UN ATRIBUTO MIENTRAS LA DURACION SEA > 0, LUEGO PONEMOS EL ATRIBUTO COMO ESTABA ANTES
+                    case "aumentar_fuerza":
+                        if (target[i].estado_alterado.ContainsKey("aumentar_fuerza")){
+                            target[i].estado_alterado.Remove("aumentar_fuerza");
+                            target[i].estado_alterado["aumentar_fuerza"] = new float[]{efecto, duracion_efecto};
+                            if(target[i].estado_alterado["aumentar_fuerza"][1] <= 0){
+                                target[i].estado_alterado.Remove("aumentar_fuerza");
+                                target[i].atributos.fuerza -= efecto;
+                            }
+                        }else{
+                            target[i].atributos.fuerza += efecto;
+                            target[i].estado_alterado["aumentar_fuerza"] = new float[]{efecto, duracion_efecto};
+                        }
+                        break;
+                    case "aumentar_vitalidad":
+                        if (target[i].estado_alterado.ContainsKey("aumentar_vitalidad")){
+                            target[i].estado_alterado.Remove("aumentar_vitalidad");
+                            target[i].estado_alterado["aumentar_vitalidad"] = new float[]{efecto, duracion_efecto};
+                            if(target[i].estado_alterado["aumentar_vitalidad"][1] <= 0){
+                                target[i].estado_alterado.Remove("aumentar_vitalidad");
+                                target[i].atributos.vitalidad -= efecto;
+                            }
+                        }else{
+                            target[i].atributos.vitalidad += efecto;
+                            target[i].estado_alterado["aumentar_vitalidad"] = new float[]{efecto, duracion_efecto};
+                        }
+                        break;
+                    case "aumentar_magia":
+                        if (target[i].estado_alterado.ContainsKey("aumentar_magia")){
+                            target[i].estado_alterado.Remove("aumentar_magia");
+                            target[i].estado_alterado["aumentar_magia"] = new float[]{efecto, duracion_efecto};
+                            if(target[i].estado_alterado["aumentar_magia"][1] <= 0){
+                                target[i].estado_alterado.Remove("aumentar_magia");
+                                target[i].atributos.magia -= efecto;
+                            }
+                        }else{
+                            target[i].atributos.magia += efecto;
+                            target[i].estado_alterado["aumentar_magia"] = new float[]{efecto, duracion_efecto};
+                        }
+                        break;
+                    case "aumentar_velocidad":
+                        if (target[i].estado_alterado.ContainsKey("aumentar_velocidad")){
+                            target[i].estado_alterado.Remove("aumentar_velocidad");
+                            target[i].estado_alterado["aumentar_velocidad"] = new float[]{efecto, duracion_efecto};
+                            if(target[i].estado_alterado["aumentar_velocidad"][1] <= 0){
+                                target[i].estado_alterado.Remove("aumentar_velocidad");
+                                target[i].atributos.velocidad -= efecto;
+                            }
+                        }else{
+                            target[i].atributos.velocidad += efecto;
+                            target[i].estado_alterado["aumentar_velocidad"] = new float[]{efecto, duracion_efecto};
+                        }
+                        break;
+                    case "aumentar_critico":
+                        if (target[i].estado_alterado.ContainsKey("aumentar_critico")){
+                            target[i].estado_alterado.Remove("aumentar_critico");
+                            target[i].estado_alterado["aumentar_critico"] = new float[]{efecto, duracion_efecto};
+                            if(target[i].estado_alterado["aumentar_critico"][1] <= 0){
+                                target[i].estado_alterado.Remove("aumentar_critico");
+                                target[i].atributos.critico -= efecto;
+                            }
+                        }else{
+                            target[i].atributos.critico += efecto;
+                            target[i].estado_alterado["aumentar_critico"] = new float[]{efecto, duracion_efecto};
+                        }
+                        break;
+                    case "aumentar_defensa_fisica":
+                        if (target[i].estado_alterado.ContainsKey("aumentar_defensa_fisica")){
+                            target[i].estado_alterado.Remove("aumentar_defensa_fisica");
+                            target[i].estado_alterado["aumentar_defensa_fisica"] = new float[]{efecto, duracion_efecto};
+                            if(target[i].estado_alterado["aumentar_defensa_fisica"][1] <= 0){
+                                target[i].estado_alterado.Remove("aumentar_defensa_fisica");
+                                target[i].atributos.defensa_fisica -= efecto;
+                            }
+                        }else{
+                            target[i].atributos.defensa_fisica += efecto;
+                            target[i].estado_alterado["aumentar_defensa_fisica"] = new float[]{efecto, duracion_efecto};
+                        }
+                        break;
+                    case "aumentar_defensa_magica":
+                        if (target[i].estado_alterado.ContainsKey("aumentar_defensa_magica")){
+                            target[i].estado_alterado.Remove("aumentar_defensa_magica");
+                            target[i].estado_alterado["aumentar_defensa_magica"] = new float[]{efecto, duracion_efecto};
+                            if(target[i].estado_alterado["aumentar_defensa_magica"][1] <= 0){
+                                target[i].estado_alterado.Remove("aumentar_defensa_magica");
+                                target[i].atributos.defensa_magica -= efecto;
+                            }
+                        }else{
+                            target[i].atributos.defensa_magica += efecto;
+                            target[i].estado_alterado["aumentar_defensa_magica"] = new float[]{efecto, duracion_efecto};
+                        }
+                        break;
+                    case "aumentar_fuerza_magia":
+                        if (target[i].estado_alterado.ContainsKey("aumentar_fuerza_magia")){
+                            target[i].estado_alterado.Remove("aumentar_fuerza_magia");
+                            target[i].estado_alterado["aumentar_fuerza_magia"] = new float[]{efecto, duracion_efecto};
+                            if(target[i].estado_alterado["aumentar_fuerza_magia"][1] <= 0){
+                                target[i].estado_alterado.Remove("aumentar_fuerza_magia");
+                                target[i].atributos.fuerza -= efecto;
+                                target[i].atributos.magia -= efecto;
+                            }
+                        }else{
+                            target[i].atributos.fuerza += efecto;
+                            target[i].atributos.magia += efecto;
+                            target[i].estado_alterado["aumentar_fuerza_magia"] = new float[]{efecto, duracion_efecto};
+                        }
+                        break;
+                    case "aumentar_defensas":
+                        if (target[i].estado_alterado.ContainsKey("aumentar_defensas")){
+                            target[i].estado_alterado.Remove("aumentar_defensas");
+                            target[i].estado_alterado["aumentar_defensas"] = new float[]{efecto, duracion_efecto};
+                            if(target[i].estado_alterado["aumentar_defensas"][1] <= 0){
+                                target[i].estado_alterado.Remove("aumentar_defensas");
+                                target[i].atributos.defensa_fisica -= efecto;
+                                target[i].atributos.defensa_magica -= efecto;
+                            }
+                        }else{
+                            target[i].atributos.defensa_fisica += efecto;
+                            target[i].atributos.defensa_magica += efecto;
+                            target[i].estado_alterado["aumentar_defensas"] = new float[]{efecto, duracion_efecto};
+                        }
+                        break;
+                    case "aumentar_velocidad_critico":
+                        if (target[i].estado_alterado.ContainsKey("aumentar_velocidad_critico")){
+                            target[i].estado_alterado.Remove("aumentar_velocidad_critico");
+                            target[i].estado_alterado["aumentar_velocidad_critico"] = new float[]{efecto, duracion_efecto};
+                            if(target[i].estado_alterado["aumentar_velocidad_critico"][1] <= 0){
+                                target[i].estado_alterado.Remove("aumentar_velocidad_critico");
+                                target[i].atributos.critico -= efecto;
+                                target[i].atributos.velocidad -= efecto;
+                            }
+                        }else{
+                            target[i].atributos.critico += efecto;
+                            target[i].atributos.velocidad += efecto;
+                            target[i].estado_alterado["aumentar_velocidad_critico"] = new float[]{efecto, duracion_efecto};
+                        }
+                        break;
+                    //PONEMOS UN ESTADO QUE NOS DARA CIERTOS BENEFICIOS EN OTRAS FUNCIONES DEL JUEGO
+                    case "inmunidad_magica":
+                        if (target[i].estado_alterado.ContainsKey("inmunidad_magica")) target[i].estado_alterado.Remove("inmunidad_magica");
+                        target[i].estado_alterado["inmunidad_magica"] = new float[]{efecto, duracion_efecto};
+                        if(target[i].estado_alterado["inmunidad_magica"][1] <= 0){
+                            target[i].estado_alterado.Remove("inmunidad_magica");
+                        }
+                        break;
+                    case "inmunidad_fisica":
+                        if (target[i].estado_alterado.ContainsKey("inmunidad_fisica")) target[i].estado_alterado.Remove("inmunidad_fisica");
+                        target[i].estado_alterado["inmunidad_fisica"] = new float[]{efecto, duracion_efecto};
+                        if(target[i].estado_alterado["inmunidad_fisica"][1] <= 0){
+                            target[i].estado_alterado.Remove("inmunidad_fisica");
+                        }
+                        break;
+                    case "inmunidad":
+                        if (target[i].estado_alterado.ContainsKey("inmunidad")) target[i].estado_alterado.Remove("inmunidad");
+                        target[i].estado_alterado["inmunidad"] = new float[]{efecto, duracion_efecto};
+                        if(target[i].estado_alterado["inmunidad"][1] <= 0){
+                            target[i].estado_alterado.Remove("inmunidad");
+                        }
+                        break;
+                    case "robo_vida":
+                        if (target[i].estado_alterado.ContainsKey("robo_vida")) target[i].estado_alterado.Remove("robo_vida");
+                        target[i].estado_alterado["robo_vida"] = new float[]{efecto, duracion_efecto};
+                        if(target[i].estado_alterado["robo_vida"][1] <= 0){
+                            target[i].estado_alterado.Remove("robo_vida");
+                        }
+                        break;
+                    case "aumentar_estadisticas":
+                     //AUMENTO UNICO DE UN ATRIBUTO MIENTRAS LA DURACION SEA > 0, LUEGO PONEMOS EL ATRIBUTO COMO ESTABA ANTES
+                        if (target[i].estado_alterado.ContainsKey("aumentar_estadisticas")){
+                            target[i].estado_alterado.Remove("aumentar_estadisticas");
+                            target[i].estado_alterado["aumentar_estadisticas"] = new float[]{efecto, duracion_efecto};
+                            if(target[i].estado_alterado["aumentar_estadisticas"][1] <= 0){
+                                target[i].estado_alterado.Remove("aumentar_estadisticas");
+                                target[i].atributos.fuerza -= efecto;
+                                target[i].atributos.vitalidad -= efecto;
+                                target[i].atributos.magia -= efecto;
+                                target[i].atributos.velocidad -= efecto;
+                                target[i].atributos.critico -= efecto;
+                            }
+                        }else{
+                            target[i].atributos.fuerza += efecto;
+                            target[i].atributos.vitalidad += efecto;
+                            target[i].atributos.magia += efecto;
+                            target[i].atributos.velocidad += efecto;
+                            target[i].atributos.critico += efecto;
+                            target[i].estado_alterado["aumentar_estadisticas"] = new float[]{efecto, duracion_efecto};
+                        }
+                        break;
+                    case "ignorar_defensa_fisica":
+                        if (target[i].estado_alterado.ContainsKey("ignorar_defensa_fisica")) target[i].estado_alterado.Remove("ignorar_defensa_fisica");
+                        // efecto = porcentaje de ignorar
+                        target[i].estado_alterado["ignorar_defensa_fisica"] = new float[]{efecto, duracion_efecto};
+                        if(target[i].estado_alterado["ignorar_defensa_fisica"][1] <= 0){
+                            target[i].estado_alterado.Remove("ignorar_defensa_fisica");
+                        }
+                        break;
+                    case "ignorar_defensa_magica":
+                        if (target[i].estado_alterado.ContainsKey("ignorar_defensa_magica")) target[i].estado_alterado.Remove("ignorar_defensa_magica");
+                        // efecto = porcentaje de ignorar
+                        target[i].estado_alterado["ignorar_defensa_magica"] = new float[]{efecto, duracion_efecto};
+                        if(target[i].estado_alterado["ignorar_defensa_magica"][1] <= 0){
+                            target[i].estado_alterado.Remove("ignorar_defensa_magica");
+                        }
+                        break;
+                    case "ignorar_defensas":
+                        if (target[i].estado_alterado.ContainsKey("ignorar_defensas")) target[i].estado_alterado.Remove("ignorar_defensas");
+                        // efecto = porcentaje de ignorar
+                        target[i].estado_alterado["ignorar_defensas"] = new float[]{efecto, duracion_efecto};
+                        if(target[i].estado_alterado["ignorar_defensas"][1] <= 0){
+                            target[i].estado_alterado.Remove("ignorar_defensas");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            //MODIFICAMOS LA VIDA DE LOS OBJETIVOS AFECTADOS
+            Cambiar_texto_vida(target[i], index_objetivo, true);
+        }
+
+        //SI ES PARA SOLO UN OJETIVO LO MODIFICAMOS EN EL ARREGLO DE PERSONAJES
+        if(target.Length < 2) personajes[index_objetivo] = target[0];
+
+    }
     
     float Critico(float daño, float pro_critico){
+        var rand = new System.Random();
+        float comparador_critico = rand.Next(0, 101);
+        if (comparador_critico < pro_critico){
+            daño = daño * 1.5F;
+            Debug.Log("GOLPE CRITICO");
+            return daño;
+        }
         return daño;
     }
 
-    void Cambiar_texto_vida(Personajes target, int index_objetivo){
+    void Cambiar_texto_vida(Personajes target, int index_objetivo, bool aliado){
 
-        //MOSIFICAMOS LA VIDA DE TODOS LOS PERSONAJES SI NOS LLEGA 99 -> TODOS LOS OBJETIVOS
-        if (index_objetivo == 99){
-            for(int i = 0; i < enemigos.Length; i++){
-                GameObject canvas_texto = GameObject.Find("vida_enemigo_"+i);
-                canvas_texto.GetComponent<Text>().text = enemigos[i].atributos.vitalidad.ToString();
+        if (aliado == false){
+            //MOSIFICAMOS LA VIDA DE TODOS LOS PERSONAJES SI NOS LLEGA (99 = TODOS LOS OBJETIVOS)
+            if (index_objetivo == 99){
+                for(int i = 0; i < enemigos.Length; i++){
+                    GameObject canvas_texto = GameObject.Find("vida_enemigo_"+i);
+                    canvas_texto.GetComponent<Text>().text = enemigos[i].atributos.vitalidad.ToString();
+                }
+            }else{
+                //MODIFICAMOS LA VIDA DE 1 PERSONAJE ARRIBA EN PANTALLA
+                GameObject canvas_texto = GameObject.Find("vida_enemigo_"+index_objetivo);
+                canvas_texto.GetComponent<Text>().text = target.atributos.vitalidad.ToString();
             }
         }else{
-            //MODIFICAMOS LA VIDA DE 1 PERSONAJE ARRIBA EN PANTALLA
-            GameObject canvas_texto = GameObject.Find("vida_enemigo_"+index_objetivo);
-            canvas_texto.GetComponent<Text>().text = target.atributos.vitalidad.ToString();
+            //MOSIFICAMOS LA VIDA DE TODOS LOS PERSONAJES SI NOS LLEGA (99 = TODOS LOS OBJETIVOS)
+            if (index_objetivo == 99){
+                for(int i = 0; i < personajes.Length; i++){
+                    GameObject canvas_texto = GameObject.Find("vida_"+i);
+                    canvas_texto.GetComponent<Text>().text = personajes[i].atributos.vitalidad.ToString();
+                }
+            }else{
+                //MODIFICAMOS LA VIDA DE 1 PERSONAJE ARRIBA EN PANTALLA
+                GameObject canvas_texto = GameObject.Find("vida_"+index_objetivo);
+                canvas_texto.GetComponent<Text>().text = target.atributos.vitalidad.ToString();
+            }
         }
+        
     }
 
 
@@ -492,74 +877,29 @@ if ataque_buff:
 
 
 
-buff(daño_base, atributo, multiplicador_efecto, tipo_elemento, reutilizacion, duracion_efecto, objetivos, sePuedeUsar, aliados )
-    if objetivo == unico:
-        if (sePuedeUsar && reutilizacion == 0):
-            Personajes[] target = new Personajes[1]{seleccionarUnico()}
-            buffear(target, daño_base, aributo, multiplicador_efecto, duracion_efecto)
-    else objetivo == multiple:
-        if (sePuedeUsar && reutilizacion == 0):
-            buffear(aliados,  daño_base, aributo, multiplicador_efecto, duracion_efecto)
-    else:
-        if (sePuedeUsar && reutilizacion == 0):
-            Personajes[] target = new Personajes[1]{actual}
-            buffear(target,  daño_base, aributo, multiplicador_efecto, duracion_efecto)
 
-
-
-buffear(Personajes[] target, daño_base,aributo, multiplicador_efecto, duracion_efecto):
-    for(i < target.Length):
-        "curacion":
-            efecto = (atributo * multiplicador_efecto) + daño_base;
-            target[i].vitalidad += efecto;
-        "revivir"
-            efecto = 0.5F
-            if(target[i].estado_alterado.has("muerto")):
-                target[i].estado_alterado["muerto"] = new float[]{efecto, duracion_efecto};
-        "revitalizar"
-            efecto = (atributo * multiplicador_efecto) + daño_base;
-            target[i].vitalidad += efecto;
-            target[i].estado_alterado["revitalizar"] = new float[]{efecto, duracion_efecto};
-        "aumentar_fuerza"
-        "aumentar_vitalidad"
-        "aumentar_magia"
-        "aumentar_velocidad"
-        "aumentar_critico"
-        "aumentar_defensa_fisica"
-        "aumentar_defensa_magica"
-        "aumentar_fuerza_magia"
-        "aumentar_defensas"
-        "aumentar_velocidad_critico"
-        "inmunidad_magica"
-        "inmunidad_fisica"
-        "escudo_fisico"
-        "escudo_magico"
-        "inmunidad"
-        "escudo"
-        "robo_vida"
-        "aumentar_estadisticas"
-        "ignorar_defensa_fisica"
-        "ignorar_defensa_magica"
-        "ignorar_defensas"
 
 
 debuff():
-    "heridas_graves":
-    "sangrado"
-    "reducir_fuerza"
-    "reducir_vitalidad"
-    "reducir_magia"
-    "reducir_velocidad"
-    "reducir_critico"
-    "reducir_defensa_fisica"
-    "reducir_defensa_magica"
-    "reducir_fuerza_magia"
-    "reducir_defensas"
-    "reducir_velocidad_critico"
-    "reducir_estadisticas"
-    "quemar"
-    "congelar"
-    "aturdir"
-    "dormir"
-    "silenciar"
+    duracion_efecto -= 1;
+    for(i < target.Length):
+        "heridas_graves":
+        "sangrado"
+        "reducir_fuerza"
+        "reducir_vitalidad"
+        "reducir_magia"
+        "reducir_velocidad"
+        "reducir_critico"
+        "reducir_defensa_fisica"
+        "reducir_defensa_magica"
+        "reducir_fuerza_magia"
+        "reducir_defensas"
+        "reducir_velocidad_critico"
+        "reducir_estadisticas"
+        "quemar"
+        "congelar"
+        "aturdir"
+        "dormir"
+        "silenciar"
     **/
+

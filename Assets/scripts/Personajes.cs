@@ -8,14 +8,14 @@ public class Personajes
     public int nivel;
     public int estrellas;
     public int despertadas;
-    public Atributos atributos;
+    public Atributos atributos; // FUERZA, VITALIDAD, MAGIA, VELOCIDAD, CRITICO, DEF_FISICA, DEF_MAGICA
     public Equipo[] equipamiento;
     public int experiencia;
-    public Poderes[] poderes;
-    public Poderes[] poderesActivos;
-    public string elemento;
-    public Dictionary<string, float[]> estado_alterado;
-    public string rareza;
+    public Poderes[] poderes; // 9
+    public Poderes[] poderesActivos; // 4
+    public string elemento; // AGUA, FUEGO, TIERRA, TRUENO, LUZ, OSCURIDAD
+    public Dictionary<string, float[]> estado_alterado; // NOMBRE EFECTO -> [ DAÑO EFECTO, DURACION EFECTO ]
+    public string rareza; // COMUN, RARO, MITICO, LEGENDARIO
 
 
     public Personajes Crear_personaje(string personaje)

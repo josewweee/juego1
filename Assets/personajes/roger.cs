@@ -22,12 +22,12 @@ public class roger : Personajes
         Activar_poderes();
     }
 
-
+// nombre, descripcion, atributo, multiplicador, multiplicador_efecto, tipo_poder, tipo_elemento, reutilizacion, duracion_efecto, objetivos, se_puede_usar, habilidades, daño_base
     public void Agregar_poderes()
     {
         this.poderes[0] = new Poderes("golpe", "roger golpea al enemigo", "fuerza", 1f, 0f, "ataque", "tierra", 0, 0, "unico", true, new string[1]{"null"}, 10F);
-        this.poderes[1] = new Poderes("curar", "roger cura a los aliados", "magia", 0f, 0.2f, "buff", "tierra", 2, 0, "multiple", true, new string[1]{"curar"}, 10F);
-        this.poderes[2] = new Poderes("quemar", "roger quema a los enemigos", "magia", 2f, 0f, "ataque", "tierra", 5, 0, "multiple", true, new string[1]{"null"}, 1F);
+        this.poderes[1] = new Poderes("curar", "roger cura a los aliados", "magia", 0f, 0.5f, "buff", "tierra", 2, 0, "multiple", true, new string[1]{"curacion"}, 10F);
+        this.poderes[2] = new Poderes("revitalizar", "roger cura en el tiepo a los aliados", "magia", 0f, 1f, "buff", "tierra", 5, 3, "multiple", true, new string[1]{"revitalizar"}, 1F);
         this.poderes[3] = new Poderes("debuff", "roger quema a los enemigos", "magia", 0f, 0.1f, "debuff", "tierra", 3, 2, "multiple", true, new string[1]{"curar"}, 0F);
         this.poderes[4] = new Poderes("debuff", "roger quema a los enemigos", "magia", 0f, 0.1f, "debuff", "tierra", 3, 2, "multiple", true, new string[1]{"curar"}, 0F);
         this.poderes[5] = new Poderes("debuff", "roger quema a los enemigos", "magia", 0f, 0.1f, "debuff", "tierra", 3, 2, "multiple", true, new string[1]{"curar"}, 0F);
