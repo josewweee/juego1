@@ -12,6 +12,7 @@ public class Poderes
     public string tipo_poder; // ataque, buff, debuff, purgar, ataque debuff, ataque buff
     public string tipo_elemento;
     public int reutilizacion;
+    public int reutilizacion_actual;
     public int duracion_efecto;
     public string objetivos; // multiple, propio, unico
     public bool se_puede_usar;
@@ -28,10 +29,24 @@ public class Poderes
         this.tipo_poder = tipo_poder;
         this.tipo_elemento = tipo_elemento;
         this.reutilizacion = reutilizacion;
+        this.reutilizacion_actual = 0;
         this.duracion_efecto = duracion_efecto;
         this.objetivos = objetivos;
         this.se_puede_usar = se_puede_usar;
         this.habilidades = habilidades;
         this.daño_base = daño_base;
+    }
+
+    public void Usado(){
+        reutilizacion_actual = reutilizacion;
+        if(reutilizacion_actual > 0) se_puede_usar = false;
+    }
+
+    public void Reducir_reutilizacion(){
+        reutilizacion_actual --;
+        if (reutilizacion_actual <= 0){
+             se_puede_usar = true;
+
+        }
     }
 }

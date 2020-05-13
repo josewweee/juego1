@@ -27,13 +27,13 @@ public class liliana : Personajes
     public void Agregar_poderes()
     {
         this.poderes[0] = new Poderes("torrente", "liliana ataca al enemigo", "magia", 1f, 0f, "ataque", "agua", 0, 0, "unico", true, new string[1]{"null"}, 10F);
-        this.poderes[1] = new Poderes("congelar", "liliana congela a los enemigos", "magia", 0f, 0f, "debuff", "agua", 10, 2, "multiple", true, new string[1]{"congelar"}, 3F);
+        this.poderes[1] = new Poderes("congelar", "liliana congela a los enemigos", "magia", 0f, 0f, "debuff", "agua", 10, 5, "multiple", true, new string[1]{"congelar"}, 3F);
         this.poderes[2] = new Poderes("fuerza +", "liliana aumenta la vitalidad del grupo", "magia", 0f, 1f, "buff", "agua", 5, 3, "multiple", true, new string[1]{"aumentar_fuerza"}, 0F);
-        this.poderes[3] = new Poderes("magia +","liliana aumenta la fuerza del grupo", "magia", 0f, 1f, "buff", "agua", 5, 3, "multiple", true, new string[1]{"aumentar_fuerza"}, 0F);
-        this.poderes[4] = new Poderes("debuff", "liliana quema a los enemigos", "magia", 0f, 0.1f, "debuff", "agua", 3, 2, "multiple", true, new string[1]{"curar"}, 0F);
-        this.poderes[5] = new Poderes("debuff", "liliana quema a los enemigos", "magia", 0f, 0.1f, "debuff", "agua", 3, 2, "multiple", true, new string[1]{"curar"}, 0F);
-        this.poderes[6] = new Poderes("debuff", "liliana quema a los enemigos", "magia", 0f, 0.1f, "debuff", "agua", 3, 2, "multiple", true, new string[1]{"curar"}, 0F);
-        this.poderes[7] = new Poderes("debuff", "liliana quema a los enemigos", "magia", 0f, 0.1f, "debuff", "agua", 3, 2, "multiple", true, new string[1]{"curar"}, 0F);
+        this.poderes[3] = new Poderes("vida +","liliana aumenta la vida del grupo", "magia", 0f, 1f, "buff", "agua", 5, 3, "multiple", true, new string[1]{"aumentar_vitalidad"}, 0F);
+        this.poderes[4] = new Poderes("xx", "liliana quema a los enemigos", "magia", 0f, 0.1f, "debuff", "agua", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
+        this.poderes[5] = new Poderes("xx", "liliana quema a los enemigos", "magia", 0f, 0.1f, "debuff", "agua", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
+        this.poderes[6] = new Poderes("xx", "liliana quema a los enemigos", "magia", 0f, 0.1f, "debuff", "agua", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
+        this.poderes[7] = new Poderes("xx", "liliana quema a los enemigos", "magia", 0f, 0.1f, "debuff", "agua", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
     }
 
     public void Activar_poderes()

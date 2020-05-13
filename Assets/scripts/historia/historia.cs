@@ -221,47 +221,75 @@ public class historia : MonoBehaviour
         int nivel = int.Parse(nivel_);
         switch(nivel){
             case 1:
-               Fabricar_personajes_repetidos("roger", 2, 4);
+                Fabricar_personajes_con_nivel("roger", 2);
+                Fabricar_personajes_con_nivel("alicia", 2);
+                Fabricar_personajes_con_nivel("martis", 2);
+                Fabricar_personajes_con_nivel("liliana", 2);
                 break;
             case 2:
-                Fabricar_personajes_repetidos("roger", nivel, 4);
+                Fabricar_personajes_con_nivel("roger", nivel);
+                Fabricar_personajes_con_nivel("alicia", nivel);
+                Fabricar_personajes_con_nivel("martis", nivel);
+                Fabricar_personajes_con_nivel("liliana", nivel);
                 break;
             case 3:
-                Fabricar_personajes_repetidos("roger", nivel, 4);
+                Fabricar_personajes_con_nivel("roger", nivel);
+                Fabricar_personajes_con_nivel("alicia", nivel);
+                Fabricar_personajes_con_nivel("martis", nivel);
+                Fabricar_personajes_con_nivel("liliana", nivel);
                 break;
             case 4:
-                Fabricar_personajes_repetidos("roger", nivel, 4);
+                Fabricar_personajes_con_nivel("roger", nivel);
+                Fabricar_personajes_con_nivel("alicia", nivel);
+                Fabricar_personajes_con_nivel("martis", nivel);
+                Fabricar_personajes_con_nivel("liliana", nivel);
                 break;
             case 5:
-                Fabricar_personajes_repetidos("roger", nivel, 4);
+                Fabricar_personajes_con_nivel("roger", nivel);
+                Fabricar_personajes_con_nivel("alicia", nivel);
+                Fabricar_personajes_con_nivel("martis", nivel);
+                Fabricar_personajes_con_nivel("liliana", nivel);
                 break;
             case 6:
-                Fabricar_personajes_repetidos("roger", nivel, 4);
+                Fabricar_personajes_con_nivel("roger", nivel);
+                Fabricar_personajes_con_nivel("alicia", nivel);
+                Fabricar_personajes_con_nivel("martis", nivel);
+                Fabricar_personajes_con_nivel("liliana", nivel);
                 break;
             case 7:
-                Fabricar_personajes_repetidos("roger", nivel, 4);
+                Fabricar_personajes_con_nivel("roger", nivel);
+                Fabricar_personajes_con_nivel("alicia", nivel);
+                Fabricar_personajes_con_nivel("martis", nivel);
+                Fabricar_personajes_con_nivel("liliana", nivel);
                 break;
             case 8:
-                Fabricar_personajes_repetidos("roger", nivel, 4);
+                Fabricar_personajes_con_nivel("roger", nivel);
+                Fabricar_personajes_con_nivel("alicia", nivel);
+                Fabricar_personajes_con_nivel("martis", nivel);
+                Fabricar_personajes_con_nivel("liliana", nivel);
                 break;
             case 9:
-                Fabricar_personajes_repetidos("roger", nivel, 4);
+                Fabricar_personajes_con_nivel("roger", nivel);
+                Fabricar_personajes_con_nivel("alicia", nivel);
+                Fabricar_personajes_con_nivel("martis", nivel);
+                Fabricar_personajes_con_nivel("liliana", nivel);
                 break;
             case 10:
-                Fabricar_personajes_repetidos("roger", nivel, 4);
+                Fabricar_personajes_con_nivel("roger", nivel);
+                Fabricar_personajes_con_nivel("alicia", nivel);
+                Fabricar_personajes_con_nivel("martis", nivel);
+                Fabricar_personajes_con_nivel("liliana", nivel);
                 break;
             default:
                 break;
         }
     }
 
-    void Fabricar_personajes_repetidos(string personaje, int nivel, int cantidad){
+    void Fabricar_personajes_con_nivel(string personaje, int nivel){
         int i = 0;
-        while (i < cantidad){
-            Personajes enemigo = fabrica_personajes.Crear_personaje(personaje);
-            enemigo.Subir_nivel(nivel);
-            storage_enemigos.Agregar_enemigo(i, enemigo);
-            i++;
-        }
+        Personajes enemigo = fabrica_personajes.Crear_personaje(personaje);
+        enemigo.Subir_nivel(nivel);
+        storage_enemigos.Agregar_enemigo(i, enemigo);
+        i++;
     }
 }

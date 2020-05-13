@@ -71,6 +71,7 @@ public class Personajes
         switch(atributo){
             case "vitalidad":
                 atributos.vitalidad += efecto;
+                if(atributos.vitalidad < atributos.salud) atributos.salud = atributos.vitalidad;
                 break;
             case "fuerza":
                 atributos.fuerza += efecto;
@@ -122,6 +123,52 @@ public class Personajes
         //SI LLEGA A 0 DE VIDA, TENDRA ESTADO MUERTO POR 999 TURNOS
         if (atributos.salud <= 0){
             estado_alterado["muerto"] = new float[]{0F, 9999F};
+        }
+    }
+
+    public float Hallar_daño_poder(Poderes poder, string tipo_ataque){
+        float atributo_ = 0F;
+        float daño;
+
+        switch(poder.atributo){
+            case "fuerza":
+                atributo_ = atributos.fuerza;
+                break;
+            case "magia":
+                atributo_ = atributos.magia;
+                break;
+            case "vitalidad":
+                atributo_ = atributos.vitalidad;
+                break;
+            case "defensa_fisica":
+                atributo_ = atributos.defensa_fisica;
+                break;
+            case "defensa_magica":
+                atributo_ = atributos.defensa_magica;
+                break;
+            case "velocidad":
+                atributo_ = atributos.velocidad;
+                break;
+            default:
+                atributo_ = 1F;
+                break;
+        }
+
+        if (tipo_ataque.Contains("ataque")){
+            daño = (atributo_ * poder.multiplicador) + poder.daño_base;
+        }else{
+            daño = (atributo_ * poder.multiplicador_efecto) + poder.daño_base;
+        }
+        return daño;
+    }
+
+    public void Poder_usado(Poderes poder){
+        poder.Usado();
+    }
+
+    public void Reducir_cooldown(){
+        for(int i = 0; i < poderesActivos.Length; i++){
+            poderesActivos[i].Reducir_reutilizacion();
         }
     }
 

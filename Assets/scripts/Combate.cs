@@ -12,6 +12,12 @@ public class Combate : MonoBehaviour
     public Personajes[] personajes;
     public Personajes[] enemigos;
 
+    //MECANICAS PERSONAJES
+    private mecanicas_combate mecanicas;
+    public Poderes poder_a_ser_lanzado;
+    public inteligencia_artificial maquina;
+    private Personajes[,] matrix_envio_personajes;
+
     //VELOCIDADES INICIALES DE LOS ALIADOS Y LOS ENEMIGOS
     public float[] velocidades_personajes;
     public float[] velocidades_enemigos;
@@ -23,14 +29,14 @@ public class Combate : MonoBehaviour
     public Usuario perdedor;
 
     //TABLA DEFENSAS ELEMENTALES;
-    private Dictionary<string, float[]> defensas_elementales = new Dictionary<string, float[]>(){
-        {"agua", new float[] {1F, 1.5F, 1F, 0.5F, 1F, 1F} },
-        {"fuego", new float[] {0.5F, 1F, 1.5F, 1F, 1F, 1F} },
-        {"tierra", new float[] {1F, 0.5F, 1F, 1.5F, 1F, 1F} },
-        {"trueno", new float[] {1.5F, 1F, 0.5F, 1F, 1F, 1F} },
-        {"oscuridad", new float[] {1F, 1F, 1F, 1F, 0.5F, 1.5F} },
-        {"luz", new float[] {1F, 1F, 1F, 1F, 1.5F, 0.5F} },
-    };
+    // private Dictionary<string, float[]> defensas_elementales = new Dictionary<string, float[]>(){
+    //     {"agua", new float[] {1F, 1.5F, 1F, 0.5F, 1F, 1F} },
+    //     {"fuego", new float[] {0.5F, 1F, 1.5F, 1F, 1F, 1F} },
+    //     {"tierra", new float[] {1F, 0.5F, 1F, 1.5F, 1F, 1F} },
+    //     {"trueno", new float[] {1.5F, 1F, 0.5F, 1F, 1F, 1F} },
+    //     {"oscuridad", new float[] {1F, 1F, 1F, 1F, 0.5F, 1.5F} },
+    //     {"luz", new float[] {1F, 1F, 1F, 1F, 1.5F, 0.5F} },
+    // };
 
     //PREFAB QUE INSTANCIAREMOS COMO PERSONAJE
     public GameObject prefab_personaje;
@@ -40,6 +46,11 @@ public class Combate : MonoBehaviour
     private Personajes personaje_en_turno;
     public string key_personaje_turno;
     public bool turno_finalizado = false;
+    int index_personaje_en_turno = 0;
+    public GameObject imagen_puntero;
+    public Sprite puntero_verde;
+    public Sprite puntero_rojo;
+
     //de pruebas locales
     private Personajes fabrica;
 
@@ -63,13 +74,13 @@ public class Combate : MonoBehaviour
     public GameObject objetivo_unico_txt;
     public GameObject multiple_objetivo_txt;
 
-    public Poderes poder_a_ser_lanzado;
-
     void Start()
     {
+       
         //TRAEMOS LAS INSTANCIAS DEL JUGADOR Y LOS ENEMIGOS
         jugador = Usuario.instancia;
         storage_enemigos = storage_script.instancia;
+
         
         //de prueba
         fabrica = new Personajes();
@@ -79,6 +90,11 @@ public class Combate : MonoBehaviour
         //COPIAMOS LOS PERSONAJES DEL USUARIO Y DE LOS ENEMIGOS LOCALMENTE
         //personajes = jugador.personajesFavoritos;
         //enemigos = storage_enemigos.enemigos;
+
+        //INSTANCIAMOS LAS MECANICAS Y LA IA
+        mecanicas = new mecanicas_combate();
+        maquina = new inteligencia_artificial(enemigos, personajes);
+        matrix_envio_personajes = new Personajes[2, personajes.Length];
 
         //ASIGNAMOS LAS VELOCIDADES INCIALES DE LOS PERSONAJES Y ENEMIGOS
         velocidades_personajes = new float[personajes.Length];
@@ -128,7 +144,15 @@ public class Combate : MonoBehaviour
         btn_poder_3 = poder_3.GetComponent<Button>();
         btn_poder_4 = poder_4.GetComponent<Button>();
 
+        imagen_puntero = GameObject.Find("puntero_turno_alidado");
         // ASIGNAMOS LOS BOTONES AL PRIMER PERSONAJE
+        for(int j = 0; j < personajes.Length; j++){
+            if(personaje_en_turno.nombre.Contains(personajes[j].nombre)){
+                index_personaje_en_turno = j;
+                break;
+            }
+        }
+        Mover_puntero_personaje(index_personaje_en_turno);
         Asignar_botones_turno(personaje_en_turno);
         Debug.Log("personaje en turno: " + personaje_en_turno.nombre);
         
@@ -141,15 +165,39 @@ public class Combate : MonoBehaviour
         if (turno_finalizado){
             //SI ES ENEMIGO PASAMOS TURNO ( ACA VENDRA LA IA QUE REVISARA BUFFOS DEBUFFOS)
             if(key_personaje_turno.Contains("enemigo")){
-                Debug.Log("enemigo jugando...");
-                string output = JsonUtility.ToJson(personaje_en_turno.estado_alterado, true);
-                Debug.Log(output);
-                pasar_turno();
+                Debug.Log("enemigo jugando: " + personaje_en_turno.nombre);
+                personaje_en_turno.Reducir_cooldown();
+                Personajes[] personaje_para_revisar_buffos = new Personajes[1]{personaje_en_turno};
+                for(int j = 0; j < enemigos.Length; j++){
+                    if(personaje_en_turno.nombre.Contains(enemigos[j].nombre)){
+                        index_personaje_en_turno = j;
+                        break;
+                    }
+                }
+                //Y REVISAMOS SI TOCA MODIFICARLE LOS BUFFOS / DEBUFFOS
+                mecanicas_combate.buffear(personaje_para_revisar_buffos, index_personaje_en_turno, enemigos);
+                mecanicas_combate.debuffear(personaje_para_revisar_buffos, index_personaje_en_turno, personajes, enemigos);
+                // Debug.Log(personaje_en_turno.estado_alterado.Count);
+                // foreach (KeyValuePair<string, float[]> estado in personaje_para_revisar_buffos[0].estado_alterado){
+                //    Debug.Log(estado.Key);
+                //  }
+                if(personaje_en_turno.estado_alterado.ContainsKey("dormir") || personaje_en_turno.estado_alterado.ContainsKey("congelar") || personaje_en_turno.estado_alterado.ContainsKey("aturdir")){
+                    Debug.Log(personaje_en_turno.nombre +  " esta con estado alterado y pasara turno");
+                    pasar_turno();
+                } else{
+                    Mover_puntero_personaje(index_personaje_en_turno);
+                    matrix_envio_personajes = maquina.Ejecutar(enemigos, personajes, personaje_en_turno);
+                    Matrix_to_array(matrix_envio_personajes);
+                    
+                    Cambiar_texto_vida(null, 99, true);
+                    Cambiar_texto_vida(null, 99, false);
+                    pasar_turno();
+                }
             }else{
                 //SI ES ALIADO, REVISAMOS QUIEN ES
                 Debug.Log("personaje en turno: " + personaje_en_turno.nombre);
+                personaje_en_turno.Reducir_cooldown();
                 Personajes[] personaje_para_revisar_buffos = new Personajes[1]{personaje_en_turno};
-                int index_personaje_en_turno = 0;
                 for(int j = 0; j < personajes.Length; j++){
                     if(personaje_en_turno.nombre.Contains(personajes[j].nombre)){
                         index_personaje_en_turno = j;
@@ -157,14 +205,17 @@ public class Combate : MonoBehaviour
                     }
                 }
                 //Y REVISAMOS SI TOCA MODIFICARLE LOS BUFFOS / DEBUFFOS
-                buffear(personaje_para_revisar_buffos, index_personaje_en_turno);
-                //debuffear();
+                mecanicas_combate.buffear(personaje_para_revisar_buffos, index_personaje_en_turno, personajes);
+                mecanicas_combate.debuffear(personaje_para_revisar_buffos, index_personaje_en_turno, enemigos, personajes);
                 if(personaje_en_turno.estado_alterado.ContainsKey("dormir") || personaje_en_turno.estado_alterado.ContainsKey("congelar") || personaje_en_turno.estado_alterado.ContainsKey("aturdir")){
+                    Debug.Log(personaje_en_turno.nombre +  " esta con estado alterado y pasara turno");
                     pasar_turno();
+                }else{
+                    //ASIGNAMOS BOTONES AL JUGADOR EN TURNO
+                    Asignar_botones_turno(personaje_en_turno);
+                    Mover_puntero_personaje(index_personaje_en_turno);
+                    turno_finalizado = false;
                 } 
-                //ASIGNAMOS BOTONES AL JUGADOR EN TURNO
-                Asignar_botones_turno(personaje_en_turno);
-                turno_finalizado = false;
             }
         }
     }
@@ -265,201 +316,66 @@ public class Combate : MonoBehaviour
         poder_a_ser_lanzado = poder;
     }
 
-    public void Confirmar_poder(string index){
-        if(poder_a_ser_lanzado == null) return;
-        Poderes poder = poder_a_ser_lanzado;
+    void Confirmar_poder(string index){
+        //Lanzar_poder(index, poder_a_ser_lanzado, personajes, enemigos, personaje_en_turno);
 
-        // TOMAMOS EL INDEX DEL PERSONAJE EN TURNO PARA MODIFICARLO
-        int index_personaje_en_turno = 0;
-        for(int j = 0; j < personajes.Length; j++){
-            if(personaje_en_turno.nombre.Contains(personajes[j].nombre)){
-                index_personaje_en_turno = j;
-                break;
-            }
-        }
-        // string output = JsonUtility.ToJson(personajes[Int32.Parse(index)].atributos, true);
-        // Debug.Log(output);
-        //MIRAMOS QUE PODER FUE LANZADO Y LLAMAMOS LA FUNCION CORRESPONDIENTE
-        //MIRAMOS SI ES POSIBLE TIRAR SEGUN EL TIEMPO DE COOLDOWN
-        if (poder.se_puede_usar){
-            switch(poder.tipo_poder){ 
-                case "ataque":
-                    ataque(poder, index, index_personaje_en_turno);
-                    break;
-                case "buff":
-                    buff(poder, index, index_personaje_en_turno);
-                    break;
-                case "purgar":
-                    purgar();
-                    break;
-                case "debuff":
-                    debuff(poder, index, index_personaje_en_turno);
-                    break;
-                case "ataque_debuff":
-                    ataque(poder, index, index_personaje_en_turno);
-                    debuff(poder, index, index_personaje_en_turno);
-                    break;
-                case "ataque_buff":
-                    ataque(poder, index, index_personaje_en_turno);
-                    buff(poder, index, index_personaje_en_turno);
-                    break;
-                default:
-                    break;
-            }
-            // output = JsonUtility.ToJson(personajes[Int32.Parse(index)].atributos, true);
-            // Debug.Log(output);
-            //PASAMOS TURNO
+
+        // TESTEO
+        if (poder_a_ser_lanzado.se_puede_usar){
+            mecanicas_combate.Lanzar_poder(index, poder_a_ser_lanzado, personajes, enemigos, personaje_en_turno);
             pasar_turno();
-            //DESACTIVAMOS LOS UI DE TEXTO OBJETIVO
-            bool multi_objetivo = (poder.objetivos == "unico")? false : true; // UNICO = FALSE, MULTIPLE = TRUE
-            switch(multi_objetivo){
-                case false:
-                    objetivo_unico_txt.SetActive(false);
-                    break;
-                case true:
-                    multiple_objetivo_txt.SetActive(false);
-                    break;
+        }else{
+            Debug.Log("Poder en reutilizacion");
+        }
+        
+        //DESACTIVAMOS LOS UI DE TEXTO OBJETIVO
+        bool multi_objetivo = (poder_a_ser_lanzado.objetivos == "unico")? false : true; // UNICO = FALSE, MULTIPLE = TRUE
+        switch(multi_objetivo){
+            case false:
+                objetivo_unico_txt.SetActive(false);
+                break;
+            case true:
+                multiple_objetivo_txt.SetActive(false);
+                break;
+        }
+
+        //PONEMOS NULL EL PODER A SER LANZADO DE FORMA GLOBAL
+        poder_a_ser_lanzado = null;
+
+        Cambiar_texto_vida(null, 99, true);
+        Cambiar_texto_vida(null, 99, false);
+        // TESTEO
+    }
+
+
+        void Cambiar_texto_vida(Personajes target, int index_objetivo, bool aliado){
+
+        if (aliado == false){
+            //MOSIFICAMOS LA VIDA DE TODOS LOS PERSONAJES SI NOS LLEGA (99 = TODOS LOS OBJETIVOS)
+            if (index_objetivo == 99){
+                for(int i = 0; i < enemigos.Length; i++){
+                    GameObject canvas_texto = GameObject.Find("vida_enemigo_"+i);
+                    canvas_texto.GetComponent<Text>().text = Convert.ToInt32(enemigos[i].atributos.salud).ToString();
+                }
+            }else{
+                //MODIFICAMOS LA VIDA DE 1 PERSONAJE ARRIBA EN PANTALLA
+                GameObject canvas_texto = GameObject.Find("vida_enemigo_"+index_objetivo);
+                canvas_texto.GetComponent<Text>().text = Convert.ToInt32(target.atributos.salud).ToString();
             }
-
-            //PONEMOS NULL EL PODER A SER LANZADO DE FORMA GLOBAL
-            poder_a_ser_lanzado = null;
-        }
-    }
-
-    void ataque(Poderes poder, string index_objetivo, int index_personaje_en_turno){
-        int index = int.Parse(index_objetivo);
-        Personajes[] target;
-        float atributo_;
-
-        // MIRAMOS CON QUE ATRIBUTO SE HARA EL DAÑO
-        switch(poder.atributo){
-            case "fuerza":
-                atributo_ = personaje_en_turno.atributos.fuerza;
-                break;
-            case "magia":
-                atributo_ = personaje_en_turno.atributos.magia;
-                break;
-            case "vitalidad":
-                atributo_ = personaje_en_turno.atributos.vitalidad;
-                break;
-            case "defensa_fisica":
-                atributo_ = personaje_en_turno.atributos.defensa_fisica;
-                break;
-            case "defensa_magica":
-                atributo_ = personaje_en_turno.atributos.defensa_magica;
-                break;
-            case "velocidad":
-                atributo_ = personaje_en_turno.atributos.velocidad;
-                break;
-            default:
-                atributo_ = 1;
-                break;
-        }
-        // TOMAMOS EL OBJETIVO DEPENDIENDO DE QUIEN HAYA SIDO SELECIONADO
-        if(poder.objetivos == "unico"){
-            target = new Personajes[1]{enemigos[index]};
-            float daño = (atributo_ * poder.multiplicador) + poder.daño_base;
-            HacerDaño(target, daño, personaje_en_turno.elemento, poder.atributo, index, index_personaje_en_turno);
         }else{
-            float daño = (atributo_ * poder.multiplicador) + poder.daño_base;
-            // 99 PARA INDICAR QUE AFECTAREMOS A TODOS
-            HacerDaño(enemigos, daño, personaje_en_turno.elemento, poder.atributo, 99, index_personaje_en_turno);
+            //MOSIFICAMOS LA VIDA DE TODOS LOS PERSONAJES SI NOS LLEGA (99 = TODOS LOS OBJETIVOS)
+            if (index_objetivo == 99){
+                for(int i = 0; i < personajes.Length; i++){
+                    GameObject canvas_texto = GameObject.Find("vida_"+i);
+                    canvas_texto.GetComponent<Text>().text = Convert.ToInt32(personajes[i].atributos.salud).ToString();
+                }
+            }else{
+                //MODIFICAMOS LA VIDA DE 1 PERSONAJE ARRIBA EN PANTALLA
+                GameObject canvas_texto = GameObject.Find("vida_"+index_objetivo);
+                canvas_texto.GetComponent<Text>().text = Convert.ToInt32(target.atributos.salud).ToString();
+            }
         }
-
-    }
-
-
-    void buff(Poderes poder, string index_objetivo, int index_personaje_en_turno){
         
-        int index = int.Parse(index_objetivo);
-        Personajes[] target;
-        float atributo_;
-        string[] habilidades = poder.habilidades;
-
-        // MIRAMOS CON QUE ATRIBUTO SE HARA EL DAÑO
-        switch(poder.atributo){
-            case "fuerza":
-                atributo_ = personaje_en_turno.atributos.fuerza;
-                break;
-            case "magia":
-                atributo_ = personaje_en_turno.atributos.magia;
-                break;
-            case "vitalidad":
-                atributo_ = personaje_en_turno.atributos.vitalidad;
-                break;
-            case "defensa_fisica":
-                atributo_ = personaje_en_turno.atributos.defensa_fisica;
-                break;
-            case "defensa_magica":
-                atributo_ = personaje_en_turno.atributos.defensa_magica;
-                break;
-            case "velocidad":
-                atributo_ = personaje_en_turno.atributos.velocidad;
-                break;
-            default:
-                atributo_ = 1;
-                break;
-        }
-        // TOMAMOS EL OBJETIVO DEPENDIENDO DE QUIEN HAYA SIDO SELECIONADO
-        if(poder.objetivos == "unico"){
-            target = new Personajes[1]{personajes[index]};
-            //HacerDaño(target, daño, personaje_en_turno.elemento, poder.atributo, index, index_personaje_en_turno);
-            buffear(target, index, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
-        }else if (poder.objetivos == "multiple"){
-            // 99 PARA INDICAR QUE AFECTAREMOS A TODOS
-            //HacerDaño(enemigos, daño, personaje_en_turno.elemento, poder.atributo, 99, index_personaje_en_turno);
-            buffear(personajes, 99, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
-        }else{
-            target = new Personajes[1]{personajes[index]};
-            buffear(target, index_personaje_en_turno, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
-        }
-    }
-    
-
-    void purgar(){}
-    void debuff(Poderes poder, string index_objetivo, int index_personaje_en_turno){
-        
-        int index = int.Parse(index_objetivo);
-        Personajes[] target;
-        float atributo_;
-        string[] habilidades = poder.habilidades;
-
-        // MIRAMOS CON QUE ATRIBUTO SE HARA EL DAÑO
-        switch(poder.atributo){
-            case "fuerza":
-                atributo_ = personaje_en_turno.atributos.fuerza;
-                break;
-            case "magia":
-                atributo_ = personaje_en_turno.atributos.magia;
-                break;
-            case "vitalidad":
-                atributo_ = personaje_en_turno.atributos.vitalidad;
-                break;
-            case "defensa_fisica":
-                atributo_ = personaje_en_turno.atributos.defensa_fisica;
-                break;
-            case "defensa_magica":
-                atributo_ = personaje_en_turno.atributos.defensa_magica;
-                break;
-            case "velocidad":
-                atributo_ = personaje_en_turno.atributos.velocidad;
-                break;
-            default:
-                atributo_ = 1;
-                break;
-        }
-        // TOMAMOS EL OBJETIVO DEPENDIENDO DE QUIEN HAYA SIDO SELECIONADO
-        if(poder.objetivos == "unico"){
-            target = new Personajes[1]{enemigos[index]};
-            debuffear(target, index, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
-        }else if (poder.objetivos == "multiple"){
-            // 99 PARA INDICAR QUE AFECTAREMOS A TODOS
-            Debug.Log(enemigos[0].atributos.salud);
-            debuffear(enemigos, 99, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
-        }else{
-            target = new Personajes[1]{enemigos[index]};
-            debuffear(target, index_personaje_en_turno, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
-        }
     }
 
     void pasar_turno(){
@@ -506,7 +422,7 @@ public class Combate : MonoBehaviour
             turno["enemigo"+i] = enemigos[i];
         }
         //ORDENAMOS EL MAPA EN ORDEN DE VELOCIDADES
-         turno = turno.OrderByDescending(key => key.Value.atributos.velocidad).ToDictionary(x => x.Key, x => x.Value);
+        turno = turno.OrderByDescending(key => key.Value.atributos.velocidad).ToDictionary(x => x.Key, x => x.Value);
         //ACTIVAMOS EL BOOLEANO DE TURNO FINALIZADO
         turno_finalizado = true;
         //LIMPIAMOS LOS BOTONES DE TURNO
@@ -520,8 +436,274 @@ public class Combate : MonoBehaviour
         } 
     }
 
+    void Mover_puntero_personaje(int index_personaje_en_turno){
+        RectTransform dragArea;
+        if (key_personaje_turno.Contains("enemigo")){
+            imagen_puntero. GetComponent<Image>().sprite = puntero_rojo;
+            switch(index_personaje_en_turno){
+                case 0:
+                    dragArea = imagen_puntero.GetComponent<RectTransform>();
+                    dragArea.localPosition = new Vector3(368f, -51f, 0f);
+                    break;
+                case 1:
+                    dragArea = imagen_puntero.GetComponent<RectTransform>();
+                    dragArea.localPosition = new Vector3(552F, -22F, 0f);
+                    break;
+                case 2:
+                    dragArea = imagen_puntero.GetComponent<RectTransform>();
+                    dragArea.localPosition = new Vector3(483f, 205F, 0f);
+                    break;
+                case 3:
+                    dragArea = imagen_puntero.GetComponent<RectTransform>();
+                    dragArea.localPosition = new Vector3(330f, 262f, 0f);
+                    break;
+                default:
+                    break;
+            }
+        }else{
+            imagen_puntero. GetComponent<Image>().sprite = puntero_verde;
+            switch(index_personaje_en_turno){
+                case 0:
+                dragArea = imagen_puntero.GetComponent<RectTransform>();
+                dragArea.localPosition = new Vector3(-399f, -54f, 0f);
+                break;
+                case 1:
+                dragArea = imagen_puntero.GetComponent<RectTransform>();
+                dragArea.localPosition = new Vector3(-574F, 61F, 0f);
+                break;
+                case 2:
+                dragArea = imagen_puntero.GetComponent<RectTransform>();
+                dragArea.localPosition = new Vector3(-483f, 217F, 0f);
+                break;
+                case 3:
+                dragArea = imagen_puntero.GetComponent<RectTransform>();
+                dragArea.localPosition = new Vector3(-291f, 248f, 0f);
+                break;
+                default:
+                break;
+            }
+        }
+        
+    }
 
-    void HacerDaño(Personajes[] target, float daño, string elementoAtacante, string atributo, int index_objetivo, int index_personaje_en_turno){
+
+    private void Matrix_to_array(Personajes[,] matrix){
+        for(int i = 0; i < matrix.GetLength(1); i++)
+        {
+            enemigos[i] = matrix[0,i];
+        }
+
+        for(int i = 0; i < matrix.GetLength(1); i++)
+        {
+            personajes[i] = matrix[1,i];
+            // string output = JsonUtility.ToJson(personajes[i].atributos, true);
+            // Debug.Log(output);
+        }
+    }
+
+    /**
+    public void Lanzar_poder(string index, Poderes poder_a_ser_lanzado, Personajes[] personajes, Personajes[] enemigos, Personajes personaje_en_turno){
+        if(poder_a_ser_lanzado == null) return;
+        Poderes poder = poder_a_ser_lanzado;
+
+        // TOMAMOS EL INDEX DEL PERSONAJE EN TURNO PARA MODIFICARLO
+        int index_personaje_en_turno = 0;
+        for(int j = 0; j < personajes.Length; j++){
+            if(personaje_en_turno.nombre.Contains(personajes[j].nombre)){
+                index_personaje_en_turno = j;
+                break;
+            }
+        }
+        // string output = JsonUtility.ToJson(personajes[Int32.Parse(index)].atributos, true);
+        // Debug.Log(output);
+        //MIRAMOS QUE PODER FUE LANZADO Y LLAMAMOS LA FUNCION CORRESPONDIENTE
+        //MIRAMOS SI ES POSIBLE TIRAR SEGUN EL TIEMPO DE COOLDOWN
+        if (poder.se_puede_usar){
+            switch(poder.tipo_poder){ 
+                case "ataque":
+                    ataque(poder, index, index_personaje_en_turno, personajes, enemigos);
+                    break;
+                case "buff":
+                    buff(poder, index, index_personaje_en_turno, personajes, enemigos);
+                    break;
+                case "purgar":
+                    purgar();
+                    break;
+                case "debuff":
+                    debuff(poder, index, index_personaje_en_turno, personajes, enemigos);
+                    break;
+                case "ataque_debuff":
+                    ataque(poder, index, index_personaje_en_turno, personajes, enemigos);
+                    debuff(poder, index, index_personaje_en_turno, personajes, enemigos);
+                    break;
+                case "ataque_buff":
+                    ataque(poder, index, index_personaje_en_turno, personajes, enemigos);
+                    buff(poder, index, index_personaje_en_turno, personajes, enemigos);
+                    break;
+                default:
+                    break;
+            }
+            // output = JsonUtility.ToJson(personajes[Int32.Parse(index)].atributos, true);
+            // Debug.Log(output);
+            //PASAMOS TURNO
+            pasar_turno();
+            //DESACTIVAMOS LOS UI DE TEXTO OBJETIVO
+            bool multi_objetivo = (poder.objetivos == "unico")? false : true; // UNICO = FALSE, MULTIPLE = TRUE
+            switch(multi_objetivo){
+                case false:
+                    objetivo_unico_txt.SetActive(false);
+                    break;
+                case true:
+                    multiple_objetivo_txt.SetActive(false);
+                    break;
+            }
+
+            //PONEMOS NULL EL PODER A SER LANZADO DE FORMA GLOBAL
+            poder_a_ser_lanzado = null;
+        }
+    }
+
+    void ataque(Poderes poder, string index_objetivo, int index_personaje_en_turno, Personajes[] personajes, Personajes[] enemigos){
+        int index = int.Parse(index_objetivo);
+        Personajes[] target;
+        float atributo_;
+        Personajes personaje_en_turno = personajes[index_personaje_en_turno];
+
+        // MIRAMOS CON QUE ATRIBUTO SE HARA EL DAÑO
+        switch(poder.atributo){
+            case "fuerza":
+                atributo_ = personaje_en_turno.atributos.fuerza;
+                break;
+            case "magia":
+                atributo_ = personaje_en_turno.atributos.magia;
+                break;
+            case "vitalidad":
+                atributo_ = personaje_en_turno.atributos.vitalidad;
+                break;
+            case "defensa_fisica":
+                atributo_ = personaje_en_turno.atributos.defensa_fisica;
+                break;
+            case "defensa_magica":
+                atributo_ = personaje_en_turno.atributos.defensa_magica;
+                break;
+            case "velocidad":
+                atributo_ = personaje_en_turno.atributos.velocidad;
+                break;
+            default:
+                atributo_ = 1;
+                break;
+        }
+        // TOMAMOS EL OBJETIVO DEPENDIENDO DE QUIEN HAYA SIDO SELECIONADO
+        if(poder.objetivos == "unico"){
+            target = new Personajes[1]{enemigos[index]};
+            float daño = (atributo_ * poder.multiplicador) + poder.daño_base;
+            HacerDaño(target, daño, personaje_en_turno.elemento, poder.atributo, index, index_personaje_en_turno, enemigos);
+        }else{
+            float daño = (atributo_ * poder.multiplicador) + poder.daño_base;
+            // 99 PARA INDICAR QUE AFECTAREMOS A TODOS
+            HacerDaño(enemigos, daño, personaje_en_turno.elemento, poder.atributo, 99, index_personaje_en_turno, enemigos);
+        }
+
+    }
+
+
+    void buff(Poderes poder, string index_objetivo, int index_personaje_en_turno, Personajes[] personajes, Personajes[] enemigos){
+        
+        int index = int.Parse(index_objetivo);
+        Personajes[] target;
+        float atributo_;
+        string[] habilidades = poder.habilidades;
+        Personajes personaje_en_turno = personajes[index_personaje_en_turno];
+
+        // MIRAMOS CON QUE ATRIBUTO SE HARA EL DAÑO
+        switch(poder.atributo){
+            case "fuerza":
+                atributo_ = personaje_en_turno.atributos.fuerza;
+                break;
+            case "magia":
+                atributo_ = personaje_en_turno.atributos.magia;
+                break;
+            case "vitalidad":
+                atributo_ = personaje_en_turno.atributos.vitalidad;
+                break;
+            case "defensa_fisica":
+                atributo_ = personaje_en_turno.atributos.defensa_fisica;
+                break;
+            case "defensa_magica":
+                atributo_ = personaje_en_turno.atributos.defensa_magica;
+                break;
+            case "velocidad":
+                atributo_ = personaje_en_turno.atributos.velocidad;
+                break;
+            default:
+                atributo_ = 1;
+                break;
+        }
+        // TOMAMOS EL OBJETIVO DEPENDIENDO DE QUIEN HAYA SIDO SELECIONADO
+        if(poder.objetivos == "unico"){
+            target = new Personajes[1]{personajes[index]};
+            //HacerDaño(target, daño, personaje_en_turno.elemento, poder.atributo, index, index_personaje_en_turno);
+            buffear(target, index, personajes, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
+        }else if (poder.objetivos == "multiple"){
+            // 99 PARA INDICAR QUE AFECTAREMOS A TODOS
+            //HacerDaño(enemigos, daño, personaje_en_turno.elemento, poder.atributo, 99, index_personaje_en_turno);
+            buffear(personajes, 99, personajes, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
+        }else{
+            target = new Personajes[1]{personajes[index]};
+            buffear(target, index_personaje_en_turno, personajes, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
+        }
+    }
+    
+
+    void purgar(){}
+    void debuff(Poderes poder, string index_objetivo, int index_personaje_en_turno, Personajes[] personajes, Personajes[] enemigos){
+        
+        int index = int.Parse(index_objetivo);
+        Personajes[] target;
+        float atributo_;
+        string[] habilidades = poder.habilidades;
+        Personajes personaje_en_turno = personajes[index_personaje_en_turno];
+
+        // MIRAMOS CON QUE ATRIBUTO SE HARA EL DAÑO
+        switch(poder.atributo){
+            case "fuerza":
+                atributo_ = personaje_en_turno.atributos.fuerza;
+                break;
+            case "magia":
+                atributo_ = personaje_en_turno.atributos.magia;
+                break;
+            case "vitalidad":
+                atributo_ = personaje_en_turno.atributos.vitalidad;
+                break;
+            case "defensa_fisica":
+                atributo_ = personaje_en_turno.atributos.defensa_fisica;
+                break;
+            case "defensa_magica":
+                atributo_ = personaje_en_turno.atributos.defensa_magica;
+                break;
+            case "velocidad":
+                atributo_ = personaje_en_turno.atributos.velocidad;
+                break;
+            default:
+                atributo_ = 1;
+                break;
+        }
+        // TOMAMOS EL OBJETIVO DEPENDIENDO DE QUIEN HAYA SIDO SELECIONADO
+        if(poder.objetivos == "unico"){
+            target = new Personajes[1]{enemigos[index]};
+            debuffear(target, index, enemigos, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
+        }else if (poder.objetivos == "multiple"){
+            // 99 PARA INDICAR QUE AFECTAREMOS A TODOS
+            Debug.Log(enemigos[0].atributos.salud);
+            debuffear(enemigos, 99, enemigos, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
+        }else{
+            target = new Personajes[1]{enemigos[index]};
+            debuffear(target, index_personaje_en_turno, enemigos, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
+        }
+    }
+
+
+    void HacerDaño(Personajes[] target, float daño, string elementoAtacante, string atributo, int index_objetivo, int index_personaje_en_turno, Personajes[] enemigos){
 
         //REVISAMOS TODOS LOS ENEMIGOS O SOLO UNO
         for (int i= 0; i < target.Length; i++){
@@ -595,7 +777,7 @@ public class Combate : MonoBehaviour
         
     }
     //LOS PRIMEROS DOS PARAMETROS SON OBLIGATORIOS, EL RESTO SON OPCIONALES
-    void buffear(Personajes[] target, int index_objetivo, string[] habilidades = null, float daño_base = 0f, float atributo = 0f, float multiplicador_efecto = 0f, int duracion_efecto_int = 0){
+    void buffear(Personajes[] target, int index_objetivo, Personajes[] personajes, string[] habilidades = null, float daño_base = 0f, float atributo = 0f, float multiplicador_efecto = 0f, int duracion_efecto_int = 0){
         float efecto = 0F;
         float duracion_efecto = 0F;
         bool chequeando_bufos = false;
@@ -765,7 +947,7 @@ public class Combate : MonoBehaviour
 
 
 
-public void debuffear(Personajes[] target, int index_objetivo, string[] habilidades = null, float daño_base = 0f, float atributo = 0f, float multiplicador_efecto = 0f, int duracion_efecto_int = 0){
+public void debuffear(Personajes[] target, int index_objetivo, Personajes[] enemigos, string[] habilidades = null, float daño_base = 0f, float atributo = 0f, float multiplicador_efecto = 0f, int duracion_efecto_int = 0){
     float efecto = 0F;
     float duracion_efecto = 0F;
     bool chequeando_debuffos = false;
@@ -944,43 +1126,7 @@ public void debuffear(Personajes[] target, int index_objetivo, string[] habilida
         }
         return daño;
     }
-
-    void Cambiar_texto_vida(Personajes target, int index_objetivo, bool aliado){
-
-        if (aliado == false){
-            //MOSIFICAMOS LA VIDA DE TODOS LOS PERSONAJES SI NOS LLEGA (99 = TODOS LOS OBJETIVOS)
-            if (index_objetivo == 99){
-                for(int i = 0; i < enemigos.Length; i++){
-                    GameObject canvas_texto = GameObject.Find("vida_enemigo_"+i);
-                    canvas_texto.GetComponent<Text>().text = Convert.ToInt32(enemigos[i].atributos.salud).ToString();
-                }
-            }else{
-                //MODIFICAMOS LA VIDA DE 1 PERSONAJE ARRIBA EN PANTALLA
-                GameObject canvas_texto = GameObject.Find("vida_enemigo_"+index_objetivo);
-                canvas_texto.GetComponent<Text>().text = Convert.ToInt32(target.atributos.salud).ToString();
-            }
-        }else{
-            //MOSIFICAMOS LA VIDA DE TODOS LOS PERSONAJES SI NOS LLEGA (99 = TODOS LOS OBJETIVOS)
-            if (index_objetivo == 99){
-                for(int i = 0; i < personajes.Length; i++){
-                    GameObject canvas_texto = GameObject.Find("vida_"+i);
-                    canvas_texto.GetComponent<Text>().text = Convert.ToInt32(personajes[i].atributos.salud).ToString();
-                }
-            }else{
-                //MODIFICAMOS LA VIDA DE 1 PERSONAJE ARRIBA EN PANTALLA
-                GameObject canvas_texto = GameObject.Find("vida_"+index_objetivo);
-                canvas_texto.GetComponent<Text>().text = Convert.ToInt32(target.atributos.salud).ToString();
-            }
-        }
-        
-    }
-
-
-
-
-
-
-
+    **/
         
 }
 
