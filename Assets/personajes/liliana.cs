@@ -10,7 +10,7 @@ public class liliana : Personajes
         nivel = 1;
         estrellas = 0;
         despertadas = 0;
-        atributos = new Atributos(3f, 120f, 15f, 6f, 8f, 5f, 7f);
+        atributos = new Atributos(3f, 100f, 15f, 6f, 8f, 5f, 7f);
         equipamiento = new Equipo[1];
         experiencia = 0;
         poderes = new Poderes[8];
@@ -27,8 +27,8 @@ public class liliana : Personajes
     public void Agregar_poderes()
     {
         this.poderes[0] = new Poderes("torrente", "liliana ataca al enemigo", "magia", 1f, 0f, "ataque", "agua", 0, 0, "unico", true, new string[1]{"null"}, 10F);
-        this.poderes[1] = new Poderes("congelar", "liliana congela a los enemigos", "magia", 0f, 0f, "debuff", "agua", 10, 5, "multiple", true, new string[1]{"congelar"}, 3F);
-        this.poderes[2] = new Poderes("fuerza +", "liliana aumenta la vitalidad del grupo", "magia", 0f, 1f, "buff", "agua", 5, 3, "multiple", true, new string[1]{"aumentar_fuerza"}, 0F);
+        this.poderes[1] = new Poderes("congelar", "liliana congela a los enemigos", "magia", 0f, 0f, "debuff", "agua", 10, 3, "multiple", true, new string[1]{"congelar"}, 3F);
+        this.poderes[2] = new Poderes("ola", "liliana lanza olas al enemigo", "magia", 1.2f, 0f, "ataque", "agua", 5, 0, "multiple", true, new string[1]{"null"}, 0F);
         this.poderes[3] = new Poderes("vida +","liliana aumenta la vida del grupo", "magia", 0f, 1f, "buff", "agua", 5, 3, "multiple", true, new string[1]{"aumentar_vitalidad"}, 0F);
         this.poderes[4] = new Poderes("xx", "liliana quema a los enemigos", "magia", 0f, 0.1f, "debuff", "agua", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
         this.poderes[5] = new Poderes("xx", "liliana quema a los enemigos", "magia", 0f, 0.1f, "debuff", "agua", 3, 2, "multiple", true, new string[1]{"a"}, 0F);

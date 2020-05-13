@@ -40,6 +40,7 @@ public class Poderes
     public void Usado(){
         reutilizacion_actual = reutilizacion;
         if(reutilizacion_actual > 0) se_puede_usar = false;
+        Debug.Log("poder usado, " + nombre);
     }
 
     public void Reducir_reutilizacion(){

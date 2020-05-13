@@ -146,7 +146,8 @@ public class mecanicas_combate {
             //HacerDaño(enemigos, daño, personaje_en_turno.elemento, poder.atributo, 99, index_personaje_en_turno);
             buffear(personajes, 99, personajes, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
         }else{
-            target = new Personajes[1]{personajes[index]};
+            target = new Personajes[1]{personajes[index_personaje_en_turno]};
+            Debug.Log("tirando buff propio");
             buffear(target, index_personaje_en_turno, personajes, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
         }
     }
@@ -425,6 +426,11 @@ public class mecanicas_combate {
                             target[i].estado_alterado.Remove("ignorar_defensas");
                         }
                         break;
+                     case "locura":
+                        target[i].Alteraciones_atributos("fuerza", "locura", efecto, duracion_efecto, false);
+                        target[i].Alteraciones_atributos("defensa_fisica", "locura", efecto, duracion_efecto, true);
+                        target[i].Alteraciones_atributos("defensa_magica", "locura", efecto, duracion_efecto, true);
+                        break;
                     default:
                         break;
                 }
@@ -553,15 +559,12 @@ public static void debuffear(Personajes[] target, int index_objetivo, Personajes
                     if (target[i].estado_alterado.ContainsKey("congelar")){
                         target[i].estado_alterado.Remove("congelar");
                         target[i].estado_alterado["congelar"] = new float[]{efecto, duracion_efecto};
-                        //Debug.Log("duracion: " + duracion_efecto);
                         if(target[i].estado_alterado["congelar"][1] <= 0){
-                            //Debug.Log("aqui fue el problema");
                             target[i].estado_alterado.Remove("congelar");
                         }
                     }else{
                         target[i].Daño(efecto);
                         target[i].estado_alterado["congelar"] = new float[]{efecto, duracion_efecto};
-                        //Debug.Log("congelado perrita");
                     }  
                     break;
                 case "aturdir":
@@ -603,11 +606,6 @@ public static void debuffear(Personajes[] target, int index_objetivo, Personajes
     if(target.Length < 2 && chequeando_debuffos == false) enemigos[index_objetivo] = target[0];
     else if (target.Length < 2 && chequeando_debuffos == true){
         personajes[index_objetivo] = target[0];
-        // string output = JsonUtility.ToJson(target[0].estado_alterado.Count, true);
-        // Debug.Log(output);
-        // Debug.Log("arriba target y abajo personajes");
-        // output = JsonUtility.ToJson(personajes[index_objetivo].estado_alterado.Count, true);
-        // Debug.Log(output);
     } 
 }
 

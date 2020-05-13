@@ -160,10 +160,11 @@ public class Combate : MonoBehaviour
 
 
     void Update()
-    {   
+    {  
+
         //SI ACABAMOS TURNO
         if (turno_finalizado){
-            //SI ES ENEMIGO PASAMOS TURNO ( ACA VENDRA LA IA QUE REVISARA BUFFOS DEBUFFOS)
+            //SI ES ENEMIGO REVISAMOS BUFFOS, DEBUFOS Y LLAMAMOS A LA IA PARA QUE EJECUTE UNA ACCION
             if(key_personaje_turno.Contains("enemigo")){
                 Debug.Log("enemigo jugando: " + personaje_en_turno.nombre);
                 personaje_en_turno.Reducir_cooldown();
@@ -177,18 +178,23 @@ public class Combate : MonoBehaviour
                 //Y REVISAMOS SI TOCA MODIFICARLE LOS BUFFOS / DEBUFFOS
                 mecanicas_combate.buffear(personaje_para_revisar_buffos, index_personaje_en_turno, enemigos);
                 mecanicas_combate.debuffear(personaje_para_revisar_buffos, index_personaje_en_turno, personajes, enemigos);
-                // Debug.Log(personaje_en_turno.estado_alterado.Count);
-                // foreach (KeyValuePair<string, float[]> estado in personaje_para_revisar_buffos[0].estado_alterado){
-                //    Debug.Log(estado.Key);
-                //  }
-                if(personaje_en_turno.estado_alterado.ContainsKey("dormir") || personaje_en_turno.estado_alterado.ContainsKey("congelar") || personaje_en_turno.estado_alterado.ContainsKey("aturdir")){
-                    Debug.Log(personaje_en_turno.nombre +  " esta con estado alterado y pasara turno");
+
+                //EN CASO DE ESTAR NOQUEADO, PASAR TURNO
+                if(personaje_en_turno.estado_alterado.ContainsKey("dormir") || personaje_en_turno.estado_alterado.ContainsKey("congelar") || personaje_en_turno.estado_alterado.ContainsKey("aturdir") || personaje_en_turno.estado_alterado.ContainsKey("muerto")){
+                    Debug.Log(personaje_en_turno.nombre +  " esta con estado alterado o muerto y pasara turno");
                     pasar_turno();
                 } else{
+
+                    //ASIGNAMOS EL PUNTERO
                     Mover_puntero_personaje(index_personaje_en_turno);
+
+                    //RECIBIMOS UNA MATRIZ CON LAS LISTAS PERSONAJES Y ENEMIGOS
                     matrix_envio_personajes = maquina.Ejecutar(enemigos, personajes, personaje_en_turno);
+
+                    //LOS PASAMOS DE LA MATRIZ A NUESTRAS LISTAS GLOBALES DE PERSONAJES Y ENEMIGOS
                     Matrix_to_array(matrix_envio_personajes);
                     
+                    //ACTUALIZAMOS LOS VALORES DE LA VIDA Y PASAMOS TURNO
                     Cambiar_texto_vida(null, 99, true);
                     Cambiar_texto_vida(null, 99, false);
                     pasar_turno();
@@ -207,8 +213,14 @@ public class Combate : MonoBehaviour
                 //Y REVISAMOS SI TOCA MODIFICARLE LOS BUFFOS / DEBUFFOS
                 mecanicas_combate.buffear(personaje_para_revisar_buffos, index_personaje_en_turno, personajes);
                 mecanicas_combate.debuffear(personaje_para_revisar_buffos, index_personaje_en_turno, enemigos, personajes);
-                if(personaje_en_turno.estado_alterado.ContainsKey("dormir") || personaje_en_turno.estado_alterado.ContainsKey("congelar") || personaje_en_turno.estado_alterado.ContainsKey("aturdir")){
+
+                //EN CASO DE ESTAR NOQUEADO, PASAR TURNO
+                if(personaje_en_turno.estado_alterado.ContainsKey("dormir") || personaje_en_turno.estado_alterado.ContainsKey("congelar") || personaje_en_turno.estado_alterado.ContainsKey("aturdir") ){
                     Debug.Log(personaje_en_turno.nombre +  " esta con estado alterado y pasara turno");
+                    pasar_turno();
+                }else if (personaje_en_turno.estado_alterado.ContainsKey("muerto") )
+                {
+                    Debug.Log(personaje_en_turno.nombre +  " esta muerto y pasara turno");
                     pasar_turno();
                 }else{
                     //ASIGNAMOS BOTONES AL JUGADOR EN TURNO
@@ -218,6 +230,31 @@ public class Combate : MonoBehaviour
                 } 
             }
         }
+
+        int contador_muertos = 0;
+        for(int k = 0; k < personajes.Length; k++)
+        {
+            if (personajes[k].estado_alterado.ContainsKey("muerto")) contador_muertos ++;
+            else break;
+            if (contador_muertos >= 4)
+            {
+                turno_finalizado = false;
+                Debug.Log("Juego perdido");
+            }
+        }
+
+        contador_muertos = 0;
+        for(int k = 0; k < enemigos.Length; k++)
+        {
+            if (enemigos[k].estado_alterado.ContainsKey("muerto")) contador_muertos ++;
+            else break;
+            if (contador_muertos >= 4)
+            {
+                turno_finalizado = false;
+                Debug.Log("Juego Ganado");
+            }
+        }
+
     }
 
 
@@ -317,15 +354,11 @@ public class Combate : MonoBehaviour
     }
 
     void Confirmar_poder(string index){
-        //Lanzar_poder(index, poder_a_ser_lanzado, personajes, enemigos, personaje_en_turno);
-
-
-        // TESTEO
-        if (poder_a_ser_lanzado.se_puede_usar){
+        if (poder_a_ser_lanzado != null && poder_a_ser_lanzado.se_puede_usar){
             mecanicas_combate.Lanzar_poder(index, poder_a_ser_lanzado, personajes, enemigos, personaje_en_turno);
             pasar_turno();
         }else{
-            Debug.Log("Poder en reutilizacion");
+            return;
         }
         
         //DESACTIVAMOS LOS UI DE TEXTO OBJETIVO
@@ -344,7 +377,6 @@ public class Combate : MonoBehaviour
 
         Cambiar_texto_vida(null, 99, true);
         Cambiar_texto_vida(null, 99, false);
-        // TESTEO
     }
 
 

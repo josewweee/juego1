@@ -30,8 +30,9 @@ public class inteligencia_artificial
         Revisar_matar_ataque(personajes, enemigos, personaje_en_turno);
         if(index_objetivo != 88 && poder_lanzar != null)
         {
+            if(index_objetivo != 99)  Debug.Log("hacia/: " +  enemigos[index_objetivo]);
+            else Debug.Log("hacia todos");
             mecanicas_combate.Lanzar_poder(index_objetivo.ToString(), poder_lanzar, personajes, enemigos, personaje_en_turno);
-            //Debug.Log("vamos a matar con " +  poder_lanzar.nombre);
             personajes_retorno = matriz_envio_personajes(personajes, enemigos);
             index_objetivo = 88;
             poder_lanzar = null;
@@ -41,8 +42,9 @@ public class inteligencia_artificial
         Revisar_si_curar(personajes, personaje_en_turno);
         if(index_objetivo != 88 && poder_lanzar != null)
         {
+             if(index_objetivo != 99)  Debug.Log("hacia: " +  enemigos[index_objetivo]);
+            else Debug.Log("hacia todos");
             mecanicas_combate.Lanzar_poder(index_objetivo.ToString(), poder_lanzar, personajes, enemigos, personaje_en_turno);
-           // Debug.Log("vamos a curar "+  poder_lanzar.nombre);
             personajes_retorno = matriz_envio_personajes(personajes, enemigos);
             index_objetivo = 88;
             poder_lanzar = null;
@@ -51,8 +53,9 @@ public class inteligencia_artificial
         Buffear(personajes, enemigos, personaje_en_turno);
         if(index_objetivo != 88 && poder_lanzar != null)
         {
+                        if(index_objetivo != 99)  Debug.Log("hacia: " +  enemigos[index_objetivo]);
+            else Debug.Log("hacia todos");
             mecanicas_combate.Lanzar_poder(index_objetivo.ToString(), poder_lanzar, personajes, enemigos, personaje_en_turno);
-           // Debug.Log("vamos a buffear "+  poder_lanzar.nombre);
             personajes_retorno = matriz_envio_personajes(personajes, enemigos);
             index_objetivo = 88;
             poder_lanzar = null;
@@ -61,8 +64,9 @@ public class inteligencia_artificial
         Debuffear(personajes, enemigos, personaje_en_turno);
         if(index_objetivo != 88 && poder_lanzar != null)
         {
+            if(index_objetivo != 99)  Debug.Log("hacia: " +  enemigos[index_objetivo]);
+            else Debug.Log("hacia todos");
             mecanicas_combate.Lanzar_poder(index_objetivo.ToString(), poder_lanzar, personajes, enemigos, personaje_en_turno);
-            //Debug.Log("vamos a debuffear "+  poder_lanzar.nombre);
             personajes_retorno = matriz_envio_personajes(personajes, enemigos);
             index_objetivo = 88;
             poder_lanzar = null;
@@ -79,8 +83,9 @@ public class inteligencia_artificial
                 i = personaje_en_turno.poderesActivos.Length + 1;
             }
         }
+                if(index_objetivo != 99 && index_objetivo != 88)  Debug.Log("hacia: " +  enemigos[index_objetivo]);
+        else Debug.Log("hacia todos");
         mecanicas_combate.Lanzar_poder(index_objetivo.ToString(), poder_lanzar, personajes, enemigos, personaje_en_turno);
-       // Debug.Log("vamos a atacar normal "+  poder_lanzar.nombre);
         personajes_retorno = matriz_envio_personajes(personajes, enemigos);
         index_objetivo = 88;
         poder_lanzar = null;
@@ -126,8 +131,8 @@ public class inteligencia_artificial
                     }else{
                         daño -= daño * (enemigos[j].atributos.defensa_magica / 100);
                     }
-                    if(enemigos[j].atributos.salud - daño <= 0){
-                        index_objetivo = j;
+                    if(enemigos[j].atributos.salud - daño <= 0 && !(enemigos[j].estado_alterado.ContainsKey("muerto")) ){
+                        index_objetivo = (poder_iteracion.objetivos != "multiple") ? j : 99;
                         poder_lanzar = poder_iteracion;
                     }
                 }
@@ -171,6 +176,9 @@ public class inteligencia_artificial
                                 break;
                             case "aumentar_defensa_magica":
                                 index_objetivo = Personaje_mayor_atributo("defensa_magica", personajes);
+                                break;
+                            case "aumentar_estadisticas":
+                                index_objetivo = Personaje_mayor_daño(personajes);
                                 break;
                             case "inmunidad":
                                 if (Personaje_a_punto_morir(personajes, 25) != 88){ // 88 SIGNIFICA QUE NADIE VA A MORIR
@@ -246,6 +254,30 @@ public class inteligencia_artificial
                             case "reducir_defensa_magica":
                                 index_objetivo = Personaje_mayor_atributo("defensa_magica", personajes);
                                 break;
+                            case "reducir_estadisticas":
+                                 index_objetivo = Personaje_mayor_daño(personajes);
+                                break;
+                            case "congelar":
+                                 index_objetivo = Personaje_mayor_daño(personajes);
+                                break;
+                            case "heridas_graves":
+                                 index_objetivo = Personaje_mayor_daño(personajes);
+                                break;
+                            case "sangrado":
+                                 index_objetivo = Personaje_mayor_daño(personajes);
+                                break;
+                            case "quemar":
+                                 index_objetivo = Personaje_mayor_daño(personajes);
+                                break;
+                            case "quemar_grave":
+                                 index_objetivo = Personaje_mayor_daño(personajes);
+                                break;
+                            case "aturdir":
+                                 index_objetivo = Personaje_mayor_daño(personajes);
+                                break;
+                            case "dormir":
+                                 index_objetivo = Personaje_mayor_daño(personajes);
+                                break;
                             default:
                                 break;
                         }
@@ -262,9 +294,11 @@ public class inteligencia_artificial
 
 
     static void Revisar_si_curar(Personajes[] personajes, Personajes personaje_en_turno){
+        //REVISAMOS SI ALGUIEN TIENE MENOS DEL 25% DE SALUD
         int index_objetivo_local = Personaje_a_punto_morir(personajes, 25);
         if (index_objetivo_local != 88) // SI ALGUIEN SE VA A MORIR
         {
+            //BUSCAMOS EN LOS PODERES POR CURAR
             for(int i = 0; i < personaje_en_turno.poderesActivos.Length; i++)
             {   if(personaje_en_turno.poderesActivos[i].se_puede_usar)
                 {
@@ -272,6 +306,7 @@ public class inteligencia_artificial
                     {
                         if (personaje_en_turno.poderesActivos[i].habilidades[j].Contains("curar"))
                         {
+                            //CURAMOS AL PRIMER PERSONAJE CON MENOS DE 25% DE VIDA
                             index_objetivo = Personaje_a_punto_morir(personajes, 25);
                             poder_lanzar = personaje_en_turno.poderesActivos[i];
                         }
@@ -280,9 +315,11 @@ public class inteligencia_artificial
             }
         }
 
+        //REVISAMOS SI ALGUIEN TIENE MENOS DEL 50% DE SALUD
         index_objetivo = Personaje_a_punto_morir(personajes, 50);
         if (index_objetivo_local != 88) // SI ALGUIEN SE VA A MORIR
         {
+            //BUSCAMOS EN LOS PODERES POR REVITALIZAR
             for(int i = 0; i < personaje_en_turno.poderesActivos.Length; i++)
             {   if(personaje_en_turno.poderesActivos[i].se_puede_usar)
                 {
@@ -290,6 +327,7 @@ public class inteligencia_artificial
                     {
                         if (personaje_en_turno.poderesActivos[i].habilidades[j].Contains("revitalizar"))
                         {
+                            //REVITALIZAMOS AL PERSONAJE CON MENOS DEL 50% DE VIDA
                             index_objetivo = Personaje_a_punto_morir(personajes, 50);
                             poder_lanzar = personaje_en_turno.poderesActivos[i];
                         }
@@ -312,9 +350,11 @@ public class inteligencia_artificial
     static int Enemigo_menos_vida(Personajes[] enemigos){
         float menor_salud = 9999999;
         int enemigo_ganador = 88;
+
+        //BUSCAMOS EN LOS ENEMIGOS EL DE MENOS VIDA QUE NO ESTE MUERTO
         for(int j = 0; j < enemigos.Length; j++)
         {
-            if(enemigos[j].atributos.salud < menor_salud)
+            if(enemigos[j].atributos.salud < menor_salud && !(enemigos[j].estado_alterado.ContainsKey("muerto")))
             {
                 menor_salud = enemigos[j].atributos.salud;
                 enemigo_ganador = j;
@@ -327,12 +367,13 @@ public class inteligencia_artificial
         float menor_salud = 9999999;
         int enemigo_ganador = 88;
 
+        //DEPENDIENDO DEL ATAQUE QUE HAGA, MIRAMOS QUIEN TIENE MENOR DEFENSA CONTRA ESE ATAQUE
         switch(poder.atributo)
         {
             case "fuerza":
                 for(int j = 0; j < enemigos.Length; j++)
                 {
-                    if(enemigos[j].atributos.defensa_fisica < menor_salud)
+                    if(enemigos[j].atributos.defensa_fisica < menor_salud && !(enemigos[j].estado_alterado.ContainsKey("muerto")))
                     {
                         menor_salud = enemigos[j].atributos.defensa_fisica;
                         enemigo_ganador = j;
@@ -342,7 +383,7 @@ public class inteligencia_artificial
             case "critico":
                 for(int j = 0; j < enemigos.Length; j++)
                 {
-                    if(enemigos[j].atributos.defensa_fisica < menor_salud)
+                    if(enemigos[j].atributos.defensa_fisica < menor_salud && !(enemigos[j].estado_alterado.ContainsKey("muerto")))
                     {
                         menor_salud = enemigos[j].atributos.defensa_fisica;
                         enemigo_ganador = j;
@@ -352,7 +393,7 @@ public class inteligencia_artificial
             case "velocidad":
                 for(int j = 0; j < enemigos.Length; j++)
                 {
-                    if(enemigos[j].atributos.defensa_fisica < menor_salud)
+                    if(enemigos[j].atributos.defensa_fisica < menor_salud && !(enemigos[j].estado_alterado.ContainsKey("muerto")))
                     {
                         menor_salud = enemigos[j].atributos.defensa_fisica;
                         enemigo_ganador = j;
@@ -362,7 +403,7 @@ public class inteligencia_artificial
             case "defensa_fisica":
                 for(int j = 0; j < enemigos.Length; j++)
                 {
-                    if(enemigos[j].atributos.defensa_fisica < menor_salud)
+                    if(enemigos[j].atributos.defensa_fisica < menor_salud && !(enemigos[j].estado_alterado.ContainsKey("muerto")))
                     {
                         menor_salud = enemigos[j].atributos.defensa_fisica;
                         enemigo_ganador = j;
@@ -372,7 +413,7 @@ public class inteligencia_artificial
             case "vitalidad":
                 for(int j = 0; j < enemigos.Length; j++)
                 {
-                    if(enemigos[j].atributos.defensa_fisica < menor_salud)
+                    if(enemigos[j].atributos.defensa_fisica < menor_salud && !(enemigos[j].estado_alterado.ContainsKey("muerto")))
                     {
                         menor_salud = enemigos[j].atributos.defensa_fisica;
                         enemigo_ganador = j;
@@ -382,7 +423,7 @@ public class inteligencia_artificial
             case "magia":   
                 for(int j = 0; j < enemigos.Length; j++)
                 {
-                    if(enemigos[j].atributos.defensa_magica < menor_salud)
+                    if(enemigos[j].atributos.defensa_magica < menor_salud && !(enemigos[j].estado_alterado.ContainsKey("muerto")))
                     {
                         menor_salud = enemigos[j].atributos.defensa_magica;
                         enemigo_ganador = j;
@@ -392,7 +433,7 @@ public class inteligencia_artificial
             case "defensa_magica":
                 for(int j = 0; j < enemigos.Length; j++)
                 {
-                    if(enemigos[j].atributos.defensa_magica < menor_salud)
+                    if(enemigos[j].atributos.defensa_magica < menor_salud && !(enemigos[j].estado_alterado.ContainsKey("muerto")))
                     {
                         menor_salud = enemigos[j].atributos.defensa_magica;
                         enemigo_ganador = j;
@@ -411,6 +452,7 @@ public class inteligencia_artificial
         int enemigo_ganador = 88;
         float daño = 0;
 
+        // MIRAMOS QUE ENEMIGO RECIBE MAS DAÑO, LUEGO DE QUITAR LA DEFENSA Y AUMENTAR EL CRITICO
         switch(poder.atributo)
         {
             case "fuerza":
@@ -420,7 +462,7 @@ public class inteligencia_artificial
                 for(int j = 0; j < enemigos.Length; j++)
                 {
                     daño -= daño * (enemigos[j].atributos.defensa_fisica / 100);
-                    if ( enemigos[j].atributos.salud - daño < menor_salud)
+                    if ( enemigos[j].atributos.salud - daño < menor_salud && !(enemigos[j].estado_alterado.ContainsKey("muerto")))
                     {
                         enemigo_ganador = j;
                     }
@@ -433,7 +475,7 @@ public class inteligencia_artificial
                 for(int j = 0; j < enemigos.Length; j++)
                 {
                     daño -= daño * (enemigos[j].atributos.defensa_fisica / 100);
-                    if ( enemigos[j].atributos.salud - daño < menor_salud)
+                    if ( enemigos[j].atributos.salud - daño < menor_salud && !(enemigos[j].estado_alterado.ContainsKey("muerto")))
                     {
                         enemigo_ganador = j;
                     }
@@ -446,7 +488,7 @@ public class inteligencia_artificial
                 for(int j = 0; j < enemigos.Length; j++)
                 {
                     daño -= daño * (enemigos[j].atributos.defensa_fisica / 100);
-                    if ( enemigos[j].atributos.salud - daño < menor_salud)
+                    if ( enemigos[j].atributos.salud - daño < menor_salud && !(enemigos[j].estado_alterado.ContainsKey("muerto")))
                     {
                         enemigo_ganador = j;
                     }
@@ -459,7 +501,7 @@ public class inteligencia_artificial
                 for(int j = 0; j < enemigos.Length; j++)
                 {
                     daño -= daño * (enemigos[j].atributos.defensa_fisica / 100);
-                    if ( enemigos[j].atributos.salud - daño < menor_salud)
+                    if ( enemigos[j].atributos.salud - daño < menor_salud && !(enemigos[j].estado_alterado.ContainsKey("muerto")))
                     {
                         enemigo_ganador = j;
                     }
@@ -472,7 +514,7 @@ public class inteligencia_artificial
                 for(int j = 0; j < enemigos.Length; j++)
                 {
                     daño -= daño * (enemigos[j].atributos.defensa_fisica / 100);
-                    if ( enemigos[j].atributos.salud - daño < menor_salud)
+                    if ( enemigos[j].atributos.salud - daño < menor_salud && !(enemigos[j].estado_alterado.ContainsKey("muerto")))
                     {
                         enemigo_ganador = j;
                     }
@@ -485,7 +527,7 @@ public class inteligencia_artificial
                 for(int j = 0; j < enemigos.Length; j++)
                 {
                     daño -= daño * (enemigos[j].atributos.defensa_magica / 100);
-                    if ( enemigos[j].atributos.salud - daño < menor_salud)
+                    if ( enemigos[j].atributos.salud - daño < menor_salud && !(enemigos[j].estado_alterado.ContainsKey("muerto")))
                     {
                         enemigo_ganador = j;
                     }
@@ -498,7 +540,7 @@ public class inteligencia_artificial
                 for(int j = 0; j < enemigos.Length; j++)
                 {
                     daño -= daño * (enemigos[j].atributos.defensa_magica / 100);
-                    if ( enemigos[j].atributos.salud - daño < menor_salud)
+                    if ( enemigos[j].atributos.salud - daño < menor_salud && !(enemigos[j].estado_alterado.ContainsKey("muerto")))
                     {
                         enemigo_ganador = j;
                     }
@@ -533,7 +575,7 @@ public class inteligencia_artificial
         switch(atributo){
             case "fuerza":
                 for(i = 0; i < personajes.Length; i++){
-                    if(personajes[i].atributos.fuerza > mayor_atributo){
+                    if(personajes[i].atributos.fuerza > mayor_atributo && !(personajes[i].estado_alterado.ContainsKey("muerto"))){
                         mayor_atributo = personajes[i].atributos.fuerza;
                         personaje_ganador = i;
                     }
@@ -541,7 +583,7 @@ public class inteligencia_artificial
                 break;
             case "magia":
             for(i = 0;i < personajes.Length; i++){
-                    if(personajes[i].atributos.magia > mayor_atributo){
+                    if(personajes[i].atributos.magia > mayor_atributo && !(personajes[i].estado_alterado.ContainsKey("muerto"))){
                         mayor_atributo = personajes[i].atributos.magia;
                         personaje_ganador = i;
                     }
@@ -549,7 +591,7 @@ public class inteligencia_artificial
                 break;
             case "vitalidad":
             for(i = 0;i < personajes.Length; i++){
-                    if(personajes[i].atributos.vitalidad > mayor_atributo){
+                    if(personajes[i].atributos.vitalidad > mayor_atributo && !(personajes[i].estado_alterado.ContainsKey("muerto"))){
                         mayor_atributo = personajes[i].atributos.vitalidad;
                         personaje_ganador = i;
                     }
@@ -557,7 +599,7 @@ public class inteligencia_artificial
                 break;
             case "velocidad":
             for(i = 0;i < personajes.Length; i++){
-                    if(personajes[i].atributos.velocidad > mayor_atributo){
+                    if(personajes[i].atributos.velocidad > mayor_atributo && !(personajes[i].estado_alterado.ContainsKey("muerto"))){
                         mayor_atributo = personajes[i].atributos.velocidad;
                         personaje_ganador = i;
                     }
@@ -565,7 +607,7 @@ public class inteligencia_artificial
                 break;
             case "critico":
             for(i = 0;i < personajes.Length; i++){
-                    if(personajes[i].atributos.critico > mayor_atributo){
+                    if(personajes[i].atributos.critico > mayor_atributo && !(personajes[i].estado_alterado.ContainsKey("muerto"))){
                         mayor_atributo = personajes[i].atributos.critico;
                         personaje_ganador = i;
                     }
@@ -573,7 +615,7 @@ public class inteligencia_artificial
                 break;
             case "defensa_fisica":
             for(i = 0;i < personajes.Length; i++){
-                    if(personajes[i].atributos.defensa_fisica > mayor_atributo){
+                    if(personajes[i].atributos.defensa_fisica > mayor_atributo && !(personajes[i].estado_alterado.ContainsKey("muerto"))){
                         mayor_atributo = personajes[i].atributos.defensa_fisica;
                         personaje_ganador = i;
                     }
@@ -581,7 +623,7 @@ public class inteligencia_artificial
                 break;
             case "defensa_magica":
             for(i = 0;i < personajes.Length; i++){
-                    if(personajes[i].atributos.defensa_magica > mayor_atributo){
+                    if(personajes[i].atributos.defensa_magica > mayor_atributo && !(personajes[i].estado_alterado.ContainsKey("muerto"))){
                         mayor_atributo = personajes[i].atributos.defensa_magica;
                         personaje_ganador = i;
                     }
@@ -598,17 +640,17 @@ public class inteligencia_artificial
         int personaje_ganador = 0;
 
         for(int i = 0; i < personajes.Length; i++){
-            if(personajes[i].atributos.fuerza > mayor_atributo){
+            if(personajes[i].atributos.fuerza > mayor_atributo && !(personajes[i].estado_alterado.ContainsKey("muerto"))){
                 mayor_atributo = personajes[i].atributos.fuerza;
                 personaje_ganador = i;
             }
 
-            if(personajes[i].atributos.magia > mayor_atributo){
+            if(personajes[i].atributos.magia > mayor_atributo && !(personajes[i].estado_alterado.ContainsKey("muerto"))){
                 mayor_atributo = personajes[i].atributos.magia;
                 personaje_ganador = i;
             }
 
-            if(personajes[i].atributos.critico > mayor_atributo){
+            if(personajes[i].atributos.critico > mayor_atributo && !(personajes[i].estado_alterado.ContainsKey("muerto"))){
                 mayor_atributo = personajes[i].atributos.critico;
                 personaje_ganador = i;
             }
@@ -622,7 +664,7 @@ public class inteligencia_artificial
         for(int i = 0; i < personajes.Length; i++){
             float vitalidad = personajes[i].atributos.vitalidad;
             float salud = personajes[i].atributos.salud;
-            if( salud <= (vitalidad * riesgo) ){
+            if( salud <= (vitalidad * riesgo)  && !(personajes[i].estado_alterado.ContainsKey("muerto"))){
                 personaje_ganador = i;
                 return personaje_ganador;
             }

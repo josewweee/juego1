@@ -70,25 +70,32 @@ public class Personajes
     public void Modificar_atributo(float efecto, string atributo){
         switch(atributo){
             case "vitalidad":
+                if((atributos.vitalidad += efecto) < 0){atributos.vitalidad = 0; break;}
                 atributos.vitalidad += efecto;
                 if(atributos.vitalidad < atributos.salud) atributos.salud = atributos.vitalidad;
                 break;
             case "fuerza":
+                if((atributos.fuerza += efecto) < 0){atributos.fuerza = 0; break;}
                 atributos.fuerza += efecto;
                 break;
             case "magia":
+                if((atributos.magia += efecto) < 0){atributos.magia = 0; break;}
                 atributos.magia += efecto;
                 break;
             case "velocidad":
+                if((atributos.velocidad += efecto) < 0){atributos.velocidad = 0; break;}
                 atributos.velocidad += efecto;
                 break;
             case "critico":
+                if((atributos.critico += efecto) < 0){atributos.critico = 0; break;}
                 atributos.critico += efecto;
                 break;
             case "defensa_fisica":
+                if((atributos.defensa_fisica += efecto) < 0){atributos.defensa_fisica = 0; break;}
                 atributos.defensa_fisica += efecto;
                 break;
             case "defensa_magica":
+                if((atributos.defensa_magica += efecto) < 0){atributos.defensa_magica = 0; break;}
                 atributos.defensa_magica += efecto;
                 break;
             default:
@@ -97,15 +104,18 @@ public class Personajes
     }
 
    public void Alteraciones_atributos(string atributo, string nombre_habilidad, float efecto, float duracion_efecto, bool reducir_atributo){
+       //REVISAMOS SI YA TENEMOS EL BUFF PUESTO Y REDUCIMOS EL TIEMPO
         if (estado_alterado.ContainsKey(nombre_habilidad)){
             estado_alterado.Remove(nombre_habilidad);
             estado_alterado[nombre_habilidad] = new float[]{efecto, duracion_efecto};
+            //SI EL TIEMPO LLEGA A CERO, QUITAMOS EL BUFF Y BAJAMOS EL ATRIBUTO
             if(estado_alterado[nombre_habilidad][1] <= 0){
                 efecto = (reducir_atributo == false) ? -efecto : efecto;
                 estado_alterado.Remove(nombre_habilidad);
                 Modificar_atributo(efecto, atributo);
             }
         }else{
+            //SI ES NUESTRA PRIMERA VEZ CON EL BUFF, SUBIMOS EL ATRIBUTO
             efecto = (reducir_atributo == true) ? -efecto : efecto;
             Modificar_atributo(efecto, atributo);
             estado_alterado[nombre_habilidad] = new float[]{efecto, duracion_efecto};
@@ -123,6 +133,7 @@ public class Personajes
         //SI LLEGA A 0 DE VIDA, TENDRA ESTADO MUERTO POR 999 TURNOS
         if (atributos.salud <= 0){
             estado_alterado["muerto"] = new float[]{0F, 9999F};
+            Debug.Log(nombre + ", ha muerto");
         }
     }
 
