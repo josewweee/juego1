@@ -8,6 +8,7 @@ public class alicia : Personajes
     {
         nombre = "Alicia";
         nivel = 1;
+        nivel_maximo = 40;
         estrellas = 0;
         despertadas = 0;
         atributos = new Atributos(2f, 70f, 20f, 4f, 15f, 5f, 10f);
@@ -17,7 +18,8 @@ public class alicia : Personajes
         poderesActivos = new Poderes[4];
         elemento = "fuego";
         estado_alterado = new Dictionary<string, float[]>();
-        rareza = "comun";
+        rareza = "raro";
+        fragmentos = 0;
         Agregar_poderes();
         Activar_poderes();
     }
@@ -43,7 +45,7 @@ public class alicia : Personajes
         this.poderesActivos[3] = poderes[3];
     }
 
-     new public void Subir_nivel(int niveles){
+     public override void Subir_nivel(int niveles){
         nivel += niveles;
         for(int i = 0; i < niveles; i++)
         {
@@ -56,11 +58,5 @@ public class alicia : Personajes
             atributos.defensa_fisica += 0.1F;
             atributos.defensa_magica += 0.1F;
         }
-    }
-
-    new public void Ganar_exp(int exp)
-    {
-        experiencia += exp;
-        if(experiencia >= nivel*100 ) Subir_nivel(1);
     }
 }

@@ -6,6 +6,7 @@ public class Personajes
 {
     public string nombre;
     public int nivel;
+    public int nivel_maximo;
     public int estrellas;
     public int despertadas;
     public Atributos atributos; // FUERZA, VITALIDAD, MAGIA, VELOCIDAD, CRITICO, DEF_FISICA, DEF_MAGICA
@@ -16,6 +17,7 @@ public class Personajes
     public string elemento; // AGUA, FUEGO, TIERRA, TRUENO, LUZ, OSCURIDAD
     public Dictionary<string, float[]> estado_alterado; // NOMBRE EFECTO -> [ DAÑO EFECTO, DURACION EFECTO ]
     public string rareza; // COMUN, RARO, MITICO, LEGENDARIO
+    public int fragmentos;
 
         // string output = JsonUtility.ToJson(atributos, true);
         // Debug.Log(output);
@@ -41,16 +43,15 @@ public class Personajes
         }
     }
 
-    public void Subir_nivel(int niveles)
+    public virtual void Subir_nivel(int niveles)
     {
-
-
+        
     }
 
-    public void Ganar_exp(int exp)
+    public virtual void Ganar_exp(int exp)
     {
         experiencia += exp;
-        if(experiencia >= nivel*100 ) Subir_nivel(1);
+        if(experiencia >= nivel*100 && nivel < nivel_maximo) Subir_nivel(1);
     }
 
     public void Curar(float efecto){
@@ -62,6 +63,65 @@ public class Personajes
         }
         else{
             atributos.salud = atributos.vitalidad;
+        }
+    }
+
+    public void Evolucionar()
+    {
+        switch(estrellas){
+            case 0:
+                if (fragmentos >= 20){
+                    fragmentos -= 20;
+                    estrellas ++;
+                    nivel_maximo += 10;
+                }
+                break;
+            case 1:
+                if (fragmentos >= 40){
+                    fragmentos -= 40;
+                    estrellas ++;
+                    nivel_maximo += 10;
+                }
+                break;
+            case 2:
+            if (fragmentos >= 60){
+                    fragmentos -= 60;
+                    estrellas ++;
+                    nivel_maximo += 10;
+                }
+                break;
+            case 3:
+            if (fragmentos >= 80){
+                    fragmentos -= 80;
+                    estrellas ++;
+                    nivel_maximo += 10;
+                }
+                break;
+            case 4:
+            if (fragmentos >= 100){
+                    fragmentos -= 100;
+                    estrellas ++;
+                    nivel_maximo += 10;
+                }
+                break;
+            case 5:
+            if (fragmentos >= 120){
+                    fragmentos -= 120;
+                    estrellas ++;
+                    nivel_maximo += 10;
+                }
+                break;
+            case 6:
+            if (fragmentos >= 140){
+                    fragmentos -= 140;
+                    estrellas ++;
+                    nivel_maximo += 10;
+                }
+                break;
+            default:
+                Debug.Log("estrella erroneas " + estrellas);
+                break;
+            
         }
     }
 

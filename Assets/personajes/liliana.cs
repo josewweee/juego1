@@ -8,6 +8,7 @@ public class liliana : Personajes
     {
         nombre = "liliana";
         nivel = 1;
+        nivel_maximo = 40;
         estrellas = 0;
         despertadas = 0;
         atributos = new Atributos(3f, 100f, 15f, 6f, 8f, 5f, 7f);
@@ -17,7 +18,8 @@ public class liliana : Personajes
         poderesActivos = new Poderes[4];
         elemento = "agua";
         estado_alterado = new Dictionary<string, float[]>();
-        rareza = "comun";
+        rareza = "legendario";
+        fragmentos = 0;
         Agregar_poderes();
         Activar_poderes();
     }
@@ -44,7 +46,7 @@ public class liliana : Personajes
         this.poderesActivos[3] = poderes[3];
     }
 
-    new public void Subir_nivel(int niveles){
+    public override void Subir_nivel(int niveles){
         nivel += niveles;
          for(int i = 0; i < niveles; i++)
         {
@@ -57,11 +59,5 @@ public class liliana : Personajes
             atributos.defensa_fisica += 0.1F;
             atributos.defensa_magica += 0.1F;
         }
-    }
-
-    new public void Ganar_exp(int exp)
-    {
-        experiencia += exp;
-        if(experiencia >= nivel*100 ) Subir_nivel(1);
     }
 }

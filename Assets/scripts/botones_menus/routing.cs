@@ -32,17 +32,22 @@ public class routing : MonoBehaviour
         storage_singleton = storage_script.instancia;
 
         //ASIGNAMOS LOS TEXTOS DEL MENU
-        oro = GameObject.Find("oro_valor").GetComponent<Text>();
-        oro.text = jugador.monedas.oro.ToString();
+        try{
+            oro = GameObject.Find("oro_valor").GetComponent<Text>();
+            oro.text = jugador.monedas.oro.ToString();
 
-        diamantes = GameObject.Find("diamantes_valor").GetComponent<Text>();
-        diamantes.text = jugador.monedas.diamantes.ToString();
+            diamantes = GameObject.Find("diamantes_valor").GetComponent<Text>();
+            diamantes.text = jugador.monedas.diamantes.ToString();
 
-        energia = GameObject.Find("energia_valor").GetComponent<Text>();
-        energia.text = jugador.energia.ToString();
+            energia = GameObject.Find("energia_valor").GetComponent<Text>();
+            energia.text = jugador.energia.ToString();
 
-        energia_max = GameObject.Find("energia_valor_maximo").GetComponent<Text>();
-        energia_max.text = " / " + jugador.energia_maxima.ToString();
+            energia_max = GameObject.Find("energia_valor_maximo").GetComponent<Text>();
+            energia_max.text = " / " + jugador.energia_maxima.ToString();
+        }catch{
+            
+        }
+        
     }
 
     void update()
@@ -106,7 +111,7 @@ public class routing : MonoBehaviour
         SceneManager.LoadScene("menu_mis_personajes");
     }
 
-    public void ir_personaje_individual(string personaje_objetivo)
+    public void ir_personaje_individual(Personajes personaje_objetivo)
     {
         storage_singleton.personaje = personaje_objetivo;
         SceneManager.LoadScene("menu_personaje_individual");

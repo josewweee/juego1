@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class storage_script
 {
-    public string personaje;
-    public string equipo;
+    public Personajes personaje = null;
+    public Equipo equipo;
     public Personajes[] enemigos = {null, null, null, null};
     public string tipo_combate = "";
     public int nivel_historia = 1;
@@ -13,7 +13,7 @@ public class storage_script
 
     private storage_script() {
 
-     }
+    }
 
 
     // SINGLETON DE PERSONAJE O EQUIPO PARA REVISAR DE FORMA INDIVIDUAL

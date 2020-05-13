@@ -23,11 +23,11 @@ public class mis_personajes : MonoBehaviour
         // INICIALIZAMOS EL USUARIO, MIRAMOS CUANTOS PERSONAJES TIENE Y POPULAMOS LA UI CON LOS PREFABS
         jugador = Usuario.instancia;
         cantidad_personajes = jugador.personajes.Count;
-        Popular_lista_personajes(cantidad_personajes, prefab_recuadro_personaje);
+        Popular_lista_mis_personajes(cantidad_personajes, prefab_recuadro_personaje);
     }
 
 
-    public void Popular_lista_personajes(int numero_personajes, GameObject prefab)
+    public void Popular_lista_mis_personajes(int numero_personajes, GameObject prefab)
     {
         float pos_inicial_x = -73F; // POSICION DEL CUADRADO 1 EN X
         float pos_inicial_y = 106.63F; // POSICION DEL CUADRADO 1 EN Y
@@ -41,7 +41,7 @@ public class mis_personajes : MonoBehaviour
                 recuadro_personaje.transform.SetParent(GameObject.Find("contenido_scroll").transform, false);
 
                 // AGREGAMOS UN ATRIBUTO DE BOTON AL PREFAB Y LE ENVIAMOS UN PARAMETRO CON EL NOMBRE DEL PERSONAJE DEL JUGADOR
-                string param = jugador.personajes[i].nombre;
+                Personajes param = jugador.personajes[i];
                 Button btn = recuadro_personaje.GetComponent<Button>();
                 btn.onClick.AddListener(delegate { btnClicked(param); });
 
@@ -63,7 +63,7 @@ public class mis_personajes : MonoBehaviour
                 recuadro_personaje.transform.SetParent(GameObject.Find("contenido_scroll").transform, false);
 
                 // AGREGAMOS UN ATRIBUTO DE BOTON AL PREFAB Y LE ENVIAMOS UN PARAMETRO CON EL NOMBRE DEL PERSONAJE DEL JUGADOR
-                string param = jugador.personajes[i].nombre;
+                Personajes param = jugador.personajes[i];
                 Button btn = recuadro_personaje.GetComponent<Button>();
                 btn.onClick.AddListener(delegate { btnClicked(param); });
 
@@ -75,9 +75,8 @@ public class mis_personajes : MonoBehaviour
     }
 
     //FUNCION DEL BOTON, PARA IR A OTRA VENTANA Y ENVIAR UN PARAMETRO
-    public void btnClicked(string nombre_personaje)
+    public void btnClicked(Personajes personaje)
     {
-        Debug.Log(nombre_personaje);
-        _routing.ir_personaje_individual(nombre_personaje);
+        _routing.ir_personaje_individual(personaje);
     }
 }

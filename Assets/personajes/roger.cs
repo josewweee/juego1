@@ -8,6 +8,7 @@ public class roger : Personajes
     {
         nombre = "Roger";
         nivel = 1;
+        nivel_maximo = 40;
         estrellas = 0;
         despertadas = 0;
         atributos = new Atributos(7f, 200f, 7f, 7f, 10f, 10f, 5f);
@@ -18,6 +19,7 @@ public class roger : Personajes
         elemento = "tierra";
         estado_alterado = new Dictionary<string, float[]>();
         rareza = "comun";
+        fragmentos = 0;
         Agregar_poderes();
         Activar_poderes();
     }
@@ -43,7 +45,7 @@ public class roger : Personajes
         this.poderesActivos[3] = poderes[3];
     }
 
-    new public void Subir_nivel(int niveles){
+    public override void Subir_nivel(int niveles){
         nivel += niveles;
          for(int i = 0; i < niveles; i++)
         {
@@ -57,12 +59,5 @@ public class roger : Personajes
             atributos.defensa_magica += 0.3F;
         }
         Debug.Log("Subiendo nivel, nivel: " + nivel);
-    }
-
-
-    new public void Ganar_exp(int exp)
-    {
-        experiencia += exp;
-        if(experiencia >= nivel*100 ) Subir_nivel(1);
     }
 }
