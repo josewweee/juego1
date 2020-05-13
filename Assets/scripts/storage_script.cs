@@ -8,6 +8,7 @@ public class storage_script
     public string equipo;
     public Personajes[] enemigos = {null, null, null, null};
     public string tipo_combate = "";
+    public int nivel_historia = 1;
 
 
     private storage_script() {
@@ -34,5 +35,10 @@ public class storage_script
         }else{
             Debug.Log("Error, Estas intentando agregar un enemigo en la pos: " + index + " y se sale de los limites");
         }
+    }
+
+    public void Cambiar_nivel(int nivel)
+    {   
+        this.nivel_historia = nivel;
     }
 }

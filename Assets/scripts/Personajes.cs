@@ -17,7 +17,8 @@ public class Personajes
     public Dictionary<string, float[]> estado_alterado; // NOMBRE EFECTO -> [ DAÑO EFECTO, DURACION EFECTO ]
     public string rareza; // COMUN, RARO, MITICO, LEGENDARIO
 
-
+        // string output = JsonUtility.ToJson(atributos, true);
+        // Debug.Log(output);
 
     public Personajes Crear_personaje(string personaje)
     {
@@ -40,19 +41,16 @@ public class Personajes
         }
     }
 
-    public void Subir_nivel(int niveles){
-        nivel = niveles;
-        experiencia = 0;
-        atributos.fuerza += niveles;
-        atributos.vitalidad += niveles;
-        atributos.magia += niveles;
-        atributos.velocidad += niveles;
-        atributos.critico += niveles;
-        atributos.defensa_fisica += niveles;
-        atributos.defensa_magica += niveles;
+    public void Subir_nivel(int niveles)
+    {
 
-        // string output = JsonUtility.ToJson(atributos, true);
-        // Debug.Log(output);
+
+    }
+
+    public void Ganar_exp(int exp)
+    {
+        experiencia += exp;
+        if(experiencia >= nivel*100 ) Subir_nivel(1);
     }
 
     public void Curar(float efecto){

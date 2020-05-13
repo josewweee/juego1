@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Monedas : MonoBehaviour
+public class Monedas
 {
-    public int oro = 0;
-    public int diamantes = 0;
-    public int puntos_pvp = 0;
-    void Start()
-    {
+    public int oro;
+    public int diamantes;
+    public int puntos_pvp;
 
+    public Monedas(int oro, int diamantes, int puntos_pvp){
+        this.oro = oro;
+        this.diamantes = diamantes;
+        this.puntos_pvp = puntos_pvp;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    
 }

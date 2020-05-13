@@ -2,23 +2,55 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class routing : MonoBehaviour
 {
+    //VALORES PARA EL MENU
     private bool menu_activo;
     private GameObject boton_menu;
+    private Text oro;
+    private Text diamantes;
+    private Text energia_max;
+    private Text energia;
+
     // TRAEMOS LA INSTANCIA DEL USUARIO PARA PRUEBAS
-    public Usuario usuario_nuevo;
-    // INSTANCIA DE PERSONA O EQUIPO A BUSCAR
+    public Usuario jugador;
+
+    // INSTANCIA DE STORAGE LOCAL
     public storage_script storage_singleton;
+
 
     void Start()
     {
+        //HALLAMOS EL BOTON DEL MENU Y LO ACTIVAMOS
         boton_menu = GameObject.Find("contenedor");
         menu_activo = true;
-        usuario_nuevo = Usuario.instancia;
+
+        //CREAMOS EL USUARIO Y EL STORAGE LOCAL
+        jugador = Usuario.instancia;
         storage_singleton = storage_script.instancia;
-        Debug.Log(usuario_nuevo.personajesFavoritos); // IMPRIMIMOS EL NOMBRE PARA PRUEBAS
+
+        //ASIGNAMOS LOS TEXTOS DEL MENU
+        oro = GameObject.Find("oro_valor").GetComponent<Text>();
+        oro.text = jugador.monedas.oro.ToString();
+
+        diamantes = GameObject.Find("diamantes_valor").GetComponent<Text>();
+        diamantes.text = jugador.monedas.diamantes.ToString();
+
+        energia = GameObject.Find("energia_valor").GetComponent<Text>();
+        energia.text = jugador.energia.ToString();
+
+        energia_max = GameObject.Find("energia_valor_maximo").GetComponent<Text>();
+        energia_max.text = " / " + jugador.energia_maxima.ToString();
+    }
+
+    void update()
+    {
+        oro.text = jugador.monedas.oro.ToString();
+        diamantes.text = jugador.monedas.diamantes.ToString();
+        energia.text = jugador.energia.ToString();
+        energia_max.text = " / " + jugador.energia_maxima.ToString();
     }
     public void mostrar_menu()
     {
@@ -97,6 +129,11 @@ public class routing : MonoBehaviour
 
     public void ir_combate(string tipoCombate){
         storage_singleton.tipo_combate = tipoCombate;
-        SceneManager.LoadScene("menu_combate");
+        if(tipoCombate == "historia"  && jugador.energia >= 6 )
+        {   
+            jugador.energia -= 6;
+            SceneManager.LoadScene("menu_combate");
+        }
+        
     }
 }

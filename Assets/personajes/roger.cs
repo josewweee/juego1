@@ -42,4 +42,27 @@ public class roger : Personajes
         this.poderesActivos[2] = poderes[2];
         this.poderesActivos[3] = poderes[3];
     }
+
+    new public void Subir_nivel(int niveles){
+        nivel += niveles;
+         for(int i = 0; i < niveles; i++)
+        {
+            experiencia = 0;
+            atributos.fuerza += 1F;
+            atributos.vitalidad += 10F;
+            atributos.magia += 0.8F;
+            atributos.velocidad += 1F;
+            atributos.critico += 0.3F;
+            atributos.defensa_fisica += 0.3F;
+            atributos.defensa_magica += 0.3F;
+        }
+        Debug.Log("Subiendo nivel, nivel: " + nivel);
+    }
+
+
+    new public void Ganar_exp(int exp)
+    {
+        experiencia += exp;
+        if(experiencia >= nivel*100 ) Subir_nivel(1);
+    }
 }

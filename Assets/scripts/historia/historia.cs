@@ -221,74 +221,85 @@ public class historia : MonoBehaviour
         int nivel = int.Parse(nivel_);
         switch(nivel){
             case 1:
-                Fabricar_personajes_con_nivel("roger", 2);
-                Fabricar_personajes_con_nivel("alicia", 2);
-                Fabricar_personajes_con_nivel("martis", 2);
-                Fabricar_personajes_con_nivel("liliana", 2);
+                Fabricar_personajes_con_nivel("roger", 2, 0);
+                Fabricar_personajes_con_nivel("alicia", 2, 1);
+                Fabricar_personajes_con_nivel("martis", 2, 2);
+                Fabricar_personajes_con_nivel("liliana", 2, 3);
+                storage_enemigos.Cambiar_nivel(1);
                 break;
             case 2:
-                Fabricar_personajes_con_nivel("roger", nivel);
-                Fabricar_personajes_con_nivel("alicia", nivel);
-                Fabricar_personajes_con_nivel("martis", nivel);
-                Fabricar_personajes_con_nivel("liliana", nivel);
+                Fabricar_personajes_con_nivel("roger", nivel, 0);
+                Fabricar_personajes_con_nivel("alicia", nivel, 1);
+                Fabricar_personajes_con_nivel("martis", nivel, 2);
+                Fabricar_personajes_con_nivel("liliana", nivel, 3);
+                storage_enemigos.Cambiar_nivel(2);
                 break;
             case 3:
-                Fabricar_personajes_con_nivel("roger", nivel);
-                Fabricar_personajes_con_nivel("alicia", nivel);
-                Fabricar_personajes_con_nivel("martis", nivel);
-                Fabricar_personajes_con_nivel("liliana", nivel);
+                Fabricar_personajes_con_nivel("roger", nivel, 0);
+                Fabricar_personajes_con_nivel("alicia", nivel, 1);
+                Fabricar_personajes_con_nivel("martis", nivel, 2);
+                Fabricar_personajes_con_nivel("liliana", nivel, 3);
+                storage_enemigos.Cambiar_nivel(3);
                 break;
             case 4:
-                Fabricar_personajes_con_nivel("roger", nivel);
-                Fabricar_personajes_con_nivel("alicia", nivel);
-                Fabricar_personajes_con_nivel("martis", nivel);
-                Fabricar_personajes_con_nivel("liliana", nivel);
+                  Fabricar_personajes_con_nivel("roger", nivel, 0);
+                Fabricar_personajes_con_nivel("alicia", nivel, 1);
+                Fabricar_personajes_con_nivel("martis", nivel, 2);
+                Fabricar_personajes_con_nivel("liliana", nivel, 3);
+                storage_enemigos.Cambiar_nivel(4);
                 break;
             case 5:
-                Fabricar_personajes_con_nivel("roger", nivel);
-                Fabricar_personajes_con_nivel("alicia", nivel);
-                Fabricar_personajes_con_nivel("martis", nivel);
-                Fabricar_personajes_con_nivel("liliana", nivel);
+                 Fabricar_personajes_con_nivel("roger", nivel, 0);
+                Fabricar_personajes_con_nivel("alicia", nivel, 1);
+                Fabricar_personajes_con_nivel("martis", nivel, 2);
+                Fabricar_personajes_con_nivel("liliana", nivel, 3);
+                storage_enemigos.Cambiar_nivel(5);
                 break;
             case 6:
-                Fabricar_personajes_con_nivel("roger", nivel);
-                Fabricar_personajes_con_nivel("alicia", nivel);
-                Fabricar_personajes_con_nivel("martis", nivel);
-                Fabricar_personajes_con_nivel("liliana", nivel);
+                 Fabricar_personajes_con_nivel("roger", nivel, 0);
+                Fabricar_personajes_con_nivel("alicia", nivel, 1);
+                Fabricar_personajes_con_nivel("martis", nivel, 2);
+                Fabricar_personajes_con_nivel("liliana", nivel, 3);
+                storage_enemigos.Cambiar_nivel(6);
                 break;
             case 7:
-                Fabricar_personajes_con_nivel("roger", nivel);
-                Fabricar_personajes_con_nivel("alicia", nivel);
-                Fabricar_personajes_con_nivel("martis", nivel);
-                Fabricar_personajes_con_nivel("liliana", nivel);
+                  Fabricar_personajes_con_nivel("roger", nivel, 0);
+                Fabricar_personajes_con_nivel("alicia", nivel, 1);
+                Fabricar_personajes_con_nivel("martis", nivel, 2);
+                Fabricar_personajes_con_nivel("liliana", nivel, 3);
+                storage_enemigos.Cambiar_nivel(7);
                 break;
             case 8:
-                Fabricar_personajes_con_nivel("roger", nivel);
-                Fabricar_personajes_con_nivel("alicia", nivel);
-                Fabricar_personajes_con_nivel("martis", nivel);
-                Fabricar_personajes_con_nivel("liliana", nivel);
+                  Fabricar_personajes_con_nivel("roger", nivel, 0);
+                Fabricar_personajes_con_nivel("alicia", nivel, 1);
+                Fabricar_personajes_con_nivel("martis", nivel, 2);
+                Fabricar_personajes_con_nivel("liliana", nivel, 3);
+                storage_enemigos.Cambiar_nivel(8);
                 break;
             case 9:
-                Fabricar_personajes_con_nivel("roger", nivel);
-                Fabricar_personajes_con_nivel("alicia", nivel);
-                Fabricar_personajes_con_nivel("martis", nivel);
-                Fabricar_personajes_con_nivel("liliana", nivel);
+                  Fabricar_personajes_con_nivel("roger", nivel, 0);
+                Fabricar_personajes_con_nivel("alicia", nivel, 1);
+                Fabricar_personajes_con_nivel("martis", nivel, 2);
+                Fabricar_personajes_con_nivel("liliana", nivel, 3);
+                storage_enemigos.Cambiar_nivel(9);
                 break;
             case 10:
-                Fabricar_personajes_con_nivel("roger", nivel);
-                Fabricar_personajes_con_nivel("alicia", nivel);
-                Fabricar_personajes_con_nivel("martis", nivel);
-                Fabricar_personajes_con_nivel("liliana", nivel);
+                  Fabricar_personajes_con_nivel("roger", nivel, 0);
+                Fabricar_personajes_con_nivel("alicia", nivel, 1);
+                Fabricar_personajes_con_nivel("martis", nivel, 2);
+                Fabricar_personajes_con_nivel("liliana", nivel, 3);
+                storage_enemigos.Cambiar_nivel(10);
                 break;
             default:
                 break;
         }
     }
 
-    void Fabricar_personajes_con_nivel(string personaje, int nivel){
-        int i = 0;
+    void Fabricar_personajes_con_nivel(string personaje, int nivel, int index){
+        int i = index;
         Personajes enemigo = fabrica_personajes.Crear_personaje(personaje);
         enemigo.Subir_nivel(nivel);
+
         storage_enemigos.Agregar_enemigo(i, enemigo);
         i++;
     }

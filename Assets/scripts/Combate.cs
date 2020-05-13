@@ -22,11 +22,12 @@ public class Combate : MonoBehaviour
     public float[] velocidades_personajes;
     public float[] velocidades_enemigos;
 
-    //¿HISTORIA, PVP?
-    public string tipo_combate;
-    public Recompenza[] recompenza;
+    //RECOMPENZAS
+    public Recompenza recompenza;
     public Usuario ganador;
     public Usuario perdedor;
+    private GameObject fin_juego;
+    private float fixedDeltaTime;
 
     //TABLA DEFENSAS ELEMENTALES;
     // private Dictionary<string, float[]> defensas_elementales = new Dictionary<string, float[]>(){
@@ -74,12 +75,26 @@ public class Combate : MonoBehaviour
     public GameObject objetivo_unico_txt;
     public GameObject multiple_objetivo_txt;
 
+
+
+
+    void Awake(){
+        //PONEMOS LA VELOCIDAD DEL TIEMPO INICIAL EN EL JUEGO
+        this.fixedDeltaTime = Time.fixedDeltaTime;
+    }
+
     void Start()
     {
-       
+        
+        //DESACTIVAMOS EL UI DE FIN DEL JUEGO
+        fin_juego = GameObject.Find("Fin_juego");
+        fin_juego.SetActive(false);
+
+
         //TRAEMOS LAS INSTANCIAS DEL JUGADOR Y LOS ENEMIGOS
         jugador = Usuario.instancia;
         storage_enemigos = storage_script.instancia;
+        recompenza = new Recompenza();
 
         
         //de prueba
@@ -111,7 +126,7 @@ public class Combate : MonoBehaviour
         multiple_objetivo_txt = GameObject.Find("texto_seleccion_objetivos");
         objetivo_unico_txt.SetActive(false);
         multiple_objetivo_txt.SetActive(false);
-
+        
         //LLENAMOS EL CAMPO CON LOS PERSONAJES COPIADOS
         popular_personajes_mapa(personajes, enemigos, prefab_personaje);
 
@@ -238,8 +253,22 @@ public class Combate : MonoBehaviour
             else break;
             if (contador_muertos >= 4)
             {
+                //DEJAMOS EL TURNO SIN AVANZAR
                 turno_finalizado = false;
-                Debug.Log("Juego perdido");
+
+                //DAMOS RECOMPENZAS POR PERDER
+               if ( !fin_juego.activeSelf )Agregar_recompenzas(false);    
+
+                //ACTIVAMOS LA UI DE FIN DEL JUEGO
+                fin_juego.SetActive(true);
+
+                //PONEMOS EL TEXTO DE PERDER
+                Text txt_fin_juego = GameObject.Find("txt_fin_del_juego").GetComponent<Text>();
+                txt_fin_juego.text = "Partida Perdida";
+
+                //BORRAMOS LOS PREFABS DEL JUEGO
+                GameObject prefab = GameObject.Find("jugador_0(Clone)");
+                Destroy(prefab);
             }
         }
 
@@ -250,8 +279,22 @@ public class Combate : MonoBehaviour
             else break;
             if (contador_muertos >= 4)
             {
+                //DEJAMOS EL TURNO SIN AVANZAR
                 turno_finalizado = false;
-                Debug.Log("Juego Ganado");
+
+                //DAMOS RECOMPENZAS POR GANAR
+                if ( !fin_juego.activeSelf )Agregar_recompenzas(true);
+
+                //ACTIVAMOS LA UI DE FIN DEL JUEGO
+                fin_juego.SetActive(true);
+
+                //PONEMOS EL TEXTO DE GANAR
+                Text txt_fin_juego = GameObject.Find("txt_fin_del_juego").GetComponent<Text>();
+                txt_fin_juego.text = "Partida Ganada";
+
+                //BORRAMOS LOS PREFABS DEL JUEGO
+                GameObject prefab = GameObject.Find("jugador_0(Clone)");
+                Destroy(prefab);
             }
         }
 
@@ -293,12 +336,8 @@ public class Combate : MonoBehaviour
                 
                 
                 //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
-                GameObject canvas_texto = GameObject.Find("vida_"+i);
-                Text texto_vida = canvas_texto.AddComponent<Text>();
-                texto_vida.text = personajes_jugador[i].atributos.vitalidad.ToString();
-                texto_vida.fontSize = 20;
-                texto_vida.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
-                texto_vida.color = Color.black;
+                Text txt_vida = GameObject.Find("vida_"+i).GetComponent<Text>();
+                txt_vida.text = personajes_jugador[i].atributos.vitalidad.ToString();
 
                 //AGREGAMOS UN EVENTO CUANDO SE SELECCIONE EL EPRSONAJE
                 int index = i;
@@ -318,12 +357,8 @@ public class Combate : MonoBehaviour
             GameObject personaje_creado = Instantiate(prefab, new Vector3(pos_inicial_x_enemigos[i], pos_inicial_y_enemigos[i], pos_inicial_z), Quaternion.identity);
             
             //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
-            GameObject canvas_texto = GameObject.Find("vida_enemigo_"+i);
-            Text texto_vida = canvas_texto.AddComponent<Text>();
-            texto_vida.text = enemigos[i].atributos.vitalidad.ToString();
-            texto_vida.fontSize = 20;
-            texto_vida.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
-            texto_vida.color = Color.black;
+            Text txt_vida = GameObject.Find("vida_enemigo_"+i).GetComponent<Text>();
+            txt_vida.text = enemigos[i].atributos.vitalidad.ToString();
             
             //AGREGAMOS UN EVENTO CUANDO SE SELECCIONE EL EPRSONAJE
             int index = i;
@@ -531,6 +566,13 @@ public class Combate : MonoBehaviour
             // string output = JsonUtility.ToJson(personajes[i].atributos, true);
             // Debug.Log(output);
         }
+    }
+
+
+    public void Agregar_recompenzas(bool Gane)
+    {
+        if (Gane) recompenza.Recompenzas_ganar();
+        else recompenza.Recompenzas_perder();
     }
 
     /**

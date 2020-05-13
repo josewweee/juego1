@@ -42,4 +42,26 @@ public class martis : Personajes
         this.poderesActivos[2] = poderes[2];
         this.poderesActivos[3] = poderes[3];
     }
+
+    new public void Subir_nivel(int niveles){
+        nivel += niveles;
+        experiencia = 0;
+         for(int i = 0; i < niveles; i++)
+        {
+            atributos.fuerza += 1F;
+            atributos.vitalidad += 10F;
+            atributos.magia += 0F;      
+            atributos.velocidad += 1.3F;      
+            atributos.critico += 0.6F;
+            atributos.defensa_fisica += 0.1F;
+            atributos.defensa_magica += 0.1F;
+        }
+    }
+
+
+    new public void Ganar_exp(int exp)
+    {
+        experiencia += exp;
+        if(experiencia >= nivel*100 ) Subir_nivel(1);
+    }
 }
