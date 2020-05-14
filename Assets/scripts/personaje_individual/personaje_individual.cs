@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class personaje_individual : MonoBehaviour
 {
@@ -24,13 +25,39 @@ public class personaje_individual : MonoBehaviour
     public Text costo_fragmentos;
     public Text fragmentos_poseidos;
 
+    public Button btn_poder_1;
+    public Button btn_poder_2;
+    public Button btn_poder_3;
+    public Button btn_poder_4;
+    public Button btn_poder_5;
+    public Button btn_poder_6;
+    public Button btn_poder_7;
+    public Button btn_poder_8;
+
+    GameObject marco_poder_1;
+    GameObject marco_poder_2;
+    GameObject marco_poder_3;
+    GameObject marco_poder_4;
+    GameObject marco_poder_5;
+    GameObject marco_poder_6;
+    GameObject marco_poder_7;
+    GameObject marco_poder_8;
+
+    //de pruebas locales
+    private Personajes fabrica;
 
     void Start()
     {
+        //prueba
+        fabrica = new Personajes();
+        personaje_actual = fabrica.Crear_personaje("roger");
+
+
         //TRAEMOS EL PERSONAJE DEL SINGLETON DE PERSONAJES A BUSCAR Y EL JUGADOR
         storage = storage_script.instancia;
         jugador = Usuario.instancia;
-        personaje_actual = storage.personaje;
+        jugador.Agregar_personaje(personaje_actual);
+        //personaje_actual = storage.personaje;
 
 
         //ASIGNAMOS VALORES A LA UI
@@ -46,6 +73,51 @@ public class personaje_individual : MonoBehaviour
         def_magica.text = personaje_actual.atributos.defensa_magica.ToString();
         costo_fragmentos.text = "x " + ((personaje_actual.estrellas + 1) * 20).ToString();
         fragmentos_poseidos.text = personaje_actual.fragmentos.ToString();
+
+        //ASIGNAMOS LOS BOTONES DE LOS PODERES
+        btn_poder_1 = GameObject.Find("boton_poder 1").GetComponent<Button>();
+        marco_poder_1 = GameObject.Find("marco_poder 1");
+        btn_poder_1.transform.GetChild(0).gameObject.GetComponent<Text>().text = personaje_actual.poderes[0].nombre;
+        btn_poder_1.onClick.AddListener( () => Asignar_poder(personaje_actual.poderes[0], marco_poder_1) );
+
+        btn_poder_2 = GameObject.Find("boton_poder 2").GetComponent<Button>();
+        marco_poder_2 = GameObject.Find("marco_poder 2");
+        btn_poder_2.transform.GetChild(0).gameObject.GetComponent<Text>().text = personaje_actual.poderes[1].nombre;
+        btn_poder_2.onClick.AddListener( () => Asignar_poder(personaje_actual.poderes[1], marco_poder_2) );
+
+        btn_poder_3 = GameObject.Find("boton_poder 3").GetComponent<Button>();
+        marco_poder_3 = GameObject.Find("marco_poder 3");
+        btn_poder_3.transform.GetChild(0).gameObject.GetComponent<Text>().text = personaje_actual.poderes[2].nombre;
+        btn_poder_3.onClick.AddListener( () => Asignar_poder(personaje_actual.poderes[2], marco_poder_3) );
+
+        btn_poder_4 = GameObject.Find("boton_poder 4").GetComponent<Button>();
+        marco_poder_4 = GameObject.Find("marco_poder 4");
+        btn_poder_4.transform.GetChild(0).gameObject.GetComponent<Text>().text = personaje_actual.poderes[3].nombre;
+        btn_poder_4.onClick.AddListener( () => Asignar_poder(personaje_actual.poderes[3], marco_poder_4) );
+
+        btn_poder_5 = GameObject.Find("boton_poder 5").GetComponent<Button>();
+        marco_poder_5 = GameObject.Find("marco_poder 5");
+        btn_poder_5.transform.GetChild(0).gameObject.GetComponent<Text>().text = personaje_actual.poderes[4].nombre;
+        btn_poder_5.onClick.AddListener( () => Asignar_poder(personaje_actual.poderes[4], marco_poder_5) );
+
+        btn_poder_6 = GameObject.Find("boton_poder 6").GetComponent<Button>();
+        marco_poder_6 = GameObject.Find("marco_poder 6");
+        btn_poder_6.transform.GetChild(0).gameObject.GetComponent<Text>().text = personaje_actual.poderes[5].nombre;
+        btn_poder_6.onClick.AddListener( () => Asignar_poder(personaje_actual.poderes[5], marco_poder_6) );
+
+        btn_poder_7 = GameObject.Find("boton_poder 7").GetComponent<Button>();
+        marco_poder_7 = GameObject.Find("marco_poder 7");
+        btn_poder_7.transform.GetChild(0).gameObject.GetComponent<Text>().text = personaje_actual.poderes[6].nombre;
+        btn_poder_7.onClick.AddListener( () => Asignar_poder(personaje_actual.poderes[6], marco_poder_7) );
+
+        btn_poder_8 = GameObject.Find("boton_poder 8").GetComponent<Button>();
+        marco_poder_8 = GameObject.Find("marco_poder 8");
+        btn_poder_8.transform.GetChild(0).gameObject.GetComponent<Text>().text = personaje_actual.poderes[7].nombre;
+        btn_poder_8.onClick.AddListener( () => Asignar_poder(personaje_actual.poderes[7], marco_poder_8) );
+
+
+        Marcos_poderes_elegidos(personaje_actual);
+
     }
 
 
@@ -64,6 +136,58 @@ public class personaje_individual : MonoBehaviour
                 nivel_max.text = " / " +  jugador.personajes[i].nivel_maximo.ToString();
                 costo_fragmentos.text = "x " + ((jugador.personajes[i].estrellas + 1) * 20).ToString();
                 fragmentos_poseidos.text = jugador.personajes[i].fragmentos.ToString();
+            }
+        }
+    }
+
+    public void Asignar_poder(Poderes poder, GameObject marco_poder)
+    {
+        bool func = personaje_actual.Asignar_poder(poder);
+        if (func)
+        {
+            Debug.Log("poder agregado");
+            int index = 0;
+            for(int i = 0; i < personaje_actual.poderesActivos.Length; i++){
+                if(personaje_actual.poderesActivos[i] != null && personaje_actual.poderesActivos[i].nombre == poder.nombre){
+                     index = i; 
+                     break;
+                }
+            }
+            marco_poder.SetActive(true);
+            GameObject txt_pos_poder = marco_poder.transform.GetChild(0).gameObject;
+            txt_pos_poder.GetComponent<Text>().text = (index+1).ToString();
+
+        }else{
+            Debug.Log("poder quitado");
+            marco_poder.SetActive(false);
+        }
+    }
+
+    void Marcos_poderes_elegidos(Personajes p_actual)
+    {
+        Poderes[] poderes_activos = p_actual.poderesActivos;
+        Poderes[] lista_poderes = p_actual.poderes;
+
+        for(int i = 0; i < lista_poderes.Length; i++)
+        {
+            bool poder_encontrado = false;
+            for(int j = 0; j < poderes_activos.Length; j++)
+            {
+                if(poderes_activos[j] != null && poderes_activos[j].nombre == lista_poderes[i].nombre)
+                {
+                    int index = i + 1;
+                    GameObject marco_poder = GameObject.Find("marco_poder " + index);
+                    if(!marco_poder.activeSelf) marco_poder.SetActive(true);
+                    GameObject txt_pos_poder = marco_poder.transform.GetChild(0).gameObject;
+                    txt_pos_poder.GetComponent<UnityEngine.UI.Text>().text = (j+1).ToString();
+                    poder_encontrado = true;
+                    break;
+                }
+            }
+            if (!poder_encontrado)
+            {
+                GameObject marco_poder = GameObject.Find("marco_poder " + (i+1));
+                if(marco_poder.activeSelf) marco_poder.SetActive(false);
             }
         }
     }

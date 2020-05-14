@@ -15,7 +15,7 @@ public class roger : Personajes
         equipamiento = new Equipo[1];
         experiencia = 0;
         poderes = new Poderes[8];
-        poderesActivos = new Poderes[4];
+        poderesActivos = new Poderes[4]{null, null, null, null};
         elemento = "tierra";
         estado_alterado = new Dictionary<string, float[]>();
         rareza = "comun";
@@ -31,10 +31,10 @@ public class roger : Personajes
         this.poderes[1] = new Poderes("curar", "roger cura a los aliados", "magia", 0f, 1f, "buff", "tierra", 2, 0, "multiple", true, new string[1]{"curacion"}, 10F);
         this.poderes[2] = new Poderes("noquear", "roger noquea el objetivo", "fuerza", 1f, 0f, "ataque_debuff", "tierra", 5, 3, "unico", true, new string[1]{"aturdir"}, 10F);
         this.poderes[3] = new Poderes("locura", "roger aumenta mucho su daño y baja su defensa", "fuerza", 0f, 10f, "buff", "tierra", 6, 3, "propio", true, new string[1]{"locura"}, 0F);
-        this.poderes[4] = new Poderes("xx", "roger quema a los enemigos", "magia", 0f, 0.1f, "debuff", "tierra", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
-        this.poderes[5] = new Poderes("xx", "roger quema a los enemigos", "magia", 0f, 0.1f, "debuff", "tierra", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
-        this.poderes[6] = new Poderes("xx", "roger quema a los enemigos", "magia", 0f, 0.1f, "debuff", "tierra", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
-        this.poderes[7] = new Poderes("xx", "roger quema a los enemigos", "magia", 0f, 0.1f, "debuff", "tierra", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
+        this.poderes[4] = new Poderes("x1", "roger quema a los enemigos", "magia", 0f, 0.1f, "debuff", "tierra", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
+        this.poderes[5] = new Poderes("x2", "roger quema a los enemigos", "magia", 0f, 0.1f, "debuff", "tierra", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
+        this.poderes[6] = new Poderes("x3", "roger quema a los enemigos", "magia", 0f, 0.1f, "debuff", "tierra", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
+        this.poderes[7] = new Poderes("x4", "roger quema a los enemigos", "magia", 0f, 0.1f, "debuff", "tierra", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
     }
 
     public void Activar_poderes()
@@ -44,6 +44,7 @@ public class roger : Personajes
         this.poderesActivos[2] = poderes[2];
         this.poderesActivos[3] = poderes[3];
     }
+
 
     public override void Subir_nivel(int niveles){
         nivel += niveles;

@@ -54,6 +54,28 @@ public class Personajes
         if(experiencia >= nivel*100 && nivel < nivel_maximo) Subir_nivel(1);
     }
 
+    public virtual bool Asignar_poder(Poderes poder)
+    {
+        for(int i = 0; i < poderesActivos.Length; i++)
+        {
+            if(poderesActivos[i] != null && poder.nombre == poderesActivos[i].nombre)
+            {
+                poderesActivos[i] = null;
+                return false;
+            }
+        }
+
+         for(int i = 0; i < poderesActivos.Length; i++)
+        {
+            if (poderesActivos[i] == null)
+            {
+                poderesActivos[i] = poder;
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void Curar(float efecto){
         if(atributos.salud <= 0) return;
         if (estado_alterado.ContainsKey("heridas_graves")) efecto -= efecto * (estado_alterado["heridas_graves"][0] / 100);

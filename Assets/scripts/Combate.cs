@@ -89,7 +89,6 @@ public class Combate : MonoBehaviour
         //TRAEMOS LAS INSTANCIAS DEL JUGADOR Y LOS ENEMIGOS
         jugador = Usuario.instancia;
         storage_enemigos = storage_script.instancia;
-        //storage_enemigos.tipo_combate = "historia";
 
         //DESACTIVAMOS EL UI DE FIN DEL JUEGO
         fin_juego = GameObject.Find("Fin_juego");
@@ -98,13 +97,13 @@ public class Combate : MonoBehaviour
         fin_juego.SetActive(false);
         
         //de prueba
-        fabrica = new Personajes();
-        personajes = new Personajes[4]{fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("liliana"), fabrica.Crear_personaje("martis")};
-        enemigos = new Personajes[4]{fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("martis"), fabrica.Crear_personaje("liliana")};
+        //fabrica = new Personajes();
+        //personajes = new Personajes[4]{fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("liliana"), fabrica.Crear_personaje("martis")};
+        //enemigos = new Personajes[4]{fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("martis"), fabrica.Crear_personaje("liliana")};
 
         //COPIAMOS LOS PERSONAJES DEL USUARIO Y DE LOS ENEMIGOS LOCALMENTE
-        //personajes = jugador.personajesFavoritos;
-        //enemigos = storage_enemigos.enemigos;
+        personajes = jugador.personajesFavoritos;
+        enemigos = storage_enemigos.enemigos;
 
         //INSTANCIAMOS LAS MECANICAS Y LA IA
         mecanicas = new mecanicas_combate();
