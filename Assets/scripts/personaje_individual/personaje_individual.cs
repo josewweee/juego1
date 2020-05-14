@@ -43,21 +43,15 @@ public class personaje_individual : MonoBehaviour
     GameObject marco_poder_7;
     GameObject marco_poder_8;
 
-    //de pruebas locales
-    private Personajes fabrica;
 
     void Start()
     {
-        //prueba
-        fabrica = new Personajes();
-        personaje_actual = fabrica.Crear_personaje("roger");
 
 
         //TRAEMOS EL PERSONAJE DEL SINGLETON DE PERSONAJES A BUSCAR Y EL JUGADOR
         storage = storage_script.instancia;
         jugador = Usuario.instancia;
-        jugador.Agregar_personaje(personaje_actual);
-        //personaje_actual = storage.personaje;
+        personaje_actual = storage.personaje;
 
 
         //ASIGNAMOS VALORES A LA UI
