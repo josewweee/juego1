@@ -27,14 +27,14 @@ public class martis : Personajes
 // nombre, descripcion, atributo, multiplicador, multiplicador_efecto, tipo_poder, tipo_elemento, reutilizacion, duracion_efecto, objetivos, se_puede_usar, habilidades, daño_base
     public void Agregar_poderes()
     {
-        this.poderes[0] = new Poderes("rayo", "martis lanza un rayo al enemigo", "fuerza", 1f, 0f, "ataque", "trueno", 0, 0, "unico", true, new string[1]{"null"}, 10F);
-        this.poderes[1] = new Poderes("electrocutar", "martis electrocuta a los enemigos", "fuerza", 0f, 1f, "debuff", "trueno", 10, 3, "multiple", true, new string[1]{"quemar"}, 3F);
-        this.poderes[2] = new Poderes("quemar", "martis quema a los enemigos", "fuerza", 0f, 1f, "debuff", "trueno", 5, 3, "multiple", true, new string[1]{"quemar"}, 1F);
-        this.poderes[3] = new Poderes("quebrar", "martis ataca a los enemigos", "fuerza", 1.2f, 0f, "ataque", "trueno", 3, 0, "multiple", true, new string[1]{"null"}, 0F);
-        this.poderes[4] = new Poderes("xx", "martis quema a los enemigos", "magia", 0f, 0.1f, "debuff", "trueno", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
-        this.poderes[5] = new Poderes("xx", "martis quema a los enemigos", "magia", 0f, 0.1f, "debuff", "trueno", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
-        this.poderes[6] = new Poderes("xx", "martis quema a los enemigos", "magia", 0f, 0.1f, "debuff", "trueno", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
-        this.poderes[7] = new Poderes("xx", "martis quema a los enemigos", "magia", 0f, 0.1f, "debuff", "trueno", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
+        this.poderes[0] = new Poderes("rayo", "martis lanza un rayo al enemigo", "fuerza", 1f, 0f, "ataque", "trueno", 0, 0, "unico", true, new string[1]{"null"}, 10F, "rayo");
+        this.poderes[1] = new Poderes("tormenta", "martis electrocuta a los enemigos", "fuerza", 0f, 1f, "debuff", "trueno", 10, 3, "multiple", true, new string[1]{"quemar"}, 3F, "tormenta");
+        this.poderes[2] = new Poderes("veneno", "martis envenena a los enemigos", "fuerza", 0f, 1f, "debuff", "trueno", 5, 3, "multiple", true, new string[1]{"quemar"}, 1F, "veneno");
+        this.poderes[3] = new Poderes("emboscar", "martis ataca a los enemigos", "fuerza", 1.2f, 0f, "ataque", "trueno", 3, 0, "unico", true, new string[1]{"null"}, 0F, "emboscar");
+        this.poderes[4] = new Poderes("xx", "martis quema a los enemigos", "magia", 0f, 0.1f, "debuff", "trueno", 3, 2, "multiple", true, new string[1]{"a"}, 0F, "revivir");
+        this.poderes[5] = new Poderes("xx", "martis quema a los enemigos", "magia", 0f, 0.1f, "debuff", "trueno", 3, 2, "multiple", true, new string[1]{"a"}, 0F, "revivir");
+        this.poderes[6] = new Poderes("xx", "martis quema a los enemigos", "magia", 0f, 0.1f, "debuff", "trueno", 3, 2, "multiple", true, new string[1]{"a"}, 0F, "revivir");
+        this.poderes[7] = new Poderes("xx", "martis quema a los enemigos", "magia", 0f, 0.1f, "debuff", "trueno", 3, 2, "multiple", true, new string[1]{"a"}, 0F, "revivir");
     }
 
     public void Activar_poderes()

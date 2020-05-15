@@ -56,7 +56,7 @@ public class Combate : MonoBehaviour
     public routing _routing;
     private GameObject menu_configuracion;
 
-    //UI DE LOS PODERES
+    //UI DE LOS PODERES PARA MAXIMO 4 PERSONAJES
     public bool cambiar_UI_poderes = true;
     private GameObject poder_1;
     private GameObject poder_2;
@@ -67,6 +67,11 @@ public class Combate : MonoBehaviour
     public Button btn_poder_2;
     public Button btn_poder_3;
     public Button btn_poder_4;
+
+    private Sprite[] img_poderes_personaje_1;
+    private Sprite[] img_poderes_personaje_2;
+    private Sprite[] img_poderes_personaje_3;
+    private Sprite[] img_poderes_personaje_4;
 
     //UI CON TEXTO DE SELECCIONAR OBJETIVO / OBJETIVOS
     public GameObject objetivo_unico_txt;
@@ -168,6 +173,44 @@ public class Combate : MonoBehaviour
         btn_poder_2 = poder_2.GetComponent<Button>();
         btn_poder_3 = poder_3.GetComponent<Button>();
         btn_poder_4 = poder_4.GetComponent<Button>();
+
+        //IMAGENES DE LOS PODERES DE MAXIMO 4 PERSONAJES
+        if (personajes.Length >= 1){
+                img_poderes_personaje_1 = new Sprite[4]{
+                    Resources.Load <Sprite>(personajes[0].poderes[0].imagen),
+                    Resources.Load <Sprite>(personajes[0].poderes[1].imagen),
+                    Resources.Load <Sprite>(personajes[0].poderes[2].imagen),
+                    Resources.Load <Sprite>(personajes[0].poderes[3].imagen)
+                };
+        }
+
+        if (personajes.Length >= 2){
+                img_poderes_personaje_2 = new Sprite[4]{
+                    Resources.Load <Sprite>(personajes[1].poderes[0].imagen),
+                    Resources.Load <Sprite>(personajes[1].poderes[1].imagen),
+                    Resources.Load <Sprite>(personajes[1].poderes[2].imagen),
+                    Resources.Load <Sprite>(personajes[1].poderes[3].imagen)
+                };
+        }
+
+        if (personajes.Length >= 3){
+                img_poderes_personaje_3 = new Sprite[4]{
+                    Resources.Load <Sprite>(personajes[2].poderes[0].imagen),
+                    Resources.Load <Sprite>(personajes[2].poderes[1].imagen),
+                    Resources.Load <Sprite>(personajes[2].poderes[2].imagen),
+                    Resources.Load <Sprite>(personajes[2].poderes[3].imagen)
+                };
+        }
+
+        if (personajes.Length >= 4){
+                img_poderes_personaje_4 = new Sprite[4]{
+                    Resources.Load <Sprite>(personajes[3].poderes[0].imagen),
+                    Resources.Load <Sprite>(personajes[3].poderes[1].imagen),
+                    Resources.Load <Sprite>(personajes[3].poderes[2].imagen),
+                    Resources.Load <Sprite>(personajes[3].poderes[3].imagen)
+                };
+        }
+
 
         imagen_puntero = GameObject.Find("puntero_turno_alidado");
         // ASIGNAMOS LOS BOTONES AL PRIMER PERSONAJE
@@ -333,6 +376,51 @@ public class Combate : MonoBehaviour
         btn_poder_2.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[1]); });
         btn_poder_3.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[2]); });
         btn_poder_4.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[3]); });
+
+        //BUSCAMOS EL ID DEL PERSONAJE ACTUAL
+        int index = 0;
+        for(int i = 0; i < personajes.Length; i++)
+        {
+            if (personajes[i] != null)
+            {
+                if (actual.nombre == personajes[i].nombre)
+                {
+                    index = i;
+                    break;
+                }
+            } 
+        }
+        
+        //ASIGNAMOS LAS IMAGENES A SUS PODERES
+        switch(index)
+        {
+            case 0:
+                poder_1.GetComponent<Image>().sprite = img_poderes_personaje_1[0];
+                poder_2.GetComponent<Image>().sprite = img_poderes_personaje_1[1];
+                poder_3.GetComponent<Image>().sprite = img_poderes_personaje_1[2];
+                poder_4.GetComponent<Image>().sprite = img_poderes_personaje_1[3];
+                break;
+            case 1:
+                poder_1.GetComponent<Image>().sprite = img_poderes_personaje_2[0];
+                poder_2.GetComponent<Image>().sprite = img_poderes_personaje_2[1];
+                poder_3.GetComponent<Image>().sprite = img_poderes_personaje_2[2];
+                poder_4.GetComponent<Image>().sprite = img_poderes_personaje_2[3];
+                break;
+            case 2:
+                poder_1.GetComponent<Image>().sprite = img_poderes_personaje_3[0];
+                poder_2.GetComponent<Image>().sprite = img_poderes_personaje_3[1];
+                poder_3.GetComponent<Image>().sprite = img_poderes_personaje_3[2];
+                poder_4.GetComponent<Image>().sprite = img_poderes_personaje_3[3];
+                break;
+            case 3:
+                poder_1.GetComponent<Image>().sprite = img_poderes_personaje_4[0];
+                poder_2.GetComponent<Image>().sprite = img_poderes_personaje_4[1];
+                poder_3.GetComponent<Image>().sprite = img_poderes_personaje_4[2];
+                poder_4.GetComponent<Image>().sprite = img_poderes_personaje_4[3];
+                break;
+            default:
+                break;
+        }
     }
 
     // BORRAMOS LOS LISTENERS DE LOS UI DE BOTONES AL ACABAR UN TURNO

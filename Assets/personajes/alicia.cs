@@ -27,14 +27,14 @@ public class alicia : Personajes
 // nombre, descripcion, atributo, multiplicador, multiplicador_efecto, tipo_poder, tipo_elemento, reutilizacion, duracion_efecto, objetivos, se_puede_usar, habilidades, daño_base
     public void Agregar_poderes()
     {
-        this.poderes[0] = new Poderes("incinerar", "alicia inciera al enemigo", "magia", 1f, 0f, "ataque", "fuego", 0, 0, "unico", true, new string[1]{"null"}, 10F);
-        this.poderes[1] = new Poderes("inmolar", "alicia quema al enemigo", "magia", 1f, 0.5f, "ataque_debuff", "fuego", 5, 4, "unico", true, new string[1]{"quemar"}, 3F);
-        this.poderes[2] = new Poderes("vida +", "alicia aumenta las estadisticas del grupo", "magia", 0f, 2f, "buff", "fuego", 5, 4, "multiple", true, new string[1]{"aumentar_estadisticas"}, 0F);
-        this.poderes[3] = new Poderes("quemar", "alicia quema a los enemigos", "magia", 0f, 1f, "debuff", "fuego", 3, 3, "multiple", true, new string[1]{"quemar"}, 10F);
-        this.poderes[4] = new Poderes("xx", "alicia quema a los enemigos", "magia", 0f, 0.1f, "debuff", "fuego", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
-        this.poderes[5] = new Poderes("xx", "alicia quema a los enemigos", "magia", 0f, 0.1f, "debuff", "fuego", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
-        this.poderes[6] = new Poderes("xx", "alicia quema a los enemigos", "magia", 0f, 0.1f, "debuff", "fuego", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
-        this.poderes[7] = new Poderes("xx", "alicia quema a los enemigos", "magia", 0f, 0.1f, "debuff", "fuego", 3, 2, "multiple", true, new string[1]{"a"}, 0F);
+        this.poderes[0] = new Poderes("incinerar", "alicia inciera al enemigo", "magia", 1f, 0f, "ataque", "fuego", 0, 0, "unico", true, new string[1]{"null"}, 10F, "incinerar");
+        this.poderes[1] = new Poderes("quemadura", "alicia quema al enemigo", "magia", 1f, 0.5f, "ataque_debuff", "fuego", 5, 4, "unico", true, new string[1]{"quemar"}, 3F, "quemadura");
+        this.poderes[2] = new Poderes("vida +", "alicia aumenta las estadisticas del grupo", "magia", 0f, 2f, "buff", "fuego", 5, 4, "multiple", true, new string[1]{"aumentar_estadisticas"}, 0F, "vida +");
+        this.poderes[3] = new Poderes("meteoro", "alicia quema a los enemigos", "magia", 0f, 1f, "debuff", "fuego", 3, 3, "multiple", true, new string[1]{"quemar"}, 10F, "meteoro");
+        this.poderes[4] = new Poderes("xx", "alicia quema a los enemigos", "magia", 0f, 0.1f, "debuff", "fuego", 3, 2, "multiple", true, new string[1]{"a"}, 0F, "revivir");
+        this.poderes[5] = new Poderes("xx", "alicia quema a los enemigos", "magia", 0f, 0.1f, "debuff", "fuego", 3, 2, "multiple", true, new string[1]{"a"}, 0F, "revivir");
+        this.poderes[6] = new Poderes("xx", "alicia quema a los enemigos", "magia", 0f, 0.1f, "debuff", "fuego", 3, 2, "multiple", true, new string[1]{"a"}, 0F, "meteoro");
+        this.poderes[7] = new Poderes("xx", "alicia quema a los enemigos", "magia", 0f, 0.1f, "debuff", "fuego", 3, 2, "multiple", true, new string[1]{"a"}, 0F, "revivir");
     }
 
     public void Activar_poderes()

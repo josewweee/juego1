@@ -18,8 +18,9 @@ public class Poderes
     public bool se_puede_usar;
     public string[] habilidades;
     public float daño_base; // DAÑO BASE DEL PODER
+    public string imagen;
 
-    public Poderes(string nombre, string descripcion, string atributo, float multiplicador, float multiplicador_efecto, string tipo_poder, string tipo_elemento,int reutilizacion, int duracion_efecto, string objetivos, bool se_puede_usar, string[] habilidades, float daño_base)
+    public Poderes(string nombre, string descripcion, string atributo, float multiplicador, float multiplicador_efecto, string tipo_poder, string tipo_elemento,int reutilizacion, int duracion_efecto, string objetivos, bool se_puede_usar, string[] habilidades, float daño_base, string imagen)
     {
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -35,6 +36,7 @@ public class Poderes
         this.se_puede_usar = se_puede_usar;
         this.habilidades = habilidades;
         this.daño_base = daño_base;
+        this.imagen = imagen;
     }
 
     public void Usado(){
