@@ -59,6 +59,5 @@ public class roger : Personajes
             atributos.defensa_fisica += 0.3F;
             atributos.defensa_magica += 0.3F;
         }
-        Debug.Log("Subiendo nivel, nivel: " + nivel);
     }
 }

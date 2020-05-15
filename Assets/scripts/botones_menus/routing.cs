@@ -138,6 +138,9 @@ public class routing : MonoBehaviour
         {   
             jugador.energia -= 6;
             SceneManager.LoadScene("menu_combate");
+        }else if(tipoCombate == "pvp"  && jugador.energia_pvp >= 1){
+            jugador.energia_pvp --;
+            SceneManager.LoadScene("menu_combate");
         }
         
     }

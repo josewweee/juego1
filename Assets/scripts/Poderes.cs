@@ -50,4 +50,10 @@ public class Poderes
 
         }
     }
+
+    public void Resetear_poder()
+    {
+        this.reutilizacion_actual = 0;
+        this.se_puede_usar = true;
+    }
 }

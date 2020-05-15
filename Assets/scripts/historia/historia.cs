@@ -221,10 +221,10 @@ public class historia : MonoBehaviour
         int nivel = int.Parse(nivel_);
         switch(nivel){
             case 1:
-                Fabricar_personajes_con_nivel("roger", 2, 0);
-                Fabricar_personajes_con_nivel("alicia", 2, 1);
-                Fabricar_personajes_con_nivel("martis", 2, 2);
-                Fabricar_personajes_con_nivel("liliana", 2, 3);
+                Fabricar_personajes_con_nivel("roger", 0, 0);
+                Fabricar_personajes_con_nivel("alicia", 0, 1);
+                Fabricar_personajes_con_nivel("martis", 0, 2);
+                Fabricar_personajes_con_nivel("liliana", 0, 3);
                 storage_enemigos.Cambiar_nivel(1);
                 break;
             case 2:

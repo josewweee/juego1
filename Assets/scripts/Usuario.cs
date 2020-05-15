@@ -20,15 +20,17 @@ public class Usuario
     public int energia = 30;
     public int energia_maxima;
     public string metodo_login = "";
-    public int energia_pvp = 0;
+    public int energia_pvp = 15;
     public int puntos_pvp = 0;
-    public Personajes[] defensa_pvp = new Personajes[4];
+    public List<Personajes> defensa_pvp;
+    public string[] historial_pvp;
     public int posicion_pvp = 0;
     public int nivel_historia = 1;
 
     // CONSTRUCTOR
-    private Usuario() { 
+    public Usuario() { 
         energia_maxima = 30;
+        defensa_pvp = new List<Personajes>(){null, null, null, null};
     }
     // SINGLETON DEL USUARIO
     public static Usuario _instancia = null;

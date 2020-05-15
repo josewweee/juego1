@@ -12,8 +12,13 @@ public class pre_combate : MonoBehaviour
     private routing _routing;
     public GameObject menu;
 
+    //VARIABLES PARA GUARDAR LOS PERSONAJES FAVORITOS QUE USAREMOS Y LOS DEL ENEMIGO
+    private List<Personajes> favoritos;
+    private List<Personajes> pjs_enemigos;
+
     //TRAEMOS LA INSTANCIA DE LOS ENEMIGOS CONTRA LOS QUE PELEAREMOS
      public storage_script storage_enemigos;
+     private string tipo_combate;
 
     // CREAMOS UNA VARIABLE CON EL SCRIPT ROUTING, ESTA ESTA DENTRO DEL GAMEOBJECT MENU
     void Awake()
@@ -29,6 +34,19 @@ public class pre_combate : MonoBehaviour
         // INICIALIZAMOS EL USUARIO, MIRAMOS CUANTOS PERSONAJES TIENE Y POPULAMOS LA UI CON LOS PREFABS
         jugador = Usuario.instancia;
         cantidad_personajes = jugador.personajes.Count;
+
+        //MIRAMOS SI ESTAMOS EN PRE COMBATE PVP O HISTORIA
+        tipo_combate = storage_enemigos.tipo_combate;
+        Debug.Log("combatiremos en : " + tipo_combate);
+        if(tipo_combate == "historia")
+        {
+            favoritos = new List<Personajes>(jugador.personajesFavoritos);
+            pjs_enemigos = new List<Personajes>(storage_enemigos.enemigos);
+        }else if (tipo_combate == "pvp"){
+            favoritos = jugador.defensa_pvp;
+            pjs_enemigos = storage_enemigos.enemigos_pvp;
+        }
+        
         Popular_lista_personajes(cantidad_personajes, prefab_recuadro_personaje);
         Popular_personajes_favoritos(jugador, prefab_recuadro_personaje);
         Popular_lista_enemigos(prefab_recuadro_personaje);
@@ -56,7 +74,8 @@ public class pre_combate : MonoBehaviour
     public void Popular_lista_enemigos(GameObject prefab){
         float pos_inicial_x = 0.00001525879F; // POSICION DEL CUADRADO 1 EN X
         float pos_inicial_y = 7.441475F; // POSICION DEL CUADRADO 1 EN Y
-        for (int i = 0; i < 4; i++){
+        Debug.Log("estamos contra: " +pjs_enemigos.Count);
+        for (int i = 0; i < pjs_enemigos.Count; i++){
             // NOS MOVEMOS 17F A LA DERECHA CADA PREFAB Y PONEMOS EL OBJETO COMO CHILD DEL CANVAS - CONTENT_SCROLL
             GameObject recuadro_personaje = Instantiate(prefab, new Vector3(pos_inicial_x, pos_inicial_y, 0), Quaternion.identity);
             recuadro_personaje.transform.SetParent(GameObject.Find("Panel_enemigo_"+i).transform, false);
@@ -64,17 +83,17 @@ public class pre_combate : MonoBehaviour
 
             //ENTRAMOS EN EL CHILD #0 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO
             GameObject texto_nivel = recuadro_personaje.transform.GetChild(1).gameObject;
-            texto_nivel.GetComponent<UnityEngine.UI.Text>().text = storage_enemigos.enemigos[i].nivel.ToString();
+            texto_nivel.GetComponent<UnityEngine.UI.Text>().text = pjs_enemigos[i].nivel.ToString();
+            
         }
     }
 
-    public void Popular_personajes_favoritos(Usuario jugador, GameObject prefab){
-        Personajes[] personajes_favoritos = jugador.personajesFavoritos; //LISTA DE PERSONAJES FAVORITOS
+    public void Popular_personajes_favoritos(Usuario jugador, GameObject prefab){      
         float pos_inicial_x = 0.00001525879F; // POSICION DEL CUADRADO 1 EN X
         float pos_inicial_y = 7.441475F; // POSICION DEL CUADRADO 1 EN Y
-        if (personajes_favoritos[0] != null || personajes_favoritos[1] != null || personajes_favoritos[2] != null || personajes_favoritos[3] != null){
-            for(int i = 0; i < personajes_favoritos.Length; i++){
-                if (personajes_favoritos[i] != null){
+        if (favoritos[0] != null || favoritos[1] != null || favoritos[2] != null || favoritos[3] != null){
+            for(int i = 0; i < favoritos.Count; i++){
+                if (favoritos[i] != null){
                     //...
                 GameObject recuadro_personaje = Instantiate(prefab, new Vector3(pos_inicial_x, pos_inicial_y, 0), Quaternion.identity);
                 recuadro_personaje.transform.SetParent(GameObject.Find("Panel_personaje_"+i).transform, false);
@@ -90,6 +109,7 @@ public class pre_combate : MonoBehaviour
                 texto_nivel.GetComponent<UnityEngine.UI.Text>().text = jugador.personajes[i].nivel.ToString();
                 }
             }
+        //SI NO HAY NINGUN PERSONAJE EN FAVORITOS, PONEMOS EL PRIMER PERSONAJE QUE TENGA EL JUGADOR
         }else{
             //...
             GameObject recuadro_personaje = Instantiate(prefab, new Vector3(pos_inicial_x, pos_inicial_y, 0), Quaternion.identity);
@@ -97,7 +117,15 @@ public class pre_combate : MonoBehaviour
             recuadro_personaje.transform.localScale = new Vector3(4.386893F, 14.56672F, 5.55976F);
 
             //AGREGAMOS EL PERSONAJE A FAVORITOS
-            jugador.Cambiar_personaje_batalla("personajes_favoritos", 0, jugador.personajes[0]);
+            if (this.tipo_combate == "historia")
+            {
+                 jugador.Cambiar_personaje_batalla("personajes_favoritos", 0, jugador.personajes[0]);
+            }
+            else if (this.tipo_combate == "pvp")
+            {
+                jugador.Cambiar_personaje_batalla("defensa_pvp", 0, jugador.personajes[0]);
+            }
+           
 
             // AGREGAMOS UN BOTON PARA ELIMINAR EL PERSONAJE DE FAVORITOS
             Button btn = recuadro_personaje.GetComponent<Button>();
@@ -113,15 +141,21 @@ public class pre_combate : MonoBehaviour
     {
         //BORRAMOS EL PERSONAJE DE FAVORITOS TANTO EN LA UI, COMO DEL USUARIO
         Destroy(personaje);
-        this.jugador.Cambiar_personaje_batalla("personajes_favoritos", index,  null);
+        if (this.tipo_combate == "historia")
+        {
+            this.jugador.Cambiar_personaje_batalla("personajes_favoritos", index,  null);
+        }
+        else if (this.tipo_combate == "pvp")
+        {
+            this.jugador.Cambiar_personaje_batalla("defensa_pvp", index,  null);
+        }
     }
 
     void Agregar_personaje(GameObject personaje, int index){
         //MIRAMOS SI EN LA LISTA DE FAVORITOS DEL JUGADOR HAY UN ESPACIO LIBRE Y TOMAMOS ESE INDEX
-        Personajes[] personajes_favoritos = this.jugador.personajesFavoritos;
         int i = 0;
         bool espacio_libre = true;
-        while (personajes_favoritos[i] != null){
+        while (favoritos[i] != null){
             i++;
             if (i >= 4 ){
                  espacio_libre = false;
@@ -141,8 +175,21 @@ public class pre_combate : MonoBehaviour
             // AGREGAMOS UN BOTON PARA ELIMINAR EL PERSONAJE DE FAVORITOS
             Button btn = recuadro_personaje.GetComponent<Button>();
             btn.onClick.AddListener(delegate { Borrar_personaje(recuadro_personaje, i); });
-            this.jugador.Cambiar_personaje_batalla("personajes_favoritos", i, this.jugador.personajes[index]);
+            if (this.tipo_combate == "historia")
+            {
+                this.jugador.Cambiar_personaje_batalla("personajes_favoritos", i, this.jugador.personajes[index]);
+            }
+            else if (this.tipo_combate == "pvp")
+            {
+                this.jugador.Cambiar_personaje_batalla("defensa_pvp", i, this.jugador.personajes[index]);
+            }
+            
         }
+    }
+
+    public void Ir_combate()
+    {
+        _routing.ir_combate(this.tipo_combate);
     }
 
 }

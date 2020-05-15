@@ -11,6 +11,7 @@ public class Combate : MonoBehaviour
     //PERSONAJES EN EL COMBATE
     public Personajes[] personajes;
     public Personajes[] enemigos;
+    public string tipo_combate;
 
     //MECANICAS PERSONAJES
     private mecanicas_combate mecanicas;
@@ -89,6 +90,8 @@ public class Combate : MonoBehaviour
         //TRAEMOS LAS INSTANCIAS DEL JUGADOR Y LOS ENEMIGOS
         jugador = Usuario.instancia;
         storage_enemigos = storage_script.instancia;
+        tipo_combate = storage_enemigos.tipo_combate;
+        Debug.Log("pelearemos en :" +tipo_combate);
 
         //DESACTIVAMOS EL UI DE FIN DEL JUEGO
         fin_juego = GameObject.Find("Fin_juego");
@@ -102,8 +105,16 @@ public class Combate : MonoBehaviour
         //enemigos = new Personajes[4]{fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("martis"), fabrica.Crear_personaje("liliana")};
 
         //COPIAMOS LOS PERSONAJES DEL USUARIO Y DE LOS ENEMIGOS LOCALMENTE
-        personajes = jugador.personajesFavoritos;
-        enemigos = storage_enemigos.enemigos;
+        if (tipo_combate == "historia")
+        {
+            personajes = jugador.personajesFavoritos;
+            enemigos = storage_enemigos.enemigos;
+        }
+        else if (tipo_combate == "pvp")
+        {
+            personajes = jugador.defensa_pvp.ToArray();
+            enemigos = storage_enemigos.enemigos_pvp.ToArray();
+        }
 
         //INSTANCIAMOS LAS MECANICAS Y LA IA
         mecanicas = new mecanicas_combate();
@@ -166,10 +177,26 @@ public class Combate : MonoBehaviour
                 break;
             }
         }
-        Mover_puntero_personaje(index_personaje_en_turno);
-        Asignar_botones_turno(personaje_en_turno);
-        Debug.Log("personaje en turno: " + personaje_en_turno.nombre);
         
+         if(key_personaje_turno.Contains("enemigo")){
+            //ASIGNAMOS EL PUNTERO
+            Mover_puntero_personaje(index_personaje_en_turno);
+
+            //RECIBIMOS UNA MATRIZ CON LAS LISTAS PERSONAJES Y ENEMIGOS
+            matrix_envio_personajes = maquina.Ejecutar(enemigos, personajes, personaje_en_turno);
+
+            //LOS PASAMOS DE LA MATRIZ A NUESTRAS LISTAS GLOBALES DE PERSONAJES Y ENEMIGOS
+            Matrix_to_array(matrix_envio_personajes);
+            
+            //ACTUALIZAMOS LOS VALORES DE LA VIDA Y PASAMOS TURNO
+            Cambiar_texto_vida(null, 99, true);
+            Cambiar_texto_vida(null, 99, false);
+            pasar_turno();
+         }else{
+            Mover_puntero_personaje(index_personaje_en_turno);
+            Asignar_botones_turno(personaje_en_turno);
+            Debug.Log("personaje en turno: " + personaje_en_turno.nombre);
+         }
     }
 
 
@@ -564,6 +591,34 @@ public class Combate : MonoBehaviour
 
     public void Agregar_recompenzas(bool Gane)
     {
+        //DEVOLVEMOS LOS PERSONAJES A SUS ATRIBUTOS INICIALES
+        switch(this.tipo_combate)
+        {
+            case "historia":
+                foreach(Personajes pj in jugador.personajesFavoritos)
+                {
+                    pj.Resetear_personaje();
+                }
+
+                foreach(Personajes pj in storage_enemigos.enemigos)
+                {
+                    pj.Resetear_personaje();
+                }
+                break;
+            case "pvp":
+                foreach(Personajes pj in jugador.defensa_pvp)
+                {
+                    pj.Resetear_personaje();
+                }
+
+                foreach(Personajes pj in storage_enemigos.enemigos_pvp)
+                {
+                    pj.Resetear_personaje();
+                }
+                break;
+        }
+        
+
         //ACTIVAMOS LA UI DE FIN DEL JUEGO
         fin_juego.SetActive(true);
         if (Gane) recompenza.Recompenzas_ganar();

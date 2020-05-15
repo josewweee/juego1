@@ -51,7 +51,20 @@ public class Personajes
     public virtual void Ganar_exp(int exp)
     {
         experiencia += exp;
-        if(experiencia >= nivel*100 && nivel < nivel_maximo) Subir_nivel(1);
+        if(experiencia >= nivel*nivel && nivel < nivel_maximo) Subir_nivel(1);
+    }
+
+    public virtual void Resetear_personaje()
+    {
+        this.atributos.Resetear_atributos();
+        this.estado_alterado.Clear();
+        foreach(Poderes p in poderesActivos)
+        {
+            p.Resetear_poder();
+        }
+
+        Subir_nivel(this.nivel - 1);
+        //Aumentar_estadisticas_equipamiento();
     }
 
     public virtual bool Asignar_poder(Poderes poder)
