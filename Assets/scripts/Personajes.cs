@@ -18,7 +18,7 @@ public class Personajes
     public Dictionary<string, float[]> estado_alterado; // NOMBRE EFECTO -> [ DAÑO EFECTO, DURACION EFECTO ]
     public string rareza; // COMUN, RARO, MITICO, LEGENDARIO
     public int fragmentos;
-    public string imagen_completa;
+    public string[] imagen_completa; // UBICACION SPRITE, POSICION SPRITE DENTRO DE LA LISTA DE SPRITES
 
         // string output = JsonUtility.ToJson(atributos, true);
         // Debug.Log(output);

@@ -442,7 +442,7 @@ public class Combate : MonoBehaviour
         float pos_inicial_z = 20F;
         for(int i = 0; i < personajes_jugador.Length; i++){
             if (personajes_jugador[i] != null){
-                GameObject personaje_creado = Instantiate( Resources.Load(personajes_jugador[i].nombre), new Vector3(pos_inicial_x[i], pos_inicial_y[i], pos_inicial_z), Quaternion.identity) as GameObject;
+                GameObject personaje_creado = Instantiate( Resources.Load("prefab_personajes/" + personajes_jugador[i].nombre), new Vector3(pos_inicial_x[i], pos_inicial_y[i], pos_inicial_z), Quaternion.identity) as GameObject;
                 personaje_creado.transform.SetParent(GameObject.Find("personajes").transform, false);
                 personaje_creado.transform.rotation = Quaternion.Euler(0, 180f, 0);
                 //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
@@ -465,7 +465,7 @@ public class Combate : MonoBehaviour
         float[] pos_inicial_y_enemigos = {-0.42F, -1.89F, 1.22F, 1.82F};
         for(int i = 0; i < enemigos.Length; i++){
             if (enemigos[i] != null){
-                GameObject personaje_creado = Instantiate(Resources.Load(enemigos[i].nombre), new Vector3(pos_inicial_x_enemigos[i], pos_inicial_y_enemigos[i], pos_inicial_z), Quaternion.identity) as GameObject;
+                GameObject personaje_creado = Instantiate(Resources.Load("prefab_personajes/" + enemigos[i].nombre), new Vector3(pos_inicial_x_enemigos[i], pos_inicial_y_enemigos[i], pos_inicial_z), Quaternion.identity) as GameObject;
                 personaje_creado.transform.SetParent(GameObject.Find("personajes").transform, false);
                 //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
                 Text txt_vida = GameObject.Find("vida_enemigo_"+i).GetComponent<Text>();

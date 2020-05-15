@@ -81,8 +81,8 @@ public class personaje_individual : MonoBehaviour
 
         //ASIGNAMOS IMAGENES
         img_personaje = GameObject.Find("img_personaje");
-        Sprite[] sprites = Resources.LoadAll<Sprite>("img_personajes/PackForest01");
-        int index_imagen = int.Parse(personaje_actual.imagen_completa);
+        Sprite[] sprites = Resources.LoadAll<Sprite>("img_personajes/" + personaje_actual.imagen_completa[0]);
+        int index_imagen = int.Parse(personaje_actual.imagen_completa[1]);
         img_personaje.GetComponent<Image>().sprite = sprites[index_imagen];
 
 
@@ -90,56 +90,56 @@ public class personaje_individual : MonoBehaviour
         poder_1 = GameObject.Find("boton_poder 1");
         btn_poder_1 = poder_1.GetComponent<Button>();
         marco_poder_1 = GameObject.Find("marco_poder 1");
-        poder_1.GetComponent<Image>().sprite = Resources.Load <Sprite>(personaje_actual.poderes[0].imagen);
+        poder_1.GetComponent<Image>().sprite = Resources.Load <Sprite>("poderes/" + personaje_actual.poderes[0].imagen);
         btn_poder_1.transform.GetChild(0).gameObject.GetComponent<Text>().text = personaje_actual.poderes[0].nombre;
         btn_poder_1.onClick.AddListener( () => Asignar_poder(personaje_actual.poderes[0], marco_poder_1) );
 
         poder_2 = GameObject.Find("boton_poder 2");
         btn_poder_2 = poder_2.GetComponent<Button>();
         marco_poder_2 = GameObject.Find("marco_poder 2");
-        poder_2.GetComponent<Image>().sprite = Resources.Load <Sprite>(personaje_actual.poderes[1].imagen);
+        poder_2.GetComponent<Image>().sprite = Resources.Load <Sprite>("poderes/" + personaje_actual.poderes[1].imagen);
         btn_poder_2.transform.GetChild(0).gameObject.GetComponent<Text>().text = personaje_actual.poderes[1].nombre;
         btn_poder_2.onClick.AddListener( () => Asignar_poder(personaje_actual.poderes[1], marco_poder_2) );
 
         poder_3 = GameObject.Find("boton_poder 3");
         btn_poder_3 = poder_3.GetComponent<Button>();
         marco_poder_3 = GameObject.Find("marco_poder 3");
-        poder_3.GetComponent<Image>().sprite = Resources.Load <Sprite>(personaje_actual.poderes[2].imagen);
+        poder_3.GetComponent<Image>().sprite = Resources.Load <Sprite>("poderes/" + personaje_actual.poderes[2].imagen);
         btn_poder_3.transform.GetChild(0).gameObject.GetComponent<Text>().text = personaje_actual.poderes[2].nombre;
         btn_poder_3.onClick.AddListener( () => Asignar_poder(personaje_actual.poderes[2], marco_poder_3) );
 
         poder_4 = GameObject.Find("boton_poder 4");
         btn_poder_4 = poder_4.GetComponent<Button>();
         marco_poder_4 = GameObject.Find("marco_poder 4");
-        poder_4.GetComponent<Image>().sprite = Resources.Load <Sprite>(personaje_actual.poderes[3].imagen);
+        poder_4.GetComponent<Image>().sprite = Resources.Load <Sprite>("poderes/" + personaje_actual.poderes[3].imagen);
         btn_poder_4.transform.GetChild(0).gameObject.GetComponent<Text>().text = personaje_actual.poderes[3].nombre;
         btn_poder_4.onClick.AddListener( () => Asignar_poder(personaje_actual.poderes[3], marco_poder_4) );
 
         poder_5 = GameObject.Find("boton_poder 5");
         btn_poder_5 = poder_5.GetComponent<Button>();
         marco_poder_5 = GameObject.Find("marco_poder 5");
-        poder_5.GetComponent<Image>().sprite = Resources.Load <Sprite>(personaje_actual.poderes[4].imagen);
+        poder_5.GetComponent<Image>().sprite = Resources.Load <Sprite>("poderes/" + personaje_actual.poderes[4].imagen);
         btn_poder_5.transform.GetChild(0).gameObject.GetComponent<Text>().text = personaje_actual.poderes[4].nombre;
         btn_poder_5.onClick.AddListener( () => Asignar_poder(personaje_actual.poderes[4], marco_poder_5) );
 
         poder_6 = GameObject.Find("boton_poder 6");
         btn_poder_6 = poder_6.GetComponent<Button>();
         marco_poder_6 = GameObject.Find("marco_poder 6");
-        poder_6.GetComponent<Image>().sprite = Resources.Load <Sprite>(personaje_actual.poderes[5].imagen);
+        poder_6.GetComponent<Image>().sprite = Resources.Load <Sprite>("poderes/" + personaje_actual.poderes[5].imagen);
         btn_poder_6.transform.GetChild(0).gameObject.GetComponent<Text>().text = personaje_actual.poderes[5].nombre;
         btn_poder_6.onClick.AddListener( () => Asignar_poder(personaje_actual.poderes[5], marco_poder_6) );
 
         poder_7 = GameObject.Find("boton_poder 7");
         btn_poder_7 = poder_7.GetComponent<Button>();
         marco_poder_7 = GameObject.Find("marco_poder 7");
-        poder_7.GetComponent<Image>().sprite = Resources.Load <Sprite>(personaje_actual.poderes[6].imagen);
+        poder_7.GetComponent<Image>().sprite = Resources.Load <Sprite>("poderes/" + personaje_actual.poderes[6].imagen);
         btn_poder_7.transform.GetChild(0).gameObject.GetComponent<Text>().text = personaje_actual.poderes[6].nombre;
         btn_poder_7.onClick.AddListener( () => Asignar_poder(personaje_actual.poderes[6], marco_poder_7) );
 
         poder_8 = GameObject.Find("boton_poder 8");
         btn_poder_8 = poder_8.GetComponent<Button>();
         marco_poder_8 = GameObject.Find("marco_poder 8");
-        poder_8.GetComponent<Image>().sprite = Resources.Load <Sprite>(personaje_actual.poderes[7].imagen);
+        poder_8.GetComponent<Image>().sprite = Resources.Load <Sprite>("poderes/" + personaje_actual.poderes[7].imagen);
         btn_poder_8.transform.GetChild(0).gameObject.GetComponent<Text>().text = personaje_actual.poderes[7].nombre;
         btn_poder_8.onClick.AddListener( () => Asignar_poder(personaje_actual.poderes[7], marco_poder_8) );
 

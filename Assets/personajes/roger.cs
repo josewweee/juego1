@@ -20,7 +20,7 @@ public class roger : Personajes
         estado_alterado = new Dictionary<string, float[]>();
         rareza = "comun";
         fragmentos = 0;
-        imagen_completa = "7";
+        imagen_completa = new string[2]{"PackForest01","7"};
         Agregar_poderes();
         Activar_poderes();
     }

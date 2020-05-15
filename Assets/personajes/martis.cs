@@ -20,7 +20,7 @@ public class martis : Personajes
         estado_alterado = new Dictionary<string, float[]>();
         rareza = "mitico";
         fragmentos = 0;
-        imagen_completa = "51";
+        imagen_completa = new string[2]{"PackForest01","51"};
         Agregar_poderes();
         Activar_poderes();
     }
