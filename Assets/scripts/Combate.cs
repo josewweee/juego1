@@ -76,6 +76,7 @@ public class Combate : MonoBehaviour
     //UI CON TEXTO DE SELECCIONAR OBJETIVO / OBJETIVOS
     public GameObject objetivo_unico_txt;
     public GameObject multiple_objetivo_txt;
+    public GameObject propio_objetivo_txt;
 
 
 
@@ -139,11 +140,13 @@ public class Combate : MonoBehaviour
         //ASIGNAMOS EL UI DE LOS TEXTOS DE OBJETIVOS Y LOS DESHABILITAMOS POR AHORA
         objetivo_unico_txt = GameObject.Find("texto_seleccion_objetivo");
         multiple_objetivo_txt = GameObject.Find("texto_seleccion_objetivos");
+        propio_objetivo_txt = GameObject.Find("texto_seleccion_propia");
+        propio_objetivo_txt.SetActive(false);
         objetivo_unico_txt.SetActive(false);
         multiple_objetivo_txt.SetActive(false);
         
         //LLENAMOS EL CAMPO CON LOS PERSONAJES COPIADOS
-        popular_personajes_mapa(personajes, enemigos, prefab_personaje);
+        popular_personajes_mapa(personajes, enemigos);
 
         //LLENAMOS EL PRIMER ORDEN DE TURNOS SEGUN LA VELOCIDAD DE LOS PERSONAJES
         for(int i = 0; i < personajes.Length; i++){
@@ -431,17 +434,17 @@ public class Combate : MonoBehaviour
         btn_poder_4.onClick.RemoveAllListeners();
     }
 
-    void popular_personajes_mapa(Personajes[] personajes_jugador, Personajes[] enemigos, GameObject prefab){
+    void popular_personajes_mapa(Personajes[] personajes_jugador, Personajes[] enemigos){
 
         //INSTANCIAMOS LOS PERSONAJES DEL JUGADOR
-        float[] pos_inicial_x = {-5.71F, -7.990039F, -6.790027F, -4.100024F};
-        float[] pos_inicial_y = {-3.72F, -1.910015F, 0.3199964F, 0.8399854F};
+        float[] pos_inicial_x = {-5.22F, -6.84F, -4.74F, -2.14F};
+        float[] pos_inicial_y = {-1.74F, 0.46F, 1.6F, 0.14F};
         float pos_inicial_z = 20F;
         for(int i = 0; i < personajes_jugador.Length; i++){
             if (personajes_jugador[i] != null){
-                GameObject personaje_creado = Instantiate(prefab, new Vector3(pos_inicial_x[i], pos_inicial_y[i], pos_inicial_z), Quaternion.identity);
+                GameObject personaje_creado = Instantiate( Resources.Load(personajes_jugador[i].nombre), new Vector3(pos_inicial_x[i], pos_inicial_y[i], pos_inicial_z), Quaternion.identity) as GameObject;
                 personaje_creado.transform.SetParent(GameObject.Find("personajes").transform, false);
-                
+                personaje_creado.transform.rotation = Quaternion.Euler(0, 180f, 0);
                 //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
                 Text txt_vida = GameObject.Find("vida_"+i).GetComponent<Text>();
                 txt_vida.text = personajes_jugador[i].atributos.vitalidad.ToString();
@@ -458,36 +461,43 @@ public class Combate : MonoBehaviour
         }
 
         //INSTANCIAMOS LOS ENEMIGOS
-        float[] pos_inicial_x_enemigos = {5.15F, 7.39F, 6.76F, 4.63F};
-        float[] pos_inicial_y_enemigos = {-3.48F, -2.61F, 0.12F, 0.89F};
+        float[] pos_inicial_x_enemigos = {2.78F, 6.43F, 7.41F, 4.66F};
+        float[] pos_inicial_y_enemigos = {-0.42F, -1.89F, 1.22F, 1.82F};
         for(int i = 0; i < enemigos.Length; i++){
-            GameObject personaje_creado = Instantiate(prefab, new Vector3(pos_inicial_x_enemigos[i], pos_inicial_y_enemigos[i], pos_inicial_z), Quaternion.identity);
-            personaje_creado.transform.SetParent(GameObject.Find("personajes").transform, false);
-            //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
-            Text txt_vida = GameObject.Find("vida_enemigo_"+i).GetComponent<Text>();
-            txt_vida.text = enemigos[i].atributos.vitalidad.ToString();
-            
-            //AGREGAMOS UN EVENTO CUANDO SE SELECCIONE EL EPRSONAJE
-            int index = i;
-            EventTrigger trigger = personaje_creado.GetComponent<EventTrigger>();
-            EventTrigger.Entry entry = new EventTrigger.Entry();
-            entry.eventID = EventTriggerType.PointerClick;
-            entry.callback.AddListener(delegate { Confirmar_poder(index.ToString()); });
-            trigger.triggers.Add(entry);
+            if (enemigos[i] != null){
+                GameObject personaje_creado = Instantiate(Resources.Load(enemigos[i].nombre), new Vector3(pos_inicial_x_enemigos[i], pos_inicial_y_enemigos[i], pos_inicial_z), Quaternion.identity) as GameObject;
+                personaje_creado.transform.SetParent(GameObject.Find("personajes").transform, false);
+                //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
+                Text txt_vida = GameObject.Find("vida_enemigo_"+i).GetComponent<Text>();
+                txt_vida.text = enemigos[i].atributos.vitalidad.ToString();
+                
+                //AGREGAMOS UN EVENTO CUANDO SE SELECCIONE EL EPRSONAJE
+                int index = i;
+                EventTrigger trigger = personaje_creado.GetComponent<EventTrigger>();
+                EventTrigger.Entry entry = new EventTrigger.Entry();
+                entry.eventID = EventTriggerType.PointerClick;
+                entry.callback.AddListener(delegate { Confirmar_poder(index.ToString()); });
+                trigger.triggers.Add(entry);
+            }
         }
     }
 
     void AsignarPoder(Poderes poder){
         //ACTIVAMOS LOS UI DE TEXTO OBJETIVO
-        bool multi_objetivo = (poder.objetivos == "unico")? false : true; // UNICO = FALSE, MULTIPLE = TRUE
-        switch(multi_objetivo){
-            case false:
+        string objetivos = poder.objetivos;
+        switch(objetivos){
+            case "unico":
                 multiple_objetivo_txt.SetActive(false);
                 objetivo_unico_txt.SetActive(true);
                 break;
-            case true:
+            case "multiple":
                 objetivo_unico_txt.SetActive(false);
                 multiple_objetivo_txt.SetActive(true);
+                break;
+            case "propio":
+                objetivo_unico_txt.SetActive(false);
+                multiple_objetivo_txt.SetActive(false);
+                propio_objetivo_txt.SetActive(true);
                 break;
         }
 
@@ -504,14 +514,18 @@ public class Combate : MonoBehaviour
         }
         
         //DESACTIVAMOS LOS UI DE TEXTO OBJETIVO
-        bool multi_objetivo = (poder_a_ser_lanzado.objetivos == "unico")? false : true; // UNICO = FALSE, MULTIPLE = TRUE
-        switch(multi_objetivo){
-            case false:
+        string objetivos = poder_a_ser_lanzado.objetivos; // UNICO = FALSE, MULTIPLE = TRUE
+        switch(objetivos){
+            case "unico":
                 objetivo_unico_txt.SetActive(false);
                 break;
-            case true:
+            case "multiple":
                 multiple_objetivo_txt.SetActive(false);
                 break;
+            case "propio":
+                propio_objetivo_txt.SetActive(false);
+                break;
+
         }
 
         //PONEMOS NULL EL PODER A SER LANZADO DE FORMA GLOBAL
@@ -617,19 +631,19 @@ public class Combate : MonoBehaviour
             switch(index_personaje_en_turno){
                 case 0:
                     dragArea = imagen_puntero.GetComponent<RectTransform>();
-                    dragArea.localPosition = new Vector3(368f, -51f, 0f);
+                    dragArea.localPosition = new Vector3(201f, 35f, 0f);
                     break;
                 case 1:
                     dragArea = imagen_puntero.GetComponent<RectTransform>();
-                    dragArea.localPosition = new Vector3(552F, -22F, 0f);
+                    dragArea.localPosition = new Vector3(340F, 207F, 0f);
                     break;
                 case 2:
                     dragArea = imagen_puntero.GetComponent<RectTransform>();
-                    dragArea.localPosition = new Vector3(483f, 205F, 0f);
+                    dragArea.localPosition = new Vector3(539f, 158F, 0f);
                     break;
                 case 3:
                     dragArea = imagen_puntero.GetComponent<RectTransform>();
-                    dragArea.localPosition = new Vector3(330f, 262f, 0f);
+                    dragArea.localPosition = new Vector3(451f, 262f, 0f);
                     break;
                 default:
                     break;
@@ -639,19 +653,19 @@ public class Combate : MonoBehaviour
             switch(index_personaje_en_turno){
                 case 0:
                 dragArea = imagen_puntero.GetComponent<RectTransform>();
-                dragArea.localPosition = new Vector3(-399f, -54f, 0f);
+                dragArea.localPosition = new Vector3(-382f, -56f, 0f);
                 break;
                 case 1:
                 dragArea = imagen_puntero.GetComponent<RectTransform>();
-                dragArea.localPosition = new Vector3(-574F, 61F, 0f);
+                dragArea.localPosition = new Vector3(-490F, 109F, 0f);
                 break;
                 case 2:
                 dragArea = imagen_puntero.GetComponent<RectTransform>();
-                dragArea.localPosition = new Vector3(-483f, 217F, 0f);
+                dragArea.localPosition = new Vector3(-349f, 190F, 0f);
                 break;
                 case 3:
                 dragArea = imagen_puntero.GetComponent<RectTransform>();
-                dragArea.localPosition = new Vector3(-291f, 248f, 0f);
+                dragArea.localPosition = new Vector3(-157f, 84f, 0f);
                 break;
                 default:
                 break;
