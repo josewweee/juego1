@@ -25,7 +25,8 @@ public class routing : MonoBehaviour
     {
         //HALLAMOS EL BOTON DEL MENU Y LO ACTIVAMOS
         boton_menu = GameObject.Find("contenedor");
-        menu_activo = true;
+        boton_menu.SetActive(false);
+        menu_activo = false;
 
         //CREAMOS EL USUARIO Y EL STORAGE LOCAL
         jugador = Usuario.instancia;
@@ -50,13 +51,20 @@ public class routing : MonoBehaviour
         
     }
 
-    void update()
+    void Update()
     {
-        oro.text = jugador.monedas.oro.ToString();
-        diamantes.text = jugador.monedas.diamantes.ToString();
-        energia.text = jugador.energia.ToString();
-        energia_max.text = " / " + jugador.energia_maxima.ToString();
+        try{
+            oro.text = jugador.monedas.oro.ToString();
+            diamantes.text = jugador.monedas.diamantes.ToString();
+            energia.text = jugador.energia.ToString();
+            energia_max.text = " / " + jugador.energia_maxima.ToString();
+        }
+        catch{
+            
+        }
     }
+
+
     public void mostrar_menu()
     {
         if (menu_activo)

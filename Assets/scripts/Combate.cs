@@ -284,16 +284,15 @@ public class Combate : MonoBehaviour
                 //DEJAMOS EL TURNO SIN AVANZAR
                 turno_finalizado = false;
 
+               //BORRAMOS LOS PREFABS DEL JUEGO
+               Limpiar_mapa_gameobjects();
+
                 //DAMOS RECOMPENZAS POR PERDER
                 if ( !fin_juego.activeSelf )Agregar_recompenzas(false);    
 
                 //PONEMOS EL TEXTO DE PERDER
                 Text txt_fin_juego = GameObject.Find("txt_fin_del_juego").GetComponent<Text>();
                 txt_fin_juego.text = "Partida Perdida";
-
-                //BORRAMOS LOS PREFABS DEL JUEGO
-                GameObject prefab = GameObject.Find("jugador_0(Clone)");
-                Destroy(prefab);
             }
         }
 
@@ -307,6 +306,9 @@ public class Combate : MonoBehaviour
                 //DEJAMOS EL TURNO SIN AVANZAR
                 turno_finalizado = false;
 
+                //BORRAMOS LOS PREFABS DEL JUEGO
+                Limpiar_mapa_gameobjects();
+
                 //DAMOS RECOMPENZAS POR GANAR
                 if ( !fin_juego.activeSelf )Agregar_recompenzas(true);
 
@@ -314,9 +316,6 @@ public class Combate : MonoBehaviour
                 Text txt_fin_juego = GameObject.Find("txt_fin_del_juego").GetComponent<Text>();
                 txt_fin_juego.text = "Partida Ganada";
 
-                //BORRAMOS LOS PREFABS DEL JUEGO
-                GameObject prefab = GameObject.Find("jugador_0(Clone)");
-                Destroy(prefab);
             }
         }
 
@@ -355,7 +354,7 @@ public class Combate : MonoBehaviour
         for(int i = 0; i < personajes_jugador.Length; i++){
             if (personajes_jugador[i] != null){
                 GameObject personaje_creado = Instantiate(prefab, new Vector3(pos_inicial_x[i], pos_inicial_y[i], pos_inicial_z), Quaternion.identity);
-                
+                personaje_creado.transform.SetParent(GameObject.Find("personajes").transform, false);
                 
                 //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
                 Text txt_vida = GameObject.Find("vida_"+i).GetComponent<Text>();
@@ -377,7 +376,7 @@ public class Combate : MonoBehaviour
         float[] pos_inicial_y_enemigos = {-3.48F, -2.61F, 0.12F, 0.89F};
         for(int i = 0; i < enemigos.Length; i++){
             GameObject personaje_creado = Instantiate(prefab, new Vector3(pos_inicial_x_enemigos[i], pos_inicial_y_enemigos[i], pos_inicial_z), Quaternion.identity);
-            
+            personaje_creado.transform.SetParent(GameObject.Find("personajes").transform, false);
             //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
             Text txt_vida = GameObject.Find("vida_enemigo_"+i).GetComponent<Text>();
             txt_vida.text = enemigos[i].atributos.vitalidad.ToString();
@@ -612,6 +611,13 @@ public class Combate : MonoBehaviour
         fin_juego.SetActive(true);
         if (Gane) recompenza.Recompenzas_ganar();
         else recompenza.Recompenzas_perder();
+    }
+
+    public void Limpiar_mapa_gameobjects()
+    {
+        //BORRAMOS LOS PREFABS DEL JUEGO
+        Destroy(GameObject.Find("personajes"));
+        Destroy(GameObject.Find("txt_vidas"));
     }
 
     public void Resetear_jugador(){

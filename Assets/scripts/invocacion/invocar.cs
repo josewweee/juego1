@@ -47,6 +47,7 @@ public class invocar : MonoBehaviour
 
     public void Invocacion_normal()
     {
+        jugador.monedas.oro -= 1000;
         var rand = new System.Random();
         int tipo_invocacion = rand.Next(1001);
         
@@ -113,13 +114,12 @@ public class invocar : MonoBehaviour
             //ACTIVAMOS EL ITEM DEL PERSONAJE INVOCADO
             Abrir_item_personaje_invocado(true);
         }
-        
-
         Debug.Log(personaje_invocado.nombre);
     }
 
     public void Invocacion_especial()
     {
+        jugador.monedas.diamantes -= 100;
         var rand = new System.Random();
         int tipo_invocacion = rand.Next(1001);
         
@@ -186,6 +186,7 @@ public class invocar : MonoBehaviour
 
     public void Invocacion_Legendaria()
     {
+        jugador.monedas.diamantes -= 1000;
         var rand = new System.Random();
         int tipo_invocacion = rand.Next(1001);
         
