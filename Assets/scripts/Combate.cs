@@ -91,12 +91,10 @@ public class Combate : MonoBehaviour
         jugador = Usuario.instancia;
         storage_enemigos = storage_script.instancia;
         tipo_combate = storage_enemigos.tipo_combate;
-        Debug.Log("pelearemos en :" +tipo_combate);
 
         //DESACTIVAMOS EL UI DE FIN DEL JUEGO
         fin_juego = GameObject.Find("Fin_juego");
         recompenza = fin_juego.GetComponent<Recompenza>();
-        Debug.Log(recompenza.tipo_combate);
         fin_juego.SetActive(false);
         
         //de prueba
@@ -108,6 +106,19 @@ public class Combate : MonoBehaviour
         if (tipo_combate == "historia")
         {
             personajes = jugador.personajesFavoritos;
+            if (personajes.Length > 1)
+            {
+                if (personajes[0] != null){
+                    Debug.Log(personajes[0].nombre);
+                    Debug.Log(personajes[1].nombre);
+                    Debug.Log(personajes.Length);
+                }else{
+                    Debug.Log("Nos llego null");
+                }
+            }else{
+                Debug.Log("no nos llego nada");
+            }
+
             enemigos = storage_enemigos.enemigos;
         }
         else if (tipo_combate == "pvp")
@@ -125,6 +136,10 @@ public class Combate : MonoBehaviour
         velocidades_personajes = new float[personajes.Length];
         velocidades_enemigos = new float[enemigos.Length];
         for(int i = 0; i < personajes.Length; i++){
+            Debug.Log("cantidad: " + personajes.Length);
+            Debug.Log(personajes[i].nombre);
+            Debug.Log(personajes[i].atributos);
+            Debug.Log(personajes[i].atributos.velocidad);
             velocidades_personajes[i] = personajes[i].atributos.velocidad;
         }
         for(int i = 0; i < enemigos.Length; i++){
@@ -577,14 +592,26 @@ public class Combate : MonoBehaviour
     private void Matrix_to_array(Personajes[,] matrix){
         for(int i = 0; i < matrix.GetLength(1); i++)
         {
-            enemigos[i] = matrix[0,i];
+            try
+            {
+                enemigos[i] = matrix[0,i];
+            }
+            catch
+            {
+                Debug.Log("menos enemigos");
+            }
         }
 
         for(int i = 0; i < matrix.GetLength(1); i++)
         {
-            personajes[i] = matrix[1,i];
-            // string output = JsonUtility.ToJson(personajes[i].atributos, true);
-            // Debug.Log(output);
+            try
+            {
+                personajes[i] = matrix[1,i];
+            }
+            catch
+            {
+                Debug.Log("menos personajes");
+            }
         }
     }
 

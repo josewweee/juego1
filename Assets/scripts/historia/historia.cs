@@ -214,6 +214,7 @@ public class historia : MonoBehaviour
 
     public void Ir_nivel(string nivel){
         Crear_personajes_nivel(nivel);
+         storage_enemigos.tipo_combate = "historia";
         _routing.ir_seleccion_pre_combate();
     }
 

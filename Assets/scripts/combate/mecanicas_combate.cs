@@ -92,9 +92,15 @@ public class mecanicas_combate {
         }
         // TOMAMOS EL OBJETIVO DEPENDIENDO DE QUIEN HAYA SIDO SELECIONADO
         if(poder.objetivos == "unico"){
-            target = new Personajes[1]{enemigos[index]};
-            float daño = (atributo_ * poder.multiplicador) + poder.daño_base;
-            HacerDaño(target, daño, personaje_en_turno.elemento, poder.atributo, index, index_personaje_en_turno, enemigos, personajes);
+            try{
+                target = new Personajes[1]{enemigos[index]};
+                float daño = (atributo_ * poder.multiplicador) + poder.daño_base;
+                HacerDaño(target, daño, personaje_en_turno.elemento, poder.atributo, index, index_personaje_en_turno, enemigos, personajes);
+            }
+            catch
+            {
+                Debug.Log("Problema en hacer daño a 1 objetivo");
+            }
         }else{
             float daño = (atributo_ * poder.multiplicador) + poder.daño_base;
             // 99 PARA INDICAR QUE AFECTAREMOS A TODOS
@@ -147,7 +153,6 @@ public class mecanicas_combate {
             buffear(personajes, 99, personajes, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
         }else{
             target = new Personajes[1]{personajes[index_personaje_en_turno]};
-            Debug.Log("tirando buff propio");
             buffear(target, index_personaje_en_turno, personajes, habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
         }
     }
@@ -188,13 +193,19 @@ public class mecanicas_combate {
         }
         // TOMAMOS EL OBJETIVO DEPENDIENDO DE QUIEN HAYA SIDO SELECIONADO
         if(poder.objetivos == "unico"){
-            target = new Personajes[1]{enemigos[index]};
-            debuffear(target, index, enemigos, personajes,habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
+            try{
+                target = new Personajes[1]{enemigos[index]};
+                debuffear(target, index, enemigos, personajes,habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
+            }
+            catch
+            {
+                Debug.Log("problema al debuffear 1 objetivo");
+            }
         }else if (poder.objetivos == "multiple"){
             // 99 PARA INDICAR QUE AFECTAREMOS A TODOS
             debuffear(enemigos, 99, enemigos, personajes,habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
         }else{
-            target = new Personajes[1]{enemigos[index]};
+            target = new Personajes[1]{personajes[index_personaje_en_turno]};
             debuffear(target, index_personaje_en_turno, enemigos, personajes,habilidades, poder.daño_base, atributo_, poder.multiplicador_efecto, poder.duracion_efecto);
         }
     }

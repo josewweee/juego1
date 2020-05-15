@@ -53,7 +53,7 @@ public class inteligencia_artificial
         Buffear(personajes, enemigos, personaje_en_turno);
         if(index_objetivo != 88 && poder_lanzar != null)
         {
-                        if(index_objetivo != 99)  Debug.Log("hacia: " +  enemigos[index_objetivo]);
+            if(index_objetivo != 99)  Debug.Log("hacia: " +  enemigos[index_objetivo]);
             else Debug.Log("hacia todos");
             mecanicas_combate.Lanzar_poder(index_objetivo.ToString(), poder_lanzar, personajes, enemigos, personaje_en_turno);
             personajes_retorno = matriz_envio_personajes(personajes, enemigos);
