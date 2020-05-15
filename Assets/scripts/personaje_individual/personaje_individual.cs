@@ -25,6 +25,8 @@ public class personaje_individual : MonoBehaviour
     public Text costo_fragmentos;
     public Text fragmentos_poseidos;
 
+    public GameObject img_personaje;
+
     public GameObject poder_1;
     public GameObject poder_2;
     public GameObject poder_3;
@@ -76,6 +78,13 @@ public class personaje_individual : MonoBehaviour
         def_magica.text = personaje_actual.atributos.defensa_magica.ToString();
         costo_fragmentos.text = "x " + ((personaje_actual.estrellas + 1) * 20).ToString();
         fragmentos_poseidos.text = personaje_actual.fragmentos.ToString();
+
+        //ASIGNAMOS IMAGENES
+        img_personaje = GameObject.Find("img_personaje");
+        Sprite[] sprites = Resources.LoadAll<Sprite>("img_personajes/PackForest01");
+        int index_imagen = int.Parse(personaje_actual.imagen_completa);
+        img_personaje.GetComponent<Image>().sprite = sprites[index_imagen];
+
 
         //ASIGNAMOS LOS BOTONES DE LOS PODERES
         poder_1 = GameObject.Find("boton_poder 1");

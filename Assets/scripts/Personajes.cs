@@ -18,6 +18,7 @@ public class Personajes
     public Dictionary<string, float[]> estado_alterado; // NOMBRE EFECTO -> [ DAÑO EFECTO, DURACION EFECTO ]
     public string rareza; // COMUN, RARO, MITICO, LEGENDARIO
     public int fragmentos;
+    public string imagen_completa;
 
         // string output = JsonUtility.ToJson(atributos, true);
         // Debug.Log(output);

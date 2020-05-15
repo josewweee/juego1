@@ -20,6 +20,7 @@ public class liliana : Personajes
         estado_alterado = new Dictionary<string, float[]>();
         rareza = "legendario";
         fragmentos = 0;
+        imagen_completa = "48";
         Agregar_poderes();
         Activar_poderes();
     }

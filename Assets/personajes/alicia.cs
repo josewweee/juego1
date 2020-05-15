@@ -20,6 +20,7 @@ public class alicia : Personajes
         estado_alterado = new Dictionary<string, float[]>();
         rareza = "raro";
         fragmentos = 0;
+        imagen_completa = "3";
         Agregar_poderes();
         Activar_poderes();
     }
