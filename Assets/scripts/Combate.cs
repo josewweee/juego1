@@ -105,21 +105,8 @@ public class Combate : MonoBehaviour
         //COPIAMOS LOS PERSONAJES DEL USUARIO Y DE LOS ENEMIGOS LOCALMENTE
         if (tipo_combate == "historia")
         {
-            personajes = jugador.personajesFavoritos;
-            if (personajes.Length > 1)
-            {
-                if (personajes[0] != null){
-                    Debug.Log(personajes[0].nombre);
-                    Debug.Log(personajes[1].nombre);
-                    Debug.Log(personajes.Length);
-                }else{
-                    Debug.Log("Nos llego null");
-                }
-            }else{
-                Debug.Log("no nos llego nada");
-            }
-
-            enemigos = storage_enemigos.enemigos;
+            personajes = jugador.personajesFavoritos.ToArray();
+            enemigos = storage_enemigos.enemigos.ToArray();
         }
         else if (tipo_combate == "pvp")
         {
@@ -618,6 +605,16 @@ public class Combate : MonoBehaviour
 
     public void Agregar_recompenzas(bool Gane)
     {
+        //RESETEAMOS EL PERSONAJE
+        Resetear_jugador();
+
+        //ACTIVAMOS LA UI DE FIN DEL JUEGO
+        fin_juego.SetActive(true);
+        if (Gane) recompenza.Recompenzas_ganar();
+        else recompenza.Recompenzas_perder();
+    }
+
+    public void Resetear_jugador(){
         //DEVOLVEMOS LOS PERSONAJES A SUS ATRIBUTOS INICIALES
         switch(this.tipo_combate)
         {
@@ -644,12 +641,6 @@ public class Combate : MonoBehaviour
                 }
                 break;
         }
-        
-
-        //ACTIVAMOS LA UI DE FIN DEL JUEGO
-        fin_juego.SetActive(true);
-        if (Gane) recompenza.Recompenzas_ganar();
-        else recompenza.Recompenzas_perder();
     }
 }
 

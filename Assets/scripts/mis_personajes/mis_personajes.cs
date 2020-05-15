@@ -8,6 +8,7 @@ public class mis_personajes : MonoBehaviour
     //TRAEMOS INSTANCIA DEL USUARIO, PREFAB DEL RECUADRO DE LOS PERSONAJES, OBJETO DEL MENU Y SCRIPT DE ROUTING
     public Usuario jugador;
     public GameObject prefab_recuadro_personaje;
+    public List<Personajes> _personajes;
     private int cantidad_personajes;
     private routing _routing;
     public GameObject menu;
@@ -22,6 +23,7 @@ public class mis_personajes : MonoBehaviour
     {
         // INICIALIZAMOS EL USUARIO, MIRAMOS CUANTOS PERSONAJES TIENE Y POPULAMOS LA UI CON LOS PREFABS
         jugador = Usuario.instancia;
+        
         cantidad_personajes = jugador.personajes.Count;
         Popular_lista_mis_personajes(cantidad_personajes, prefab_recuadro_personaje);
     }
@@ -47,7 +49,9 @@ public class mis_personajes : MonoBehaviour
 
                 //ENTRAMOS EN EL CHILD #1 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO
                 GameObject texto_nivel = recuadro_personaje.transform.GetChild(1).gameObject;
-                texto_nivel.GetComponent<UnityEngine.UI.Text>().text = jugador.personajes[i].nivel.ToString();
+                GameObject texto_nombre = recuadro_personaje.transform.GetChild(0).gameObject;
+                texto_nombre.GetComponent<Text>().text = jugador.personajes[i].nombre;
+                texto_nivel.GetComponent<Text>().text = jugador.personajes[i].nivel.ToString();
                 pos_inicial_x += 30F;
                 filaActual++;
 
@@ -69,7 +73,9 @@ public class mis_personajes : MonoBehaviour
 
                 //ENTRAMOS EN EL CHILD #1 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO
                 GameObject texto_nivel = recuadro_personaje.transform.GetChild(1).gameObject;
-                texto_nivel.GetComponent<UnityEngine.UI.Text>().text = jugador.personajes[i].nivel.ToString();
+                GameObject texto_nombre = recuadro_personaje.transform.GetChild(0).gameObject;
+                texto_nombre.GetComponent<Text>().text = jugador.personajes[i].nombre;
+                texto_nivel.GetComponent<Text>().text = jugador.personajes[i].nivel.ToString();
             }
         }
     }

@@ -134,13 +134,23 @@ public class routing : MonoBehaviour
 
     public void ir_combate(string tipoCombate){
         storage_singleton.tipo_combate = tipoCombate;
-        if(tipoCombate == "historia"  && jugador.energia >= 6 )
-        {   
-            jugador.energia -= 6;
-            SceneManager.LoadScene("menu_combate");
-        }else if(tipoCombate == "pvp"  && jugador.energia_pvp >= 1){
-            jugador.energia_pvp --;
-            SceneManager.LoadScene("menu_combate");
+        if(tipoCombate == "historia")
+        {  
+            if(jugador.energia >= 6 )
+            {
+                jugador.energia -= 6;
+                SceneManager.LoadScene("menu_combate");
+            }else{
+                Debug.Log("No hay energia suficiente");
+            }
+        }else if(tipoCombate == "pvp"){
+            if ( jugador.energia_pvp >= 1)
+            {
+                jugador.energia_pvp --;
+                SceneManager.LoadScene("menu_combate");
+            }else{
+                 Debug.Log("No hay energia suficiente");
+            }
         }
         
     }

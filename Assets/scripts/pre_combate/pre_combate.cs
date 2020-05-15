@@ -40,12 +40,17 @@ public class pre_combate : MonoBehaviour
         tipo_combate = storage_enemigos.tipo_combate;
         if(tipo_combate == "historia")
         {
-            favoritos = jugador.personajesFavoritos.ToList();
-            if (favoritos.Count < 4) favoritos.Add(null);
+            //favoritos = jugador.personajesFavoritos.ToList();
+            favoritos = jugador.personajesFavoritos;
+            for(int i = 0; i < 4; i++){
+                if (favoritos.Count < 4) favoritos.Add(null);
+            }
             pjs_enemigos = storage_enemigos.enemigos.ToList();
         }else if (tipo_combate == "pvp"){
             favoritos = jugador.defensa_pvp;
-            if (favoritos.Count < 4) favoritos.Add(null);
+            for(int i = 0; i < 4; i++){
+                if (favoritos.Count < 4) favoritos.Add(null);
+            }
             pjs_enemigos = storage_enemigos.enemigos_pvp;
         }
         
@@ -130,7 +135,7 @@ public class pre_combate : MonoBehaviour
             if (this.tipo_combate == "historia")
             {
                  jugador.Cambiar_personaje_batalla("personajes_favoritos", 0, jugador.personajes[0]);
-                 this.favoritos = jugador.personajesFavoritos.ToList();
+                 //this.favoritos = jugador.personajesFavoritos.ToList();
             }
             else if (this.tipo_combate == "pvp")
             {
@@ -163,7 +168,7 @@ public class pre_combate : MonoBehaviour
         if (this.tipo_combate == "historia")
         {
             this.jugador.Cambiar_personaje_batalla("personajes_favoritos", index,  null);
-            this.favoritos = jugador.personajesFavoritos.ToList();
+            //this.favoritos = jugador.personajesFavoritos.ToList();
         }
         else if (this.tipo_combate == "pvp")
         {
@@ -200,7 +205,7 @@ public class pre_combate : MonoBehaviour
             if (this.tipo_combate == "historia")
             {
                 this.jugador.Cambiar_personaje_batalla("personajes_favoritos", i, this.jugador.personajes[index]);
-                this.favoritos = jugador.personajesFavoritos.ToList();
+                //this.favoritos = jugador.personajesFavoritos.ToList();
             }
             else if (this.tipo_combate == "pvp")
             {
@@ -215,7 +220,7 @@ public class pre_combate : MonoBehaviour
     public void Ir_combate()
     {    
         favoritos.RemoveAll(item => item == null);
-        if (this.tipo_combate == "historia") jugador.personajesFavoritos = favoritos.ToArray();
+        //if (this.tipo_combate == "historia") jugador.personajesFavoritos = favoritos.ToArray();
         _routing.ir_combate(this.tipo_combate);
     }
 

@@ -12,7 +12,7 @@ public class Usuario
     public bool tutorial_completo = false;
     public List<Usuario> amigos = new List<Usuario>();
     public List<Personajes> personajes = new List<Personajes>();
-    public Personajes[] personajesFavoritos = {null, null, null, null};
+    public List<Personajes> personajesFavoritos;
     public Monedas monedas = new Monedas(0,0,0);
     public Configuracion configuracion = new Configuracion();
     public List<Logros> logros = new List<Logros>();
@@ -31,6 +31,7 @@ public class Usuario
     public Usuario() { 
         energia_maxima = 30;
         defensa_pvp = new List<Personajes>(){null, null, null, null};
+        personajesFavoritos = new List<Personajes>(){null, null, null, null};
     }
     // SINGLETON DEL USUARIO
     public static Usuario _instancia = null;
