@@ -30,15 +30,6 @@ public class Combate : MonoBehaviour
     private GameObject fin_juego;
     private float fixedDeltaTime;
 
-    //TABLA DEFENSAS ELEMENTALES;
-    // private Dictionary<string, float[]> defensas_elementales = new Dictionary<string, float[]>(){
-    //     {"agua", new float[] {1F, 1.5F, 1F, 0.5F, 1F, 1F} },
-    //     {"fuego", new float[] {0.5F, 1F, 1.5F, 1F, 1F, 1F} },
-    //     {"tierra", new float[] {1F, 0.5F, 1F, 1.5F, 1F, 1F} },
-    //     {"trueno", new float[] {1.5F, 1F, 0.5F, 1F, 1F, 1F} },
-    //     {"oscuridad", new float[] {1F, 1F, 1F, 1F, 0.5F, 1.5F} },
-    //     {"luz", new float[] {1F, 1F, 1F, 1F, 1.5F, 0.5F} },
-    // };
 
     //PREFAB QUE INSTANCIAREMOS COMO PERSONAJE
     public GameObject prefab_personaje;
@@ -59,6 +50,11 @@ public class Combate : MonoBehaviour
     // INSTANCIAS SINGLETON CON LOS DATOS DE LOS ENEMIGOS Y EL USUARIO
     public storage_script storage_enemigos;
     public Usuario jugador;
+
+    //OBJETOS PARA PODER IR A OTRAS ESCENAS EN EL MENU Y MENU CONFIGURACIONES
+    public GameObject menu;
+    public routing _routing;
+    private GameObject menu_configuracion;
 
     //UI DE LOS PODERES
     public bool cambiar_UI_poderes = true;
@@ -96,6 +92,12 @@ public class Combate : MonoBehaviour
         fin_juego = GameObject.Find("Fin_juego");
         recompenza = fin_juego.GetComponent<Recompenza>();
         fin_juego.SetActive(false);
+
+        //INSTANCIAMOS EL SCRIPT QUE NOS DEJARA CAMBIAR DE ESCENAS, ASIGNAMOS Y DESACTIVAMOS EL MENU DE CONFIGURACION
+        this.menu = GameObject.Find("menu");
+        _routing = menu.GetComponent<routing>();
+        this.menu_configuracion = GameObject.Find("ventana_configuracion");
+        this.menu_configuracion.SetActive(false);
         
         //de prueba
         //fabrica = new Personajes();
@@ -123,10 +125,6 @@ public class Combate : MonoBehaviour
         velocidades_personajes = new float[personajes.Length];
         velocidades_enemigos = new float[enemigos.Length];
         for(int i = 0; i < personajes.Length; i++){
-            Debug.Log("cantidad: " + personajes.Length);
-            Debug.Log(personajes[i].nombre);
-            Debug.Log(personajes[i].atributos);
-            Debug.Log(personajes[i].atributos.velocidad);
             velocidades_personajes[i] = personajes[i].atributos.velocidad;
         }
         for(int i = 0; i < enemigos.Length; i++){
@@ -648,6 +646,29 @@ public class Combate : MonoBehaviour
                 break;
         }
     }
+
+
+
+// FUNCIONES DEL MENU
+    public void Opciones_menu(string opcion)
+    {
+        switch(opcion)
+        {
+            case "salir":
+                Resetear_jugador();
+                _routing.ir_principal();
+                break;
+            case "configuracion":
+                this.menu_configuracion.SetActive(true);
+                break;
+        }
+    }
+
+    public void Cerrar_menu_configuracion()
+    {
+        this.menu_configuracion.SetActive(false);
+    }
+
 }
 
 

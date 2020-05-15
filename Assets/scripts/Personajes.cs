@@ -43,6 +43,19 @@ public class Personajes
         }
     }
 
+    public List<Personajes> Crear_todos_personajes()
+    {
+        //ARREGLO EN DONDE SE INSTANCIAN TODOS LOS PERSONAJES QUE EXITEN
+        List<Personajes> lista_personajes = new List<Personajes>(){
+            new roger(),
+            new alicia(),
+            new liliana(),
+            new martis()
+        };
+
+        return lista_personajes;
+    }
+
     public virtual void Subir_nivel(int niveles)
     {
         
