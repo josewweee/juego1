@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Personajes
 {
@@ -65,7 +66,7 @@ public class Personajes
     public virtual void Ganar_exp(int exp)
     {
         experiencia += exp;
-        if(experiencia >= nivel*nivel && nivel < nivel_maximo) Subir_nivel(1);
+        if(experiencia >= Math.Pow(nivel, 2) && nivel < nivel_maximo) Subir_nivel(1);
     }
 
     public virtual void Resetear_personaje()

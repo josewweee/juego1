@@ -323,7 +323,7 @@ public class Combate : MonoBehaviour
         {
             if (personajes[k].estado_alterado.ContainsKey("muerto")) contador_muertos ++;
             else break;
-            if (contador_muertos >= 4)
+            if (contador_muertos >= personajes.Length)
             {
                 //DEJAMOS EL TURNO SIN AVANZAR
                 turno_finalizado = false;
@@ -345,7 +345,7 @@ public class Combate : MonoBehaviour
         {
             if (enemigos[k].estado_alterado.ContainsKey("muerto")) contador_muertos ++;
             else break;
-            if (contador_muertos >= 4)
+            if (contador_muertos >= enemigos.Length)
             {
                 //DEJAMOS EL TURNO SIN AVANZAR
                 turno_finalizado = false;
