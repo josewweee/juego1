@@ -627,7 +627,7 @@ public static void debuffear(Personajes[] target, int index_objetivo, Personajes
     public static float Critico(float daño, float pro_critico){
         var rand = new System.Random();
         float comparador_critico = rand.Next(0, 101);
-        if (comparador_critico < pro_critico){
+        if (comparador_critico <= pro_critico){
             daño = daño * 1.5F;
             Debug.Log("GOLPE CRITICO");
             return daño;

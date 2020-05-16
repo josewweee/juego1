@@ -461,8 +461,8 @@ public class Combate : MonoBehaviour
         }
 
         //INSTANCIAMOS LOS ENEMIGOS
-        float[] pos_inicial_x_enemigos = {2.78F, 6.43F, 7.41F, 4.66F};
-        float[] pos_inicial_y_enemigos = {-0.42F, -1.89F, 1.22F, 1.82F};
+        float[] pos_inicial_x_enemigos = {2.78F, 4.66F, 7.41F, 6.43F};
+        float[] pos_inicial_y_enemigos = {-0.42F, 1.82F, 1.22F, -1.89F};
         for(int i = 0; i < enemigos.Length; i++){
             if (enemigos[i] != null){
                 GameObject personaje_creado = Instantiate(Resources.Load("prefabs_personajes/" + enemigos[i].nombre), new Vector3(pos_inicial_x_enemigos[i], pos_inicial_y_enemigos[i], pos_inicial_z), Quaternion.identity) as GameObject;
