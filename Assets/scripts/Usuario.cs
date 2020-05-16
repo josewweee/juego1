@@ -24,7 +24,7 @@ public class Usuario
     public int puntos_pvp = 0;
     public List<Personajes> defensa_pvp;
     public string[] historial_pvp;
-    public int posicion_pvp = 0;
+    public int posicion_pvp = 99999;
     public int nivel_historia = 1;
 
     // CONSTRUCTOR

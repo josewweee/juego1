@@ -12,7 +12,9 @@ public class menu_pvp : MonoBehaviour
     private storage_script storage_enemigos;
     public GameObject prefab_lista;
     private Usuario[] jugadores_DB;
-    
+    private Text txt_energia_pvp;
+    private Text txt_puntos_pvp;
+    private Text txt_posicion_pvp;
     private Personajes fabrica;
 
     void Start()
@@ -22,6 +24,15 @@ public class menu_pvp : MonoBehaviour
          //TRAEMOS LAS INSTANCIAS DEL JUGADOR Y LOS ENEMIGOS
         jugador = Usuario.instancia;
         storage_enemigos = storage_script.instancia;
+
+        //CONECTAMOS LA UI
+        txt_energia_pvp = GameObject.Find("texto_energia_pvp").GetComponent<Text>();
+        txt_energia_pvp.text = jugador.energia_pvp.ToString();
+        txt_puntos_pvp = GameObject.Find("texto_numero_puntos").GetComponent<Text>();
+        txt_puntos_pvp.text = jugador.puntos_pvp.ToString();
+        txt_posicion_pvp = GameObject.Find("texto_numero_posicion").GetComponent<Text>();
+        txt_puntos_pvp.text = jugador.posicion_pvp.ToString();
+
 
         fabrica = new Personajes();
         Usuario u1 = new Usuario();

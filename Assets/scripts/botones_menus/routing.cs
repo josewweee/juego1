@@ -130,6 +130,11 @@ public class routing : MonoBehaviour
         SceneManager.LoadScene("menu_pvp");
     }
 
+    public void ir_defensa_pvp()
+    {
+        SceneManager.LoadScene("menu_defensa_pvp");
+    }
+
     public void ir_seleccion_pre_combate()
     {
         SceneManager.LoadScene("menu_seleccion_pre_combate");
