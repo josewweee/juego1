@@ -180,37 +180,37 @@ public class Combate : MonoBehaviour
         //IMAGENES DE LOS PODERES DE MAXIMO 4 PERSONAJES
         if (personajes.Length >= 1){
                 img_poderes_personaje_1 = new Sprite[4]{
-                    Resources.Load <Sprite>(personajes[0].poderes[0].imagen),
-                    Resources.Load <Sprite>(personajes[0].poderes[1].imagen),
-                    Resources.Load <Sprite>(personajes[0].poderes[2].imagen),
-                    Resources.Load <Sprite>(personajes[0].poderes[3].imagen)
+                    Resources.Load <Sprite>("poderes/" + personajes[0].poderes[0].imagen),
+                    Resources.Load <Sprite>("poderes/" + personajes[0].poderes[1].imagen),
+                    Resources.Load <Sprite>("poderes/" + personajes[0].poderes[2].imagen),
+                    Resources.Load <Sprite>("poderes/" + personajes[0].poderes[3].imagen)
                 };
         }
 
         if (personajes.Length >= 2){
                 img_poderes_personaje_2 = new Sprite[4]{
-                    Resources.Load <Sprite>(personajes[1].poderes[0].imagen),
-                    Resources.Load <Sprite>(personajes[1].poderes[1].imagen),
-                    Resources.Load <Sprite>(personajes[1].poderes[2].imagen),
-                    Resources.Load <Sprite>(personajes[1].poderes[3].imagen)
+                    Resources.Load <Sprite>("poderes/" + personajes[1].poderes[0].imagen),
+                    Resources.Load <Sprite>("poderes/" + personajes[1].poderes[1].imagen),
+                    Resources.Load <Sprite>("poderes/" + personajes[1].poderes[2].imagen),
+                    Resources.Load <Sprite>("poderes/" + personajes[1].poderes[3].imagen)
                 };
         }
 
         if (personajes.Length >= 3){
                 img_poderes_personaje_3 = new Sprite[4]{
-                    Resources.Load <Sprite>(personajes[2].poderes[0].imagen),
-                    Resources.Load <Sprite>(personajes[2].poderes[1].imagen),
-                    Resources.Load <Sprite>(personajes[2].poderes[2].imagen),
-                    Resources.Load <Sprite>(personajes[2].poderes[3].imagen)
+                    Resources.Load <Sprite>("poderes/" + personajes[2].poderes[0].imagen),
+                    Resources.Load <Sprite>("poderes/" + personajes[2].poderes[1].imagen),
+                    Resources.Load <Sprite>("poderes/" + personajes[2].poderes[2].imagen),
+                    Resources.Load <Sprite>("poderes/" + personajes[2].poderes[3].imagen)
                 };
         }
 
         if (personajes.Length >= 4){
                 img_poderes_personaje_4 = new Sprite[4]{
-                    Resources.Load <Sprite>(personajes[3].poderes[0].imagen),
-                    Resources.Load <Sprite>(personajes[3].poderes[1].imagen),
-                    Resources.Load <Sprite>(personajes[3].poderes[2].imagen),
-                    Resources.Load <Sprite>(personajes[3].poderes[3].imagen)
+                    Resources.Load <Sprite>("poderes/" + personajes[3].poderes[0].imagen),
+                    Resources.Load <Sprite>("poderes/" + personajes[3].poderes[1].imagen),
+                    Resources.Load <Sprite>("poderes/" + personajes[3].poderes[2].imagen),
+                    Resources.Load <Sprite>("poderes/" + personajes[3].poderes[3].imagen)
                 };
         }
 
@@ -439,10 +439,10 @@ public class Combate : MonoBehaviour
         //INSTANCIAMOS LOS PERSONAJES DEL JUGADOR
         float[] pos_inicial_x = {-5.22F, -6.84F, -4.74F, -2.14F};
         float[] pos_inicial_y = {-1.74F, 0.46F, 1.6F, 0.14F};
-        float pos_inicial_z = 20F;
+        float pos_inicial_z = -69F;
         for(int i = 0; i < personajes_jugador.Length; i++){
             if (personajes_jugador[i] != null){
-                GameObject personaje_creado = Instantiate( Resources.Load("prefab_personajes/" + personajes_jugador[i].nombre), new Vector3(pos_inicial_x[i], pos_inicial_y[i], pos_inicial_z), Quaternion.identity) as GameObject;
+                GameObject personaje_creado = Instantiate( Resources.Load("prefabs_personajes/" + personajes_jugador[i].nombre), new Vector3(pos_inicial_x[i], pos_inicial_y[i], pos_inicial_z), Quaternion.identity) as GameObject;
                 personaje_creado.transform.SetParent(GameObject.Find("personajes").transform, false);
                 personaje_creado.transform.rotation = Quaternion.Euler(0, 180f, 0);
                 //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
@@ -465,7 +465,7 @@ public class Combate : MonoBehaviour
         float[] pos_inicial_y_enemigos = {-0.42F, -1.89F, 1.22F, 1.82F};
         for(int i = 0; i < enemigos.Length; i++){
             if (enemigos[i] != null){
-                GameObject personaje_creado = Instantiate(Resources.Load("prefab_personajes/" + enemigos[i].nombre), new Vector3(pos_inicial_x_enemigos[i], pos_inicial_y_enemigos[i], pos_inicial_z), Quaternion.identity) as GameObject;
+                GameObject personaje_creado = Instantiate(Resources.Load("prefabs_personajes/" + enemigos[i].nombre), new Vector3(pos_inicial_x_enemigos[i], pos_inicial_y_enemigos[i], pos_inicial_z), Quaternion.identity) as GameObject;
                 personaje_creado.transform.SetParent(GameObject.Find("personajes").transform, false);
                 //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
                 Text txt_vida = GameObject.Find("vida_enemigo_"+i).GetComponent<Text>();

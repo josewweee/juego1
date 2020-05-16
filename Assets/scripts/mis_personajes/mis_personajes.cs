@@ -56,8 +56,8 @@ public class mis_personajes : MonoBehaviour
 
     public void Popular_lista_mis_personajes(int numero_personajes, GameObject prefab)
     {
-        float pos_inicial_x = -73F; // POSICION DEL CUADRADO 1 EN X
-        float pos_inicial_y = 106.63F; // POSICION DEL CUADRADO 1 EN Y
+        float pos_inicial_x = -59.7F; // POSICION DEL CUADRADO 1 EN X
+        float pos_inicial_y = 89F; // POSICION DEL CUADRADO 1 EN Y
         int filaActual = 0;
         for (int i = 0; i < numero_personajes; i++)
         {
@@ -86,8 +86,8 @@ public class mis_personajes : MonoBehaviour
             {
                 // NOS MOVEMOS 87F HACIA ABAJO, RESETEAMOS X Y CADA PREFAB Y PONEMOS EL OBJETO COMO CHILD DEL CANVAS - CONTENIDO_SCROLL
                 filaActual = 0;
+                pos_inicial_x = -59.7F;
                 pos_inicial_y -= 87F;
-                pos_inicial_x = -73F;
                 GameObject recuadro_personaje = Instantiate(prefab, new Vector3(pos_inicial_x, pos_inicial_y, 0), Quaternion.identity);
                 recuadro_personaje.transform.SetParent(GameObject.Find("contenido_scroll").transform, false);
 

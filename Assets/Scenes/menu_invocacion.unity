@@ -618,8 +618,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1009257240}
   m_HandleRect: {fileID: 1009257239}
   m_Direction: 2
-  m_Value: -0.0000028170066
-  m_Size: 0.6056509
+  m_Value: 0
+  m_Size: 0.60604846
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1622,7 +1622,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 813040887}
+      - m_Target: {fileID: 1825862984}
         m_MethodName: Invocacion_Legendaria
         m_Mode: 1
         m_Arguments:
@@ -2310,7 +2310,6 @@ GameObject:
   - component: {fileID: 813040884}
   - component: {fileID: 813040886}
   - component: {fileID: 813040885}
-  - component: {fileID: 813040887}
   m_Layer: 5
   m_Name: panel_invocacion
   m_TagString: Untagged
@@ -2377,18 +2376,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 813040883}
   m_CullTransparentMesh: 0
---- !u!114 &813040887
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 813040883}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a3daf12d175111c4ad8f6b75acab52d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &902665771
 GameObject:
   m_ObjectHideFlags: 0
@@ -3798,7 +3785,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 813040887}
+      - m_Target: {fileID: 1825862984}
         m_MethodName: Invocacion_especial
         m_Mode: 1
         m_Arguments:
@@ -4006,7 +3993,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 813040887}
+      - m_Target: {fileID: 1825862984}
         m_MethodName: Invocacion_normal
         m_Mode: 1
         m_Arguments:
@@ -4539,7 +4526,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00042672685, y: 130.00038}
+  m_AnchoredPosition: {x: 0.00042672685, y: 130.00002}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1578629730
@@ -5317,7 +5304,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 813040887}
+      - m_Target: {fileID: 0}
         m_MethodName: Cerrar_item_personaje_invocado
         m_Mode: 1
         m_Arguments:
@@ -5837,6 +5824,7 @@ GameObject:
   - component: {fileID: 1825862983}
   - component: {fileID: 1825862982}
   - component: {fileID: 1825862981}
+  - component: {fileID: 1825862984}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -5892,6 +5880,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1825862984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1825862980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a3daf12d175111c4ad8f6b75acab52d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1859778181
 GameObject:
   m_ObjectHideFlags: 0
