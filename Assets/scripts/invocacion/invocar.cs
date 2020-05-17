@@ -252,8 +252,16 @@ public class invocar : MonoBehaviour
     {
         //ACTIVAMOS EL ITEM DEL PERSONAJE INVOCADO
         item_personaje_invocado.SetActive(true);
+
+        //NOMBRE DEL INVOCADO
         if (!fragmentos) txt_personaje_invocado.GetComponent<Text>().text = personaje_invocado.nombre;
         else txt_personaje_invocado.GetComponent<Text>().text = "Fragmentos de, " + personaje_invocado.nombre;
+
+        //IMAGEN DEL INVOCADO
+        Sprite[] sprites = Resources.LoadAll<Sprite>("img_personajes/" + personaje_invocado.imagen_completa[0]);
+        int index_imagen = int.Parse(personaje_invocado.imagen_completa[1]);
+        img_personaje_invocado.GetComponent<Image>().sprite = sprites[index_imagen];
+
     }
 
     public void Cerrar_item_personaje_invocado()

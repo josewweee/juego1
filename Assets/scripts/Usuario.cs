@@ -12,6 +12,7 @@ public class Usuario
     public bool tutorial_completo = false;
     public List<Usuario> amigos = new List<Usuario>();
     public List<Personajes> personajes = new List<Personajes>();
+    public List<Equipo> equipo = new List<Equipo>();
     public List<Personajes> personajesFavoritos;
     public Monedas monedas = new Monedas(0,0,0);
     public Configuracion configuracion = new Configuracion();

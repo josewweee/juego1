@@ -94,8 +94,9 @@ public class routing : MonoBehaviour
         SceneManager.LoadScene("menu_equipamiento");
     }
 
-    public void ir_equipamiento_individual()
+    public void ir_equipamiento_individual(Equipo equipo_objetivo)
     {
+        storage_singleton.equipo = equipo_objetivo;
         SceneManager.LoadScene("menu_equipamiento_individual");
     }
 
