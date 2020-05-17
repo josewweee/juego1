@@ -54,7 +54,9 @@ public class defensa_pvp : MonoBehaviour
             btn.onClick.AddListener(delegate { Agregar_personaje(recuadro_personaje, index); });
 
             //ENTRAMOS EN EL CHILD #0 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO
+            GameObject img_perfil = recuadro_personaje.transform.GetChild(0).gameObject;
             GameObject texto_nivel = recuadro_personaje.transform.GetChild(1).gameObject;
+            img_perfil.GetComponent<Image>().sprite = Resources.Load <Sprite>("img_personajes/perfiles/" + this.jugador.personajes[i].foto_perfil);
             texto_nivel.GetComponent<Text>().text = this.jugador.personajes[i].nivel.ToString();
             pos_inicial_x += 17F;
 
@@ -87,7 +89,9 @@ public class defensa_pvp : MonoBehaviour
                 btn.onClick.AddListener(delegate { Borrar_personaje(recuadro_personaje, index); });
 
                 //ENTRAMOS EN EL CHILD #0 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO
+                GameObject img_perfil = recuadro_personaje.transform.GetChild(0).gameObject;
                 GameObject texto_nivel = recuadro_personaje.transform.GetChild(1).gameObject;
+                img_perfil.GetComponent<Image>().sprite = Resources.Load <Sprite>("img_personajes/perfiles/" + this.jugador.personajes[i].foto_perfil);
                 texto_nivel.GetComponent<Text>().text = jugador.personajes[i].nivel.ToString();
                 }
             }
@@ -107,7 +111,9 @@ public class defensa_pvp : MonoBehaviour
             btn.onClick.AddListener(delegate { Borrar_personaje(recuadro_personaje, 0); });
 
             //ENTRAMOS EN EL CHILD #0 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO
+            GameObject img_perfil = recuadro_personaje.transform.GetChild(0).gameObject;
             GameObject texto_nivel = recuadro_personaje.transform.GetChild(1).gameObject;
+            img_perfil.GetComponent<Image>().sprite = Resources.Load <Sprite>("img_personajes/perfiles/" + jugador.personajes[0].foto_perfil);
             texto_nivel.GetComponent<Text>().text = jugador.personajes[0].nivel.ToString();
         }
     }

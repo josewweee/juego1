@@ -20,6 +20,7 @@ public class Personajes
     public string rareza; // COMUN, RARO, MITICO, LEGENDARIO
     public int fragmentos;
     public string[] imagen_completa; // UBICACION SPRITE, POSICION SPRITE DENTRO DE LA LISTA DE SPRITES
+    public string foto_perfil;
 
         // string output = JsonUtility.ToJson(atributos, true);
         // Debug.Log(output);

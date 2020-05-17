@@ -21,6 +21,7 @@ public class liliana : Personajes
         rareza = "legendario";
         fragmentos = 0;
         imagen_completa = new string[2]{"PackForest01","48"};
+        foto_perfil = "liliana_perfil";
         Agregar_poderes();
         Activar_poderes();
     }

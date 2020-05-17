@@ -21,6 +21,7 @@ public class martis : Personajes
         rareza = "mitico";
         fragmentos = 0;
         imagen_completa = new string[2]{"PackForest01","51"};
+        foto_perfil = "martis_perfil";
         Agregar_poderes();
         Activar_poderes();
     }

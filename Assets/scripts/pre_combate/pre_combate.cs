@@ -53,7 +53,7 @@ public class pre_combate : MonoBehaviour
             }
             pjs_enemigos = storage_enemigos.enemigos_pvp;
         }
-        
+
         Popular_personajes_favoritos(jugador, prefab_recuadro_personaje);
         Popular_lista_personajes(cantidad_personajes, prefab_recuadro_personaje);
         Popular_lista_enemigos(prefab_recuadro_personaje);
@@ -71,10 +71,12 @@ public class pre_combate : MonoBehaviour
             int index = i; // NECESARIO PARA EVITAR CLOUSURE CON LA i
             btn.onClick.AddListener(delegate { Agregar_personaje(recuadro_personaje, index); });
 
-            //ENTRAMOS EN EL CHILD #0 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO
+            //ENTRAMOS EN EL CHILD #0 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO Y SU FOTO
+            GameObject img_perfil = recuadro_personaje.transform.GetChild(0).gameObject;
             GameObject texto_nivel = recuadro_personaje.transform.GetChild(1).gameObject;
+            img_perfil.GetComponent<Image>().sprite = Resources.Load <Sprite>("img_personajes/perfiles/" + this.jugador.personajes[i].foto_perfil);
             texto_nivel.GetComponent<Text>().text = this.jugador.personajes[i].nivel.ToString();
-            pos_inicial_x += 17F;
+            pos_inicial_x += 21F;
 
             //DESABILITAMOS EL PERSONAJE SI YA ESTA EN FAVORITOS
             foreach (Personajes fav in favoritos)
@@ -96,8 +98,10 @@ public class pre_combate : MonoBehaviour
             recuadro_personaje.transform.SetParent(GameObject.Find("Panel_enemigo_"+i).transform, false);
             recuadro_personaje.transform.localScale = new Vector3(4.386893F, 14.56672F, 5.55976F);
 
-            //ENTRAMOS EN EL CHILD #0 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO
+            //ENTRAMOS EN EL CHILD #0 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO Y SU IMAGEN
+            GameObject img_perfil = recuadro_personaje.transform.GetChild(0).gameObject;
             GameObject texto_nivel = recuadro_personaje.transform.GetChild(1).gameObject;
+            img_perfil.GetComponent<Image>().sprite = Resources.Load <Sprite>("img_personajes/perfiles/" + pjs_enemigos[i].foto_perfil);
             texto_nivel.GetComponent<Text>().text = pjs_enemigos[i].nivel.ToString();
             
         }
@@ -119,8 +123,10 @@ public class pre_combate : MonoBehaviour
                 int index = i; // NECESARIO PARA EVITAR CLOUSURE
                 btn.onClick.AddListener(delegate { Borrar_personaje(recuadro_personaje, index); });
 
-                //ENTRAMOS EN EL CHILD #0 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO
+                //ENTRAMOS EN EL CHILD #0 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO Y FOTO
+                GameObject img_perfil = recuadro_personaje.transform.GetChild(0).gameObject;
                 GameObject texto_nivel = recuadro_personaje.transform.GetChild(1).gameObject;
+                img_perfil.GetComponent<Image>().sprite = Resources.Load <Sprite>("img_personajes/perfiles/" + jugador.personajes[i].foto_perfil);
                 texto_nivel.GetComponent<Text>().text = jugador.personajes[i].nivel.ToString();
                 }
             }
@@ -147,8 +153,10 @@ public class pre_combate : MonoBehaviour
             Button btn = recuadro_personaje.GetComponent<Button>();
             btn.onClick.AddListener(delegate { Borrar_personaje(recuadro_personaje, 0); });
 
-            //ENTRAMOS EN EL CHILD #0 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO
+            //ENTRAMOS EN EL CHILD #0 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO Y FOTO
+            GameObject img_perfil = recuadro_personaje.transform.GetChild(0).gameObject;
             GameObject texto_nivel = recuadro_personaje.transform.GetChild(1).gameObject;
+            img_perfil.GetComponent<Image>().sprite = Resources.Load <Sprite>("img_personajes/perfiles/" + jugador.personajes[0].foto_perfil);
             texto_nivel.GetComponent<Text>().text = jugador.personajes[0].nivel.ToString();
         }
     }

@@ -73,8 +73,10 @@ public class mis_personajes : MonoBehaviour
                 btn.onClick.AddListener(delegate { btnClicked(param); });
 
                 //ENTRAMOS EN EL CHILD #1 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO
-                GameObject texto_nivel = recuadro_personaje.transform.GetChild(1).gameObject;
-                GameObject texto_nombre = recuadro_personaje.transform.GetChild(0).gameObject;
+                GameObject texto_nivel = recuadro_personaje.transform.GetChild(2).gameObject;
+                GameObject texto_nombre = recuadro_personaje.transform.GetChild(1).gameObject;
+                GameObject img_perfil = recuadro_personaje.transform.GetChild(0).gameObject;
+                img_perfil.GetComponent<Image>().sprite = Resources.Load <Sprite>("img_personajes/perfiles/" +  _personajes[i].foto_perfil);
                 texto_nombre.GetComponent<Text>().text = _personajes[i].nombre;
                 texto_nivel.GetComponent<Text>().text = _personajes[i].nivel.ToString();
                 pos_inicial_x += 30F;

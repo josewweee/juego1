@@ -21,6 +21,7 @@ public class roger : Personajes
         rareza = "comun";
         fragmentos = 0;
         imagen_completa = new string[2]{"PackForest01","7"};
+        foto_perfil = "roger_perfil";
         Agregar_poderes();
         Activar_poderes();
     }

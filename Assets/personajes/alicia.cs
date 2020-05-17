@@ -21,6 +21,7 @@ public class alicia : Personajes
         rareza = "raro";
         fragmentos = 0;
         imagen_completa = new string[2]{"PackForest01","3"};
+        foto_perfil = "alicia_perfil";
         Agregar_poderes();
         Activar_poderes();
     }
