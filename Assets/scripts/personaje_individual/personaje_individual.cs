@@ -13,20 +13,20 @@ public class personaje_individual : MonoBehaviour
     Personajes personaje_actual;
 
     // TRAEMOS LOS VALORES DE LA UI
-    private Text nombre;
-    private Text nivel;
-    private Text nivel_max;
-    private Text exp;
-    private Text exp_max;
-    private Text vitalidad;
-    private Text fuerza;
-    private Text magia;
-    private Text velocidad;
-    private Text critico;
-    private Text def_fisica;
-    private Text def_magica;
-    private Text costo_fragmentos;
-    private Text fragmentos_poseidos;
+    public Text nombre;
+    public Text nivel;
+    public Text nivel_max;
+    public Text exp;
+    public Text exp_max;
+    public Text vitalidad;
+    public Text fuerza;
+    public Text magia;
+    public Text velocidad;
+    public Text critico;
+    public Text def_fisica;
+    public Text def_magica;
+    public Text costo_fragmentos;
+    public Text fragmentos_poseidos;
 
     public GameObject img_personaje;
 
@@ -73,7 +73,7 @@ public class personaje_individual : MonoBehaviour
         nivel.text = personaje_actual.nivel.ToString();
         nivel_max.text = " / " +  personaje_actual.nivel_maximo.ToString();
         exp.text = personaje_actual.experiencia.ToString();
-        exp_max.text = Math.Pow(personaje_actual.nivel, 2).ToString();
+        exp_max.text = "/ " +  Math.Pow(personaje_actual.nivel, 2).ToString();
         vitalidad.text = personaje_actual.atributos.vitalidad.ToString();
         fuerza.text = personaje_actual.atributos.fuerza.ToString();
         magia.text = personaje_actual.atributos.magia.ToString();

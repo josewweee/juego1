@@ -36,17 +36,17 @@ public class Recompenza : MonoBehaviour
             var rand = new System.Random();
             int oro = rand.Next(0, 101);
             int diamantes = 0;
-
+            float y = 0F;
             //MOSTRAMOS LO GANADO DE ORO EN LA UI
-            Mostrar_item_UI(-70F, 0F, prefab_item, "Oro", oro);
+            Mostrar_item_UI(-70F, y, prefab_item, "Oro", oro);
 
             //SI ESTAMOS EN UN NIVEL 10, 20, 30, ... TENDREMOS MAS PROBABILIDADES DE GANAR DIAMANTES, SI NO SOLO UN 18%
             int prob_diamantes = ( nivel_historia % 10 == 0)? rand.Next(0, 76): rand.Next(0, 101);
             if (prob_diamantes < 18){
                 diamantes = prob_diamantes;
-
+                y -= 83F;
                 //MOSTRAMOS LO GANADO DE ORO EN LA UI
-                Mostrar_item_UI(-70F, -83F, prefab_item, "Diamantes", diamantes);
+                Mostrar_item_UI(-70F, y, prefab_item, "Diamantes", diamantes);
             }
 
             //LE AGREGAMOS LO GANADO AL JUGADOR
@@ -68,7 +68,7 @@ public class Recompenza : MonoBehaviour
 
             //DAMOS FRAGMENTOS DE PERSONAJE, SEGUN LOS PERSONAJES QUE TENGA EL USUARIO
             List<Personajes> personajes = jugador.personajes;
-            float pos_y = -166F;
+            float pos_y = y - 83F;
             for(int i = 0; i < personajes.Count; i++)
             {
                 int prob_fragmentos = rand.Next(0, 1000);
@@ -116,24 +116,24 @@ public class Recompenza : MonoBehaviour
             var rand = new System.Random();
             int puntos_pvp = rand.Next(0, 101);
             int diamantes = 0;
-
+            float y = 0F;
              //MOSTRAMOS LO GANADO DE PUNTOS PVP EN LA UI
-            Mostrar_item_UI(-70F, 0F, prefab_item, "Puntos Pvp", puntos_pvp);
+            Mostrar_item_UI(-70F, y, prefab_item, "Puntos Pvp", puntos_pvp);
 
             //25% DE PROB DE GANAR DIAMANTES EN PVP
             int prob_diamantes = rand.Next(0, 76);
              if (prob_diamantes < 25){
                 diamantes = prob_diamantes;
-
+                y -= 83F;
                 //MOSTRAMOS LO GANADO DE ORO EN LA UI
-                Mostrar_item_UI(-70F, -83F, prefab_item, "Diamantes", diamantes);
+                Mostrar_item_UI(-70F, y, prefab_item, "Diamantes", diamantes);
             }
             jugador.monedas.puntos_pvp += puntos_pvp;
             jugador.monedas.diamantes += diamantes;
 
             //DAMOS FRAGMENTOS DE PERSONAJE, DOBLE DE POSIBILIDAD, SEGUN LOS PERSONAJES QUE TENGA EL USUARIO
             List<Personajes> personajes = jugador.personajes;
-            float pos_y = -166F;
+            float pos_y = y - 83F;
             for(int i = 0; i < personajes.Count; i++)
             {
                 int prob_fragmentos = rand.Next(0, 1000);
@@ -185,17 +185,17 @@ public class Recompenza : MonoBehaviour
             var rand = new System.Random();
             int oro = rand.Next(0, 51);
             int diamantes = 0;
-
+            float y = 0F;
             //MOSTRAMOS LO GANADO DE ORO EN LA UI
-            Mostrar_item_UI(-70F, 0F, prefab_item, "Oro", oro);
+            Mostrar_item_UI(-70F, y, prefab_item, "Oro", oro);
 
             //SI ESTAMOS EN UN NIVEL 10, 20, 30, ... TENDREMOS MAS PROBABILIDADES DE GANAR DIAMANTES, SI NO SOLO UN 8%
             int prob_diamantes = ( nivel_historia % 10 == 0)? rand.Next(0, 76): rand.Next(0, 101);
             if (prob_diamantes < 8){
                 diamantes = prob_diamantes;
-
+                y -= -83F;
                 //MOSTRAMOS LO GANADO DE ORO EN LA UI
-                Mostrar_item_UI(-70F, -83F, prefab_item, "Diamantes", diamantes);
+                Mostrar_item_UI(-70F, y, prefab_item, "Diamantes", diamantes);
             }
             jugador.monedas.oro += oro;
             jugador.monedas.diamantes += diamantes;
@@ -218,18 +218,18 @@ public class Recompenza : MonoBehaviour
             var rand = new System.Random();
             int puntos_pvp = rand.Next(0, 31);
             int diamantes = 0;
-
+            float y = 0F;
             //MOSTRAMOS LO GANADO DE PUNTOS PVP EN LA UI
-            Mostrar_item_UI(-70F, 0F, prefab_item, "Puntos Pvp", puntos_pvp);
+            Mostrar_item_UI(-70F, y, prefab_item, "Puntos Pvp", puntos_pvp);
 
 
             //15% DE PROB DE GANAR DIAMANTES EN PVP
             int prob_diamantes = rand.Next(0, 76);
             if (prob_diamantes < 8){
                 diamantes = prob_diamantes;
-
+                y -= 83F;
                 //MOSTRAMOS LO GANADO DE ORO EN LA UI
-                Mostrar_item_UI(-70F, -83F, prefab_item, "Diamantes", diamantes);
+                Mostrar_item_UI(-70F, y, prefab_item, "Diamantes", diamantes);
             }
             jugador.monedas.puntos_pvp += puntos_pvp;
             jugador.monedas.diamantes += diamantes;
@@ -248,6 +248,26 @@ public class Recompenza : MonoBehaviour
         //PONEMOS EL ITEM QUE SALIO
         GameObject txt_item = item_ganado.transform.GetChild(1).gameObject;
         txt_item.GetComponent<UnityEngine.UI.Text>().text = item;
+
+        //PONEMOS LA IMAGEN
+        string nombre_img = "";
+        switch(item)
+        {
+            case "Oro":
+                nombre_img = "Oro";
+                break;
+            case "Diamantes":
+                nombre_img = "Diamantes";
+                break;
+            case "Puntos Pvp":
+                nombre_img = "pvp";
+                break;
+            default: //OPCION DE LOS FRAGMENTOS
+                nombre_img = "invocacion";
+                break;
+        }
+        GameObject img_item = item_ganado.transform.GetChild(2).gameObject;
+        img_item.GetComponent<UnityEngine.UI.Image>().sprite = Resources.Load <Sprite>("botones/" + nombre_img);
 
         //LO PONEMOS COMO HIJO DE LA VENTANA DE FIN JUEGO
         item_ganado.transform.SetParent(GameObject.Find("Fin_juego").transform, false);
