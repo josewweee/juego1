@@ -480,9 +480,13 @@ public class Combate : MonoBehaviour
                 GameObject personaje_creado = Instantiate( Resources.Load("prefabs_personajes/" + personajes_jugador[i].nombre), new Vector3(pos_inicial_x[i], pos_inicial_y[i], pos_inicial_z), Quaternion.identity) as GameObject;
                 personaje_creado.transform.SetParent(GameObject.Find("personajes").transform, false);
                 personaje_creado.transform.rotation = Quaternion.Euler(0, 180f, 0);
+
+                //LE CAMBIAMOS EL NOMBRE
+                personaje_creado.name = personajes_jugador[i].nombre + "_aliado";
+
                 //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
                 Text txt_vida = GameObject.Find("vida_"+i).GetComponent<Text>();
-                txt_vida.text = personajes_jugador[i].atributos.vitalidad.ToString();
+                txt_vida.text = personajes_jugador[i].atributos.salud.ToString() + " / " + personajes_jugador[i].atributos.vitalidad.ToString();
 
                 //AGREGAMOS UN EVENTO CUANDO SE SELECCIONE EL EPRSONAJE
                 int index = i;
@@ -491,9 +495,6 @@ public class Combate : MonoBehaviour
                 entry.eventID = EventTriggerType.PointerClick;
                 entry.callback.AddListener(delegate { Confirmar_poder(index.ToString()); });
                 trigger.triggers.Add(entry);
-
-                //LE CAMBIAMOS EL NOMBRE
-                personaje_creado.name = personajes_jugador[i].nombre + "_aliado";
             }
             
         }
@@ -505,9 +506,13 @@ public class Combate : MonoBehaviour
             if (enemigos[i] != null){
                 GameObject personaje_creado = Instantiate(Resources.Load("prefabs_personajes/" + enemigos[i].nombre), new Vector3(pos_inicial_x_enemigos[i], pos_inicial_y_enemigos[i], pos_inicial_z), Quaternion.identity) as GameObject;
                 personaje_creado.transform.SetParent(GameObject.Find("personajes").transform, false);
+
+                //LE CAMBIAMOS EL NOMBRE
+                personaje_creado.name = enemigos[i].nombre + "_enemigo";
+                
                 //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
                 Text txt_vida = GameObject.Find("vida_enemigo_"+i).GetComponent<Text>();
-                txt_vida.text = enemigos[i].atributos.vitalidad.ToString();
+                txt_vida.text = enemigos[i].atributos.salud.ToString() + " / " + enemigos[i].atributos.vitalidad.ToString();
                 
                 //AGREGAMOS UN EVENTO CUANDO SE SELECCIONE EL EPRSONAJE
                 int index = i;
@@ -516,9 +521,6 @@ public class Combate : MonoBehaviour
                 entry.eventID = EventTriggerType.PointerClick;
                 entry.callback.AddListener(delegate { Confirmar_poder(index.ToString()); });
                 trigger.triggers.Add(entry);
-
-                //LE CAMBIAMOS EL NOMBRE
-                personaje_creado.name = enemigos[i].nombre + "_enemigo";
             }
         }
     }
@@ -637,7 +639,7 @@ public class Combate : MonoBehaviour
          }catch{
              Debug.Log("acabamos el juego");
          }   
-         
+
          //ESPERAMOS 0,7 SEGUNDOS MAS, PARA QUE TEMRINE LA ANIMACION SI NO LO HA HECHO Y PASAMOS TURNO
         yield return new WaitForSeconds(0.7F);
         pasar_turno();
@@ -651,24 +653,28 @@ public class Combate : MonoBehaviour
             if (index_objetivo == 99){
                 for(int i = 0; i < enemigos.Length; i++){
                     GameObject canvas_texto = GameObject.Find("vida_enemigo_"+i);
-                    canvas_texto.GetComponent<Text>().text = Convert.ToInt32(enemigos[i].atributos.salud).ToString();
+                    string salud = (Convert.ToInt32(enemigos[i].atributos.salud) > 0) ? Convert.ToInt32(enemigos[i].atributos.salud).ToString() : "0";
+                    canvas_texto.GetComponent<Text>().text = salud + " / " + enemigos[i].atributos.vitalidad.ToString();
                 }
             }else{
                 //MODIFICAMOS LA VIDA DE 1 PERSONAJE ARRIBA EN PANTALLA
                 GameObject canvas_texto = GameObject.Find("vida_enemigo_"+index_objetivo);
-                canvas_texto.GetComponent<Text>().text = Convert.ToInt32(target.atributos.salud).ToString();
+                string salud = (Convert.ToInt32(target.atributos.salud) > 0) ? Convert.ToInt32(target.atributos.salud).ToString() : "0";
+                canvas_texto.GetComponent<Text>().text = salud + " / " + target.atributos.vitalidad.ToString();
             }
         }else{
             //MOSIFICAMOS LA VIDA DE TODOS LOS PERSONAJES SI NOS LLEGA (99 = TODOS LOS OBJETIVOS)
             if (index_objetivo == 99){
                 for(int i = 0; i < personajes.Length; i++){
                     GameObject canvas_texto = GameObject.Find("vida_"+i);
-                    canvas_texto.GetComponent<Text>().text = Convert.ToInt32(personajes[i].atributos.salud).ToString();
+                    string salud = (Convert.ToInt32(personajes[i].atributos.salud) > 0) ? Convert.ToInt32(personajes[i].atributos.salud).ToString() : "0";
+                    canvas_texto.GetComponent<Text>().text = salud + " / " + personajes[i].atributos.vitalidad.ToString();
                 }
             }else{
                 //MODIFICAMOS LA VIDA DE 1 PERSONAJE ARRIBA EN PANTALLA
                 GameObject canvas_texto = GameObject.Find("vida_"+index_objetivo);
-                canvas_texto.GetComponent<Text>().text = Convert.ToInt32(target.atributos.salud).ToString();
+                string salud = (Convert.ToInt32(target.atributos.salud) > 0) ? Convert.ToInt32(target.atributos.salud).ToString() : "0";
+                canvas_texto.GetComponent<Text>().text = salud + " / " + target.atributos.vitalidad.ToString();
             }
         }
         
