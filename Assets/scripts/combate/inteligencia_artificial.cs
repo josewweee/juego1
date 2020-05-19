@@ -6,11 +6,18 @@ using System;
 public class inteligencia_artificial 
 {
     private mecanicas_combate mecanicas;
+
+    // ( IMPORTANTE -> 88 SIGNIFICA "NO SE ENCONTRO UN RESULTADO", SI SE MODIFICA EL 88, SIGNIFICA QUE SI PODEMOS ATACAR, ES BASICAMENTE UN BOOLEANO)
     private static int index_objetivo = 88;
     private static Poderes poder_lanzar = null;
-    public Personajes[,] personajes_retorno;
+    //VALORES QUE USAREMOS EN ESTA INSTANCIA Y ENVIAREMOS A MECANICAS
     public Personajes[] personajes;
     public Personajes[] enemigos;
+
+    //VALORES A RETORNAR A LA INSTANCIA DE COMBATE
+    public Personajes[,] personajes_retorno;
+    public Poderes poder_retorno; 
+    int index_objetivo_retorno;
 
 
     public inteligencia_artificial(Personajes[] personajes, Personajes[] enemigos){
@@ -22,18 +29,32 @@ public class inteligencia_artificial
         mecanicas = new mecanicas_combate();
     }
 
+    //MORAMOS LAS POSIBLES OPCIONES PARA ATACAR
+    // ( IMPORTANTE -> 99 SIGNIFICA A TODOS LOS OBJETIVOS)
+
     public Personajes[,] Ejecutar(Personajes[] personajes, Personajes[] enemigos, Personajes personaje_en_turno){
         
         int numero_personajes = personajes.Length;
         personajes_retorno = new Personajes[2,numero_personajes];
 
         Revisar_matar_ataque(personajes, enemigos, personaje_en_turno);
+        //SI ENCONTRAMOS A ALGUIEN Y EL PODER QUE LANZAREMOS NO ES NULO
         if(index_objetivo != 88 && poder_lanzar != null)
         {
+            //SI NO ES HACIA TODOS LOS OBJETIVOS
             if(index_objetivo != 99)  Debug.Log("hacia/: " +  enemigos[index_objetivo]);
             else Debug.Log("hacia todos");
+
+            //LANZAMOS EL PODER HACIA EL OBJETIVO INDICADO
             mecanicas_combate.Lanzar_poder(index_objetivo.ToString(), poder_lanzar, personajes, enemigos, personaje_en_turno);
+
+            //ASIGNAMOS LA MATRIZ QUE ENVIARA LA INFORMACION DE COMO QUEDARON LOS PRSONAJES A LA INSTANCIA DE COMBATE
             personajes_retorno = matriz_envio_personajes(personajes, enemigos);
+
+            //ASIGNAMOS EL PDOER Y EL INDEX QUE SE LANZO A LA INSTANCIA DE COMBATE
+            poder_retorno = poder_lanzar;
+            index_objetivo_retorno = index_objetivo;
+
             index_objetivo = 88;
             poder_lanzar = null;
             return personajes_retorno;
@@ -46,6 +67,10 @@ public class inteligencia_artificial
             else Debug.Log("hacia todos");
             mecanicas_combate.Lanzar_poder(index_objetivo.ToString(), poder_lanzar, personajes, enemigos, personaje_en_turno);
             personajes_retorno = matriz_envio_personajes(personajes, enemigos);
+            //ASIGNAMOS EL PDOER Y EL INDEX QUE SE LANZO A LA INSTANCIA DE COMBATE
+            poder_retorno = poder_lanzar;
+            index_objetivo_retorno = index_objetivo;
+
             index_objetivo = 88;
             poder_lanzar = null;
             return personajes_retorno;
@@ -57,6 +82,10 @@ public class inteligencia_artificial
             else Debug.Log("hacia todos");
             mecanicas_combate.Lanzar_poder(index_objetivo.ToString(), poder_lanzar, personajes, enemigos, personaje_en_turno);
             personajes_retorno = matriz_envio_personajes(personajes, enemigos);
+            //ASIGNAMOS EL PDOER Y EL INDEX QUE SE LANZO A LA INSTANCIA DE COMBATE
+            poder_retorno = poder_lanzar;
+            index_objetivo_retorno = index_objetivo;
+
             index_objetivo = 88;
             poder_lanzar = null;
             return personajes_retorno;
@@ -68,6 +97,10 @@ public class inteligencia_artificial
             else Debug.Log("hacia todos");
             mecanicas_combate.Lanzar_poder(index_objetivo.ToString(), poder_lanzar, personajes, enemigos, personaje_en_turno);
             personajes_retorno = matriz_envio_personajes(personajes, enemigos);
+            //ASIGNAMOS EL PDOER Y EL INDEX QUE SE LANZO A LA INSTANCIA DE COMBATE
+            poder_retorno = poder_lanzar;
+            index_objetivo_retorno = index_objetivo;
+
             index_objetivo = 88;
             poder_lanzar = null;
             return personajes_retorno;
@@ -87,6 +120,10 @@ public class inteligencia_artificial
         else Debug.Log("hacia todos");
         mecanicas_combate.Lanzar_poder(index_objetivo.ToString(), poder_lanzar, personajes, enemigos, personaje_en_turno);
         personajes_retorno = matriz_envio_personajes(personajes, enemigos);
+        //ASIGNAMOS EL PDOER Y EL INDEX QUE SE LANZO A LA INSTANCIA DE COMBATE
+        poder_retorno = poder_lanzar;
+        index_objetivo_retorno = index_objetivo;
+
         index_objetivo = 88;
         poder_lanzar = null;
         return personajes_retorno;
@@ -672,19 +709,34 @@ public class inteligencia_artificial
         return personaje_ganador;
     }
 
+    //GUARDAMOS LOS ENEMIGOS Y ALIADOS QUE MODIFICAMOS EN UNA MATRIX 2, TAMAÑO DE PERSONAJES
     static Personajes[,] matriz_envio_personajes(Personajes[] personajes, Personajes[] enemigos)
     {
+    
         Personajes[,] matrix = new Personajes[2, personajes.Length];
+        //ALIADOS POS 0
         for(int i = 0; i < personajes.Length; i++)
         {
             matrix[0,i] = personajes[i];
         }
 
+        //ENEMIGOS POS 1
         for(int i = 0; i < enemigos.Length; i++)
         {
             matrix[1,i] = enemigos[i];
         }
         return matrix;
+    }
+
+    //NO ES STATIC POR QUE NO DA ERROR ASI
+    public Poderes GetPoderLanzado()
+    {
+        return poder_retorno;
+    }
+
+    public int GetIndexObjetivo()
+    {
+        return index_objetivo_retorno;
     }
 
 }

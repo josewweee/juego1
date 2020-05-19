@@ -77,8 +77,11 @@ public class Combate : MonoBehaviour
     public GameObject objetivo_unico_txt;
     public GameObject multiple_objetivo_txt;
     public GameObject propio_objetivo_txt;
+    
 
-
+    //VARIABLES DE ANIMACION
+    Animator animator;
+    private IEnumerator corrutina;
 
 
     void Awake(){
@@ -106,21 +109,21 @@ public class Combate : MonoBehaviour
         this.menu_configuracion.SetActive(false);
         
         //de prueba
-        //fabrica = new Personajes();
-        //personajes = new Personajes[4]{fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("liliana"), fabrica.Crear_personaje("martis")};
-        //enemigos = new Personajes[4]{fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("martis"), fabrica.Crear_personaje("liliana")};
+        fabrica = new Personajes();
+        personajes = new Personajes[4]{fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("liliana"), fabrica.Crear_personaje("martis")};
+        enemigos = new Personajes[4]{fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("martis"), fabrica.Crear_personaje("liliana")};
 
         //COPIAMOS LOS PERSONAJES DEL USUARIO Y DE LOS ENEMIGOS LOCALMENTE
-        if (tipo_combate == "historia")
-        {
-            personajes = jugador.personajesFavoritos.ToArray();
-            enemigos = storage_enemigos.enemigos.ToArray();
-        }
-        else if (tipo_combate == "pvp")
-        {
-            personajes = jugador.defensa_pvp.ToArray();
-            enemigos = storage_enemigos.enemigos_pvp.ToArray();
-        }
+        // if (tipo_combate == "historia")
+        // {
+        //     personajes = jugador.personajesFavoritos.ToArray();
+        //     enemigos = storage_enemigos.enemigos.ToArray();
+        // }
+        // else if (tipo_combate == "pvp")
+        // {
+        //     personajes = jugador.defensa_pvp.ToArray();
+        //     enemigos = storage_enemigos.enemigos_pvp.ToArray();
+        // }
 
         //INSTANCIAMOS LAS MECANICAS Y LA IA
         mecanicas = new mecanicas_combate();
@@ -223,13 +226,24 @@ public class Combate : MonoBehaviour
                 break;
             }
         }
+
+        GameObject prefab_pj_turno = null;
         
          if(key_personaje_turno.Contains("enemigo")){
+
             //ASIGNAMOS EL PUNTERO
             Mover_puntero_personaje(index_personaje_en_turno);
 
-            //RECIBIMOS UNA MATRIZ CON LAS LISTAS PERSONAJES Y ENEMIGOS
+            //EJECUTAMOS UNA ACCION DE LA IA DE ATAQUE Y RECIBIMOS UNA MATRIZ CON LAS LISTAS PERSONAJES Y ENEMIGOS
             matrix_envio_personajes = maquina.Ejecutar(enemigos, personajes, personaje_en_turno);
+
+            //INICIALIZAMOS LA ANIMACION DEL ENEMIGO
+            GameObject personaje = GameObject.Find(personaje_en_turno.nombre + "_enemigo");
+            Poderes poder_lanzado_enemigo = maquina.GetPoderLanzado();
+            int index_objetivo_lanzado_enemigo = maquina.GetIndexObjetivo();
+            
+            //CORREMOS LA ANIMACION EN UNA SUB RUTINA
+            Activar_animacion(personaje, poder_lanzado_enemigo, true, index_personaje_en_turno, index_objetivo_lanzado_enemigo.ToString());
 
             //LOS PASAMOS DE LA MATRIZ A NUESTRAS LISTAS GLOBALES DE PERSONAJES Y ENEMIGOS
             Matrix_to_array(matrix_envio_personajes);
@@ -241,8 +255,13 @@ public class Combate : MonoBehaviour
          }else{
             Mover_puntero_personaje(index_personaje_en_turno);
             Asignar_botones_turno(personaje_en_turno);
+
+            prefab_pj_turno = GameObject.Find(personaje_en_turno.nombre + "_aliado");
+            animator = prefab_pj_turno.GetComponent<Animator>();
+
             Debug.Log("personaje en turno: " + personaje_en_turno.nombre);
          }
+
     }
 
 
@@ -267,16 +286,32 @@ public class Combate : MonoBehaviour
                 mecanicas_combate.debuffear(personaje_para_revisar_buffos, index_personaje_en_turno, personajes, enemigos);
 
                 //EN CASO DE ESTAR NOQUEADO, PASAR TURNO
-                if(personaje_en_turno.estado_alterado.ContainsKey("dormir") || personaje_en_turno.estado_alterado.ContainsKey("congelar") || personaje_en_turno.estado_alterado.ContainsKey("aturdir") || personaje_en_turno.estado_alterado.ContainsKey("muerto")){
+                if(personaje_en_turno.estado_alterado.ContainsKey("dormir") || personaje_en_turno.estado_alterado.ContainsKey("congelar") || personaje_en_turno.estado_alterado.ContainsKey("aturdir")){
                     Debug.Log(personaje_en_turno.nombre +  " esta con estado alterado o muerto y pasara turno");
+                    pasar_turno();
+                } else if ( personaje_en_turno.estado_alterado.ContainsKey("muerto")){
+                    Debug.Log(personaje_en_turno.nombre +  " esta muerto");
                     pasar_turno();
                 } else{
 
                     //ASIGNAMOS EL PUNTERO
                     Mover_puntero_personaje(index_personaje_en_turno);
 
+                    //LO PONEMOS EN TURNO, QUITAMOS EL BOOLEAN DE PASAR TURNO
+                    turno_finalizado = false;
+
                     //RECIBIMOS UNA MATRIZ CON LAS LISTAS PERSONAJES Y ENEMIGOS
                     matrix_envio_personajes = maquina.Ejecutar(enemigos, personajes, personaje_en_turno);
+
+                    //RECIBIMOS EL PODER QUE FUE LANZADO Y EL INDEX HACIA QUIEN FUE
+                    Poderes poder_lanzado_enemigo = maquina.GetPoderLanzado();
+                    int index_objetivo_lanzado_enemigo = maquina.GetIndexObjetivo();
+
+                    //INICIALIZAMOS LA ANIMACION DEL ENEMIGO
+                    GameObject personaje = GameObject.Find(personaje_en_turno.nombre + "_enemigo");
+
+                    //CORREMOS LA ANIMACION EN UNA SUB RUTINA
+                    Activar_animacion(personaje, poder_lanzado_enemigo, true, index_personaje_en_turno, index_objetivo_lanzado_enemigo.ToString());
 
                     //LOS PASAMOS DE LA MATRIZ A NUESTRAS LISTAS GLOBALES DE PERSONAJES Y ENEMIGOS
                     Matrix_to_array(matrix_envio_personajes);
@@ -284,7 +319,7 @@ public class Combate : MonoBehaviour
                     //ACTUALIZAMOS LOS VALORES DE LA VIDA Y PASAMOS TURNO
                     Cambiar_texto_vida(null, 99, true);
                     Cambiar_texto_vida(null, 99, false);
-                    pasar_turno();
+                    //pasar_turno();
                 }
             }else{
                 //SI ES ALIADO, REVISAMOS QUIEN ES
@@ -456,6 +491,9 @@ public class Combate : MonoBehaviour
                 entry.eventID = EventTriggerType.PointerClick;
                 entry.callback.AddListener(delegate { Confirmar_poder(index.ToString()); });
                 trigger.triggers.Add(entry);
+
+                //LE CAMBIAMOS EL NOMBRE
+                personaje_creado.name = personajes_jugador[i].nombre + "_aliado";
             }
             
         }
@@ -478,6 +516,9 @@ public class Combate : MonoBehaviour
                 entry.eventID = EventTriggerType.PointerClick;
                 entry.callback.AddListener(delegate { Confirmar_poder(index.ToString()); });
                 trigger.triggers.Add(entry);
+
+                //LE CAMBIAMOS EL NOMBRE
+                personaje_creado.name = enemigos[i].nombre + "_enemigo";
             }
         }
     }
@@ -506,13 +547,20 @@ public class Combate : MonoBehaviour
     }
 
     void Confirmar_poder(string index){
+         GameObject personaje = null;
         if (poder_a_ser_lanzado != null && poder_a_ser_lanzado.se_puede_usar){
             mecanicas_combate.Lanzar_poder(index, poder_a_ser_lanzado, personajes, enemigos, personaje_en_turno);
-            pasar_turno();
+
+            //INICIALIZAMOS LA ANIMACION
+            personaje = GameObject.Find(personaje_en_turno.nombre + "_aliado");
+
+            //CORREMOS LA ANIMACION EN UNA SUB RUTINA
+            Activar_animacion(personaje, poder_a_ser_lanzado, false, index_personaje_en_turno, index);
+
         }else{
             return;
         }
-        
+
         //DESACTIVAMOS LOS UI DE TEXTO OBJETIVO
         string objetivos = poder_a_ser_lanzado.objetivos; // UNICO = FALSE, MULTIPLE = TRUE
         switch(objetivos){
@@ -533,7 +581,67 @@ public class Combate : MonoBehaviour
 
         Cambiar_texto_vida(null, 99, true);
         Cambiar_texto_vida(null, 99, false);
+
     }
+
+
+    //FUNCION ENCARGADA DE INICIAR UNA ANIMACION DE COMBATE
+    public void Activar_animacion(GameObject personaje, Poderes poder_lanzado, bool es_enemigo, int index_personaje, string index_objetivo)
+    {       
+            //SACAMOS EL COMPONENTE DE ANIMACION, EL NOMBRE DEL CLIP Y DEL TRIGGER QUE ACTIVARA LA ANIMACION
+            this.animator = personaje.GetComponent<Animator>();
+            string  nombre_animacion = "";
+            string nombre_clip = "";
+            string bando = (es_enemigo) ? "enemigo" : "aliado";
+
+            //VEMOS SI EL TRIGER QUE ACTIVARA LA ANIMACION ES PARA LA MAGIA O PARA EL DAÑO NORMAL
+            if (poder_lanzado.atributo == "magia" || poder_lanzado.objetivos != "unico" || poder_lanzado.atributo == "defensa_magia")
+            {
+                nombre_animacion = index_personaje + "_magia";
+                nombre_clip = index_personaje + "_basico_magia";
+            }else{
+                nombre_animacion = index_personaje + "_melee_" + index_objetivo;
+                nombre_clip = index_personaje + "_melee_" + index_objetivo;
+            }
+            if(es_enemigo) this.animator.SetBool("enemigo", true); // especificamos que es un enemigo para asegurar la animacion de enemigo
+            this.animator.SetBool(nombre_animacion, true); // justo aqui se activa la animacion
+
+            //TOMAMOS TODOS LOS CLIPS Y BUSCAMOS EL ACTUAL PARA HALLAR SU TIEMPO DE DURACION
+            AnimationClip[] clips = this.animator.runtimeAnimatorController.animationClips;
+            int index_clip_actual = 0;
+            foreach(AnimationClip clip in clips)
+             {
+                 if (clip.name == nombre_clip){
+                     break;
+                 }
+                 index_clip_actual++;
+            }
+            Debug.Log(clips[index_clip_actual].name);
+
+            //CORREMOS UNA SUB RUTINA PARA CERRAR LA ANIMACION, QUE SE EJECUTARA LUEGO DEL TIEMPO DE DURACION DE LA ANIMACION
+            corrutina = Terminar_animacion(nombre_animacion, clips[index_clip_actual].length - 0.5F, bando);
+            StartCoroutine(corrutina); // un hilo para terminar la animacio
+    }
+
+
+
+    //FUNCION ENCARGADA DE CORTAR LA ANIMACION CUANDO TERMINE
+     private IEnumerator Terminar_animacion(string nombre_animacion, float tiempo_espera, string bando)
+     {
+         //ESPERAMOS EL TIEMPO DEL CLIP - 0.5 SEGUNDOS PARA DESACTIVARLO, 0.5 MENOS PARA ASEGURAR QUE EVITAMOS UNA REPETICION DEL CLIP
+         yield return new WaitForSeconds(tiempo_espera);
+         Debug.Log("tiempo de la animacion: " + tiempo_espera);
+         try{
+            this.animator.SetBool("enemigo", false);
+            this.animator.SetBool(nombre_animacion, false);
+         }catch{
+             Debug.Log("acabamos el juego");
+         }   
+         
+         //ESPERAMOS 0,7 SEGUNDOS MAS, PARA QUE TEMRINE LA ANIMACION SI NO LO HA HECHO Y PASAMOS TURNO
+        yield return new WaitForSeconds(0.7F);
+        pasar_turno();
+     }
 
 
         void Cambiar_texto_vida(Personajes target, int index_objetivo, bool aliado){
@@ -674,10 +782,11 @@ public class Combate : MonoBehaviour
         
     }
 
-
+    //OBTENEMOS LA MATRIX DE PERSONAJES Y ENEMIGOS QUE LLEGO DE LA INTELEGENCIA ARTIFICIAL.
     private void Matrix_to_array(Personajes[,] matrix){
         for(int i = 0; i < matrix.GetLength(1); i++)
         {
+            //UN TRY CATCH, YA QUE ALGUNO DE LOS 2 ARREGLOS DE PERSONAJE PUEDE SER MAS PEQUEÑO QUE EL OTRO
             try
             {
                 enemigos[i] = matrix[0,i];
@@ -701,27 +810,30 @@ public class Combate : MonoBehaviour
         }
     }
 
-
+    //FUNCIONES AL TERMINAR EL JUEGO Y IR A LA VENTANA DE RECOMPENZAS
     public void Agregar_recompenzas(bool Gane)
     {
-        //RESETEAMOS EL PERSONAJE
+        //RESETEAMOS EL JUGADOR Y LOS ENEMIGOS
         Resetear_jugador();
 
         //ACTIVAMOS LA UI DE FIN DEL JUEGO
         fin_juego.SetActive(true);
+
+        //ACTIVAMOS LA FUNCION DE RECOMPENZA CORRESPONDIENTE
         if (Gane) recompenza.Recompenzas_ganar();
         else recompenza.Recompenzas_perder();
     }
 
+    //BORRAMOS LOS PREFABS DEL JUEGO
     public void Limpiar_mapa_gameobjects()
     {
-        //BORRAMOS LOS PREFABS DEL JUEGO
         Destroy(GameObject.Find("personajes"));
         Destroy(GameObject.Find("txt_vidas"));
     }
 
+
+    //DEVOLVEMOS LOS PERSONAJES Y ENEMIGOS DE FAVORITOS Y DEFENSA PVP A SUS ATRIBUTOS INICIALES
     public void Resetear_jugador(){
-        //DEVOLVEMOS LOS PERSONAJES A SUS ATRIBUTOS INICIALES
         switch(this.tipo_combate)
         {
             case "historia":
@@ -754,6 +866,7 @@ public class Combate : MonoBehaviour
 // FUNCIONES DEL MENU
     public void Opciones_menu(string opcion)
     {
+        //OPCIONES DENTRO DEL MENU
         switch(opcion)
         {
             case "salir":
@@ -766,6 +879,7 @@ public class Combate : MonoBehaviour
         }
     }
 
+    //CERRAMOS EL BLOQUE NEGRO CON LAS OPCIONES DEL MENU
     public void Cerrar_menu_configuracion()
     {
         this.menu_configuracion.SetActive(false);
