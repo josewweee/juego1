@@ -82,6 +82,7 @@ public class Combate : MonoBehaviour
     //VARIABLES DE ANIMACION
     Animator animator;
     private IEnumerator corrutina;
+    GameObject mostrar_poder; //poder que sale en la pantalla;
 
 
     void Awake(){
@@ -179,6 +180,9 @@ public class Combate : MonoBehaviour
         btn_poder_2 = poder_2.GetComponent<Button>();
         btn_poder_3 = poder_3.GetComponent<Button>();
         btn_poder_4 = poder_4.GetComponent<Button>();
+
+        //INICIALIZAMOS LA IMAGEN DEL PODER QUE SE MUESTRA EN LA PANTALLA
+        mostrar_poder = GameObject.Find("poder_lanzado");
 
         //IMAGENES DE LOS PODERES DE MAXIMO 4 PERSONAJES
         if (personajes.Length >= 1){
@@ -621,28 +625,41 @@ public class Combate : MonoBehaviour
             Debug.Log(clips[index_clip_actual].name);
 
             //CORREMOS UNA SUB RUTINA PARA CERRAR LA ANIMACION, QUE SE EJECUTARA LUEGO DEL TIEMPO DE DURACION DE LA ANIMACION
-            corrutina = Terminar_animacion(nombre_animacion, clips[index_clip_actual].length - 0.5F, bando);
-            StartCoroutine(corrutina); // un hilo para terminar la animacio
+            corrutina = Terminar_animacion(nombre_animacion, clips[index_clip_actual].length - 0.5F, bando, null);
+            StartCoroutine(corrutina); // un hilo para terminar la animacion
+
+            //CORREMOS LA ANIMACION DEL PODER MOSTRADO EN PANTALLA
+            mostrar_poder.GetComponent<Image>().sprite = Resources.Load <Sprite>("poderes/" + poder_lanzado.imagen);
+            Animator animator_poder = mostrar_poder.GetComponent<Animator>();
+            animator_poder.SetBool("mostrar_poder", true); // se activa la animacion del poder en pantalla
+            clips = animator_poder.runtimeAnimatorController.animationClips;
+            corrutina = Terminar_animacion("mostrar_poder", clips[0].length - 0.5F, "ninguno", animator_poder);
+            StartCoroutine(corrutina);
     }
 
 
 
     //FUNCION ENCARGADA DE CORTAR LA ANIMACION CUANDO TERMINE
-     private IEnumerator Terminar_animacion(string nombre_animacion, float tiempo_espera, string bando)
+     private IEnumerator Terminar_animacion(string nombre_animacion, float tiempo_espera, string bando, Animator anim)
      {
+         if (anim == null) anim = this.animator;
          //ESPERAMOS EL TIEMPO DEL CLIP - 0.5 SEGUNDOS PARA DESACTIVARLO, 0.5 MENOS PARA ASEGURAR QUE EVITAMOS UNA REPETICION DEL CLIP
          yield return new WaitForSeconds(tiempo_espera);
-         Debug.Log("tiempo de la animacion: " + tiempo_espera);
          try{
-            this.animator.SetBool("enemigo", false);
-            this.animator.SetBool(nombre_animacion, false);
+             //SI TENEMOS UN ENEMIGO O UN ALIADO HACIENDO ANIMACION
+            if (bando == "enemigo" || bando == "aliado") anim.SetBool("enemigo", false);
+            anim.SetBool(nombre_animacion, false);
          }catch{
              Debug.Log("acabamos el juego");
          }   
 
          //ESPERAMOS 0,7 SEGUNDOS MAS, PARA QUE TEMRINE LA ANIMACION SI NO LO HA HECHO Y PASAMOS TURNO
-        yield return new WaitForSeconds(0.7F);
-        pasar_turno();
+         //ESTO NO SE EJECUTA SI ESTAMOS ANIMANDO UN PODER LANZADO
+        if (bando == "enemigo" || bando == "aliado")
+        {
+            yield return new WaitForSeconds(0.7F);
+            pasar_turno();
+        }
      }
 
 
