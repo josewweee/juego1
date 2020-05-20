@@ -36,7 +36,7 @@ public class Atributos
         this.critico = this.atributos_base[4];
         this.defensa_fisica = this.atributos_base[5];
         this.defensa_magica = this.atributos_base[6];
-        this.salud = this.atributos_base[7];
+        this.salud = this.atributos_base[1];
     }
 
 

@@ -36,8 +36,8 @@ public class invocar : MonoBehaviour
         
         //ASIGNAMOS Y ELIMINAMOS TEMPORALMENTE LA IMG_PERSONAJE INVOCADO
         item_personaje_invocado = GameObject.Find("personaje_invocado");
-        img_personaje_invocado = item_personaje_invocado.transform.GetChild(0).gameObject;
-        txt_personaje_invocado = item_personaje_invocado.transform.GetChild(1).gameObject;
+        img_personaje_invocado = item_personaje_invocado.transform.GetChild(1).gameObject;
+        txt_personaje_invocado = item_personaje_invocado.transform.GetChild(2).gameObject;
         item_personaje_invocado.SetActive(false);
 
 

@@ -40,7 +40,6 @@ public class pre_combate : MonoBehaviour
         tipo_combate = storage_enemigos.tipo_combate;
         if(tipo_combate == "historia")
         {
-            //favoritos = jugador.personajesFavoritos.ToList();
             favoritos = jugador.personajesFavoritos;
             for(int i = 0; i < 4; i++){
                 if (favoritos.Count < 4) favoritos.Add(null);
@@ -228,7 +227,8 @@ public class pre_combate : MonoBehaviour
     public void Ir_combate()
     {    
         favoritos.RemoveAll(item => item == null);
-        //if (this.tipo_combate == "historia") jugador.personajesFavoritos = favoritos.ToArray();
+        if (this.tipo_combate == "historia") jugador.personajesFavoritos = favoritos;
+        else jugador.defensa_pvp = favoritos;
         _routing.ir_combate(this.tipo_combate);
     }
 

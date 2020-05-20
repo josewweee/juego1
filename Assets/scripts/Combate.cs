@@ -154,18 +154,16 @@ public class Combate : MonoBehaviour
         objetivo_unico_txt.SetActive(false);
         multiple_objetivo_txt.SetActive(false);
 
-        //DESACTIVAMOS TODAS LAS BARRAS DE VIDA PARA NO USAR LAS QUE NO NECESITAMOS
-        for (int w = 0; w < personajes.Length; w++) {
+        //DESACTIVAMOS TODAS LAS BARRAS DE VIDA PARA NO USAR LAS QUE NO NECESITAMOS, SON 8 EN TOTAL ( 4 DE ENEMIGOS Y 4 DE ALIADOS )
+        for (int w = 0; w < 4; w++) {
             GameObject b_vida = GameObject.Find("barra_vida_"+w);
-            Objs_barras_vidas.Add(b_vida);
+            GameObject b_vida_enemigo = GameObject.Find("barra_vida_enemigo_"+w);
             b_vida.SetActive(false);
+            b_vida_enemigo.SetActive(false);
+            Objs_barras_vidas.Add(b_vida);
+            Objs_barras_vidas.Add(b_vida_enemigo); 
         }
 
-        for (int w = 0; w < enemigos.Length; w++) {
-            GameObject b_vida = GameObject.Find("barra_vida_enemigo_"+w);
-            Objs_barras_vidas.Add(b_vida);
-            b_vida.SetActive(false);
-        }
         
         //LLENAMOS EL CAMPO CON LOS PERSONAJES COPIADOS
         popular_personajes_mapa(personajes, enemigos);
@@ -885,52 +883,53 @@ public class Combate : MonoBehaviour
 
     void Mover_puntero_personaje(int index_personaje_en_turno){
         RectTransform dragArea;
-        if (key_personaje_turno.Contains("enemigo")){
-            imagen_puntero. GetComponent<Image>().sprite = puntero_rojo;
-            switch(index_personaje_en_turno){
-                case 0:
+        if (imagen_puntero != null){
+            if (key_personaje_turno.Contains("enemigo")){
+                imagen_puntero. GetComponent<Image>().sprite = puntero_rojo;
+                switch(index_personaje_en_turno){
+                    case 0:
+                        dragArea = imagen_puntero.GetComponent<RectTransform>();
+                        dragArea.localPosition = new Vector3(201f, 35f, 0f);
+                        break;
+                    case 1:
+                        dragArea = imagen_puntero.GetComponent<RectTransform>();
+                        dragArea.localPosition = new Vector3(340F, 207F, 0f);
+                        break;
+                    case 2:
+                        dragArea = imagen_puntero.GetComponent<RectTransform>();
+                        dragArea.localPosition = new Vector3(539f, 158F, 0f);
+                        break;
+                    case 3:
+                        dragArea = imagen_puntero.GetComponent<RectTransform>();
+                        dragArea.localPosition = new Vector3(451f, 262f, 0f);
+                        break;
+                    default:
+                        break;
+                }
+            }else{
+                imagen_puntero. GetComponent<Image>().sprite = puntero_verde;
+                switch(index_personaje_en_turno){
+                    case 0:
                     dragArea = imagen_puntero.GetComponent<RectTransform>();
-                    dragArea.localPosition = new Vector3(201f, 35f, 0f);
+                    dragArea.localPosition = new Vector3(-382f, -56f, 0f);
                     break;
-                case 1:
+                    case 1:
                     dragArea = imagen_puntero.GetComponent<RectTransform>();
-                    dragArea.localPosition = new Vector3(340F, 207F, 0f);
+                    dragArea.localPosition = new Vector3(-490F, 109F, 0f);
                     break;
-                case 2:
+                    case 2:
                     dragArea = imagen_puntero.GetComponent<RectTransform>();
-                    dragArea.localPosition = new Vector3(539f, 158F, 0f);
+                    dragArea.localPosition = new Vector3(-349f, 190F, 0f);
                     break;
-                case 3:
+                    case 3:
                     dragArea = imagen_puntero.GetComponent<RectTransform>();
-                    dragArea.localPosition = new Vector3(451f, 262f, 0f);
+                    dragArea.localPosition = new Vector3(-157f, 84f, 0f);
                     break;
-                default:
+                    default:
                     break;
-            }
-        }else{
-            imagen_puntero. GetComponent<Image>().sprite = puntero_verde;
-            switch(index_personaje_en_turno){
-                case 0:
-                dragArea = imagen_puntero.GetComponent<RectTransform>();
-                dragArea.localPosition = new Vector3(-382f, -56f, 0f);
-                break;
-                case 1:
-                dragArea = imagen_puntero.GetComponent<RectTransform>();
-                dragArea.localPosition = new Vector3(-490F, 109F, 0f);
-                break;
-                case 2:
-                dragArea = imagen_puntero.GetComponent<RectTransform>();
-                dragArea.localPosition = new Vector3(-349f, 190F, 0f);
-                break;
-                case 3:
-                dragArea = imagen_puntero.GetComponent<RectTransform>();
-                dragArea.localPosition = new Vector3(-157f, 84f, 0f);
-                break;
-                default:
-                break;
+                }
             }
         }
-        
     }
 
     //OBTENEMOS LA MATRIX DE PERSONAJES Y ENEMIGOS QUE LLEGO DE LA INTELEGENCIA ARTIFICIAL.
