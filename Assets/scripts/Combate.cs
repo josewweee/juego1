@@ -84,6 +84,9 @@ public class Combate : MonoBehaviour
     private IEnumerator corrutina;
     GameObject mostrar_poder; //poder que sale en la pantalla;
 
+    //VARIABLES DE BARRA DE VIDA
+    private List <GameObject> Objs_barras_vidas = new List <GameObject>();
+
 
 
     void Awake(){
@@ -111,21 +114,22 @@ public class Combate : MonoBehaviour
         this.menu_configuracion.SetActive(false);
         
         //de prueba
-        fabrica = new Personajes();
-        personajes = new Personajes[4]{fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("liliana"), fabrica.Crear_personaje("martis")};
-        enemigos = new Personajes[4]{fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("martis"), fabrica.Crear_personaje("liliana")};
+        // fabrica = new Personajes();
+        // personajes = new Personajes[4]{fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("liliana"), fabrica.Crear_personaje("martis")};
+        // enemigos = new Personajes[4]{fabrica.Crear_personaje("alicia"), fabrica.Crear_personaje("roger"), fabrica.Crear_personaje("martis"), fabrica.Crear_personaje("liliana")};
 
         //COPIAMOS LOS PERSONAJES DEL USUARIO Y DE LOS ENEMIGOS LOCALMENTE
-        // if (tipo_combate == "historia")
-        // {
-        //     personajes = jugador.personajesFavoritos.ToArray();
-        //     enemigos = storage_enemigos.enemigos.ToArray();
-        // }
-        // else if (tipo_combate == "pvp")
-        // {
-        //     personajes = jugador.defensa_pvp.ToArray();
-        //     enemigos = storage_enemigos.enemigos_pvp.ToArray();
-        // }
+        if (tipo_combate == "historia")
+        {
+            personajes = jugador.personajesFavoritos.ToArray();
+            enemigos = storage_enemigos.enemigos.ToArray();
+        }
+        else if (tipo_combate == "pvp")
+        {
+            personajes = jugador.defensa_pvp.ToArray();
+            enemigos = storage_enemigos.enemigos_pvp.ToArray();
+        }
+
 
         //INSTANCIAMOS LAS MECANICAS Y LA IA
         mecanicas = new mecanicas_combate();
@@ -149,6 +153,19 @@ public class Combate : MonoBehaviour
         propio_objetivo_txt.SetActive(false);
         objetivo_unico_txt.SetActive(false);
         multiple_objetivo_txt.SetActive(false);
+
+        //DESACTIVAMOS TODAS LAS BARRAS DE VIDA PARA NO USAR LAS QUE NO NECESITAMOS
+        for (int w = 0; w < personajes.Length; w++) {
+            GameObject b_vida = GameObject.Find("barra_vida_"+w);
+            Objs_barras_vidas.Add(b_vida);
+            b_vida.SetActive(false);
+        }
+
+        for (int w = 0; w < enemigos.Length; w++) {
+            GameObject b_vida = GameObject.Find("barra_vida_enemigo_"+w);
+            Objs_barras_vidas.Add(b_vida);
+            b_vida.SetActive(false);
+        }
         
         //LLENAMOS EL CAMPO CON LOS PERSONAJES COPIADOS
         popular_personajes_mapa(personajes, enemigos);
@@ -247,16 +264,12 @@ public class Combate : MonoBehaviour
             Poderes poder_lanzado_enemigo = maquina.GetPoderLanzado();
             int index_objetivo_lanzado_enemigo = maquina.GetIndexObjetivo();
             
-            //CORREMOS LA ANIMACION EN UNA SUB RUTINA
+            //CORREMOS LA ANIMACION, CUANDO ACABE ACTUALIZAREMOS LAS BARRAS DE VIDA Y PASAREMOS TURNO
             Activar_animacion(personaje, poder_lanzado_enemigo, true, index_personaje_en_turno, index_objetivo_lanzado_enemigo.ToString());
 
             //LOS PASAMOS DE LA MATRIZ A NUESTRAS LISTAS GLOBALES DE PERSONAJES Y ENEMIGOS
             Matrix_to_array(matrix_envio_personajes);
-            
-            //ACTUALIZAMOS LOS VALORES DE LA VIDA Y PASAMOS TURNO
-            Cambiar_texto_vida(null, 99, true);
-            Cambiar_texto_vida(null, 99, false);
-            pasar_turno();
+
          }else{
             Mover_puntero_personaje(index_personaje_en_turno);
             Asignar_botones_turno(personaje_en_turno);
@@ -315,16 +328,12 @@ public class Combate : MonoBehaviour
                     //INICIALIZAMOS LA ANIMACION DEL ENEMIGO
                     GameObject personaje = GameObject.Find(personaje_en_turno.nombre + "_enemigo");
 
-                    //CORREMOS LA ANIMACION EN UNA SUB RUTINA
+                    //CORREMOS LA ANIMACION, CUANDO ACABE ACTUALIZAREMOS LAS BARRAS DE VIDA Y PASAREMOS TURNO
                     Activar_animacion(personaje, poder_lanzado_enemigo, true, index_personaje_en_turno, index_objetivo_lanzado_enemigo.ToString());
 
                     //LOS PASAMOS DE LA MATRIZ A NUESTRAS LISTAS GLOBALES DE PERSONAJES Y ENEMIGOS
                     Matrix_to_array(matrix_envio_personajes);
-                    
-                    //ACTUALIZAMOS LOS VALORES DE LA VIDA Y PASAMOS TURNO
-                    Cambiar_texto_vida(null, 99, true);
-                    Cambiar_texto_vida(null, 99, false);
-                    //pasar_turno();
+                
                 }
             }else{
                 //SI ES ALIADO, REVISAMOS QUIEN ES
@@ -479,7 +488,7 @@ public class Combate : MonoBehaviour
         //INSTANCIAMOS LOS PERSONAJES DEL JUGADOR
         float[] pos_inicial_x = {-5.22F, -6.84F, -4.74F, -2.14F};
         float[] pos_inicial_y = {-1.74F, 0.46F, 1.6F, 0.14F};
-        float pos_inicial_z = -69F;
+        float pos_inicial_z = -0F;
         for(int i = 0; i < personajes_jugador.Length; i++){
             if (personajes_jugador[i] != null){
                 GameObject personaje_creado = Instantiate( Resources.Load("prefabs_personajes/" + personajes_jugador[i].nombre), new Vector3(pos_inicial_x[i], pos_inicial_y[i], pos_inicial_z), Quaternion.identity) as GameObject;
@@ -489,12 +498,17 @@ public class Combate : MonoBehaviour
                 //LE CAMBIAMOS EL NOMBRE
                 personaje_creado.name = personajes_jugador[i].nombre + "_aliado";
 
+                //ACITVAMOS LA BARRA DE VIDA CORRESPONDIENTE Y LE SETEAMOS LA SALUD MAXIMA
+                GameObject objeto_barra_vida = this.Objs_barras_vidas.Find(x => x.name == "barra_vida_"+i);
+                objeto_barra_vida.SetActive(true);
+
+                Barra_vida barra_vida = objeto_barra_vida.GetComponent<Barra_vida>();
+                barra_vida.Set_salud_maxima(personajes_jugador[i].atributos.vitalidad);
+
                 //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
                 Text txt_vida = GameObject.Find("vida_"+i).GetComponent<Text>();
                 txt_vida.text = personajes_jugador[i].atributos.salud.ToString() + " / " + personajes_jugador[i].atributos.vitalidad.ToString();
 
-                Barra_vida barra_vida = GameObject.Find("barra_vida_"+i).GetComponent<Barra_vida>();
-                barra_vida.Set_salud_maxima(personajes_jugador[i].atributos.vitalidad);
 
                 //AGREGAMOS UN EVENTO CUANDO SE SELECCIONE EL EPRSONAJE
                 int index = i;
@@ -517,13 +531,17 @@ public class Combate : MonoBehaviour
 
                 //LE CAMBIAMOS EL NOMBRE
                 personaje_creado.name = enemigos[i].nombre + "_enemigo";
+
+                //ACITVAMOS LA BARRA DE VIDA CORRESPONDIENTE Y LE SETEAMOS LA SALUD MAXIMA
+                GameObject objeto_barra_vida = this.Objs_barras_vidas.Find(x => x.name == "barra_vida_enemigo_"+i);
+                objeto_barra_vida.SetActive(true);
+
+                Barra_vida barra_vida = objeto_barra_vida.GetComponent<Barra_vida>();
+                barra_vida.Set_salud_maxima(enemigos[i].atributos.vitalidad);
                 
                 //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
                 Text txt_vida = GameObject.Find("vida_enemigo_"+i).GetComponent<Text>();
                 txt_vida.text = enemigos[i].atributos.salud.ToString() + " / " + enemigos[i].atributos.vitalidad.ToString();
-
-                Barra_vida barra_vida = GameObject.Find("barra_vida_enemigo_"+i).GetComponent<Barra_vida>();
-                barra_vida.Set_salud_maxima(enemigos[i].atributos.vitalidad);
                 
                 //AGREGAMOS UN EVENTO CUANDO SE SELECCIONE EL EPRSONAJE
                 int index = i;
@@ -567,7 +585,7 @@ public class Combate : MonoBehaviour
             //INICIALIZAMOS LA ANIMACION
             personaje = GameObject.Find(personaje_en_turno.nombre + "_aliado");
 
-            //CORREMOS LA ANIMACION EN UNA SUB RUTINA
+            //CORREMOS LA ANIMACION, CUANDO ACABE ACTUALIZAREMOS LAS BARRAS DE VIDA Y PASAREMOS TURNO
             Activar_animacion(personaje, poder_a_ser_lanzado, false, index_personaje_en_turno, index);
 
         }else{
@@ -591,10 +609,6 @@ public class Combate : MonoBehaviour
 
         //PONEMOS NULL EL PODER A SER LANZADO DE FORMA GLOBAL
         poder_a_ser_lanzado = null;
-
-        Cambiar_texto_vida(null, 99, true);
-        Cambiar_texto_vida(null, 99, false);
-
     }
 
 
@@ -607,13 +621,12 @@ public class Combate : MonoBehaviour
             string nombre_clip = "";
             string bando = (es_enemigo) ? "enemigo" : "aliado";
 
-
             //CORREMOS LA ANIMACION DEL PODER MOSTRADO EN PANTALLA
             mostrar_poder.GetComponent<Image>().sprite = Resources.Load <Sprite>("poderes/" + poder_lanzado.imagen);
             Animator animator_poder = mostrar_poder.GetComponent<Animator>();
             animator_poder.SetBool("mostrar_poder", true); // se activa la animacion del poder en pantalla
             AnimationClip[] clips = animator_poder.runtimeAnimatorController.animationClips;
-            corrutina = Terminar_animacion("mostrar_poder", clips[0].length - 0.5F, "ninguno", animator_poder);
+            corrutina = Terminar_animacion("mostrar_poder", clips[0].length - 0.5F, "ninguno", animator_poder, "");
             StartCoroutine(corrutina);
 
             //VEMOS SI EL TRIGER QUE ACTIVARA LA ANIMACION ES PARA LA MAGIA O PARA EL DAÑO NORMAL
@@ -640,26 +653,70 @@ public class Combate : MonoBehaviour
             }
             Debug.Log(clips[index_clip_actual].name);
 
+            //SI TENEMOS QUE EL PODER ES PARA VARIOS OBJETIVOS, CAMBIAMOS EL INDEX A TODOS
+            if (poder_lanzado.objetivos == "multiple") index_objetivo = "multiple";
+            if (poder_lanzado.objetivos == "propio") index_objetivo = "propio";
+            if (poder_lanzado.tipo_poder == "buff") index_objetivo = "buff";
+
+            //ENVIAMOS EL ELEMENTO DEL PERSONAJE QUE LANZO EL PODER
+            string elemento = "";
+            switch(this.personaje_en_turno.elemento)
+            {
+                case "fuego":
+                    elemento = "_fuego";
+                    break;
+                case "agua":
+                    elemento = "_agua";
+                    break;
+                case "tierra":
+                    elemento = "_tierra";
+                    break;
+                case "trueno":
+                    elemento = "_trueno";
+                    break;
+                case "luz":
+                    elemento = "_luz";
+                    break;
+                case "oscuridad":
+                    elemento = "_oscuridad";
+                    break;
+                default:
+                    break;
+            }
             //CORREMOS UNA SUB RUTINA PARA CERRAR LA ANIMACION, QUE SE EJECUTARA LUEGO DEL TIEMPO DE DURACION DE LA ANIMACION
-            corrutina = Terminar_animacion(nombre_animacion, clips[index_clip_actual].length - 0.5F, bando, null);
+            corrutina = Terminar_animacion(nombre_animacion, clips[index_clip_actual].length - 0.5F, bando, null, index_objetivo, elemento);
             StartCoroutine(corrutina); // un hilo para terminar la animacion
     }
 
 
 
     //FUNCION ENCARGADA DE CORTAR LA ANIMACION CUANDO TERMINE
-     private IEnumerator Terminar_animacion(string nombre_animacion, float tiempo_espera, string bando, Animator anim)
+     private IEnumerator Terminar_animacion(string nombre_animacion, float tiempo_espera, string bando, Animator anim, string index_objetivo, string elemento = "")
      {
-         if (anim == null) anim = this.animator;
-         //ESPERAMOS EL TIEMPO DEL CLIP - 0.5 SEGUNDOS PARA DESACTIVARLO, 0.5 MENOS PARA ASEGURAR QUE EVITAMOS UNA REPETICION DEL CLIP
-         yield return new WaitForSeconds(tiempo_espera);
-         try{
-             //SI TENEMOS UN ENEMIGO O UN ALIADO HACIENDO ANIMACION
-            if (bando == "enemigo" || bando == "aliado") anim.SetBool("enemigo", false);
+         //SI ANIM = NULL ESTAMOS ANIMANDO EL PODER QUE SALE EN PANTALLA, SI NO UN PERSONAJE
+        if (anim == null) anim = this.animator;
+        //ESPERAMOS EL TIEMPO DEL CLIP - 0.5 SEGUNDOS PARA DESACTIVARLO, 0.5 MENOS PARA ASEGURAR QUE EVITAMOS UNA REPETICION DEL CLIP
+        yield return new WaitForSeconds(tiempo_espera);
+        try{
+
+            //SI TENEMOS UN ENEMIGO O UN ALIADO HACIENDO ANIMACION, ESTO NO SE EJECUTA SI ESTAMOS ANIMANDO LA IMAGEN DEL PODER EN EL MAPA
+            if (bando == "enemigo" || bando == "aliado")
+            {
+                anim.SetBool("enemigo", false); //PONEMOS LA VARIABLE DE ENEMIGO SIEMPRE EN FALSO AL TERMINAR, NO IMPORTA SI ESTABA EN FALSO.
+        
+                //ACTIVAMOS LAS PARTICULAS A LOS OBJETIVOS AFECTADOS POR EL PODER TIRADO
+                Activar_particulas(index_objetivo, bando, elemento);
+
+                //ACTUALIZAMOS LAS VIDAS DE TODOS EN EL MAPA
+                Cambiar_texto_vida(null, 99, true);
+                Cambiar_texto_vida(null, 99, false);
+            }
+
+            //DETENEMOS LA ANIMACION
             anim.SetBool(nombre_animacion, false);
-         }catch{
-             Debug.Log("acabamos el juego");
-         }   
+        }catch{
+                Debug.Log("acabamos el juego");
+        }   
 
          //ESPERAMOS 0,7 SEGUNDOS MAS, PARA QUE TEMRINE LA ANIMACION SI NO LO HA HECHO Y PASAMOS TURNO
          //ESTO NO SE EJECUTA SI ESTAMOS ANIMANDO UN PODER LANZADO
@@ -667,6 +724,54 @@ public class Combate : MonoBehaviour
         {
             yield return new WaitForSeconds(0.7F);
             pasar_turno();
+        }
+     }
+
+     void Activar_particulas(string index_objetivo, string bando, string elemento)
+     {
+         Color color = new Color(0,0,0,0);
+         if (elemento.Contains("fuego")) color = new Color(1f, 0f, 0f, 1f);
+         if (elemento.Contains("agua")) color = new Color(0f, 1f, 1f, 1f);
+         if (elemento.Contains("tierra")) color = new Color(0.78f, 0.55f, 0.25f, 1f);
+         if (elemento.Contains("trueno")) color = new Color(1f, 0.92f, 0.016f, 1f);
+         if (elemento.Contains("luz")) color = new Color(1f, 1f, 1f, 1f);
+         if (elemento.Contains("oscuridad")) color = new Color(0f, 0f, 0f, 1f);
+
+        //ACTIVAMOS LAS PARTICULAS PARA SIMULAR UN GOLPE
+        string objetivo_particulas_nombre = (bando == "enemigo") ? "Particulas_" : "Particulas_enemigo_";
+        if (index_objetivo.Contains("multiple")){
+            int cantidad_objetivos = (bando == "enemigo") ? this.personajes.Length : this.enemigos.Length;
+            for(int i = 0; i < this.personajes.Length; i++)
+            {
+                GameObject particulas_golpe = GameObject.Find(objetivo_particulas_nombre + i);
+
+                //CAMBIAMOS EL COLOR AL ELEMENTO DEL PERSONAJE
+                ParticleSystem.MainModule settings = particulas_golpe.GetComponent<ParticleSystem>().main;
+                settings.startColor = color;
+
+                particulas_golpe.GetComponent <ParticleSystem>().Play();
+            }
+        }else if (index_objetivo.Contains("buff")){
+            int cantidad_objetivos = (bando == "enemigo") ? this.enemigos.Length : this.personajes.Length;
+            for(int i = 0; i < this.personajes.Length; i++)
+            {
+                objetivo_particulas_nombre = (bando == "enemigo") ? "Particulas_enemigo_" : "Particulas_";
+                GameObject particulas_golpe = GameObject.Find(objetivo_particulas_nombre + i);
+
+                //CAMBIAMOS EL COLOR A VERDE SI ES UN BUFF
+                ParticleSystem.MainModule settings = particulas_golpe.GetComponent<ParticleSystem>().main;
+                settings.startColor = new Color(0f, 1f, 0f, 1f);
+
+                particulas_golpe.GetComponent <ParticleSystem>().Play();
+            }
+        }else{
+            GameObject particulas_golpe = GameObject.Find(objetivo_particulas_nombre + index_objetivo);
+
+            //CAMBIAMOS EL COLOR AL ELEMENTO DEL PERSONAJE
+            ParticleSystem.MainModule settings = particulas_golpe.GetComponent<ParticleSystem>().main;
+            settings.startColor = color;
+
+            particulas_golpe.GetComponent <ParticleSystem>().Play();
         }
      }
 
