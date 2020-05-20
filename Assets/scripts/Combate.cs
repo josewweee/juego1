@@ -85,6 +85,7 @@ public class Combate : MonoBehaviour
     GameObject mostrar_poder; //poder que sale en la pantalla;
 
 
+
     void Awake(){
         //PONEMOS LA VELOCIDAD DEL TIEMPO INICIAL EN EL JUEGO
         this.fixedDeltaTime = Time.fixedDeltaTime;
@@ -492,6 +493,9 @@ public class Combate : MonoBehaviour
                 Text txt_vida = GameObject.Find("vida_"+i).GetComponent<Text>();
                 txt_vida.text = personajes_jugador[i].atributos.salud.ToString() + " / " + personajes_jugador[i].atributos.vitalidad.ToString();
 
+                Barra_vida barra_vida = GameObject.Find("barra_vida_"+i).GetComponent<Barra_vida>();
+                barra_vida.Set_salud_maxima(personajes_jugador[i].atributos.vitalidad);
+
                 //AGREGAMOS UN EVENTO CUANDO SE SELECCIONE EL EPRSONAJE
                 int index = i;
                 EventTrigger trigger = personaje_creado.GetComponent<EventTrigger>();
@@ -517,6 +521,9 @@ public class Combate : MonoBehaviour
                 //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
                 Text txt_vida = GameObject.Find("vida_enemigo_"+i).GetComponent<Text>();
                 txt_vida.text = enemigos[i].atributos.salud.ToString() + " / " + enemigos[i].atributos.vitalidad.ToString();
+
+                Barra_vida barra_vida = GameObject.Find("barra_vida_enemigo_"+i).GetComponent<Barra_vida>();
+                barra_vida.Set_salud_maxima(enemigos[i].atributos.vitalidad);
                 
                 //AGREGAMOS UN EVENTO CUANDO SE SELECCIONE EL EPRSONAJE
                 int index = i;
@@ -600,6 +607,15 @@ public class Combate : MonoBehaviour
             string nombre_clip = "";
             string bando = (es_enemigo) ? "enemigo" : "aliado";
 
+
+            //CORREMOS LA ANIMACION DEL PODER MOSTRADO EN PANTALLA
+            mostrar_poder.GetComponent<Image>().sprite = Resources.Load <Sprite>("poderes/" + poder_lanzado.imagen);
+            Animator animator_poder = mostrar_poder.GetComponent<Animator>();
+            animator_poder.SetBool("mostrar_poder", true); // se activa la animacion del poder en pantalla
+            AnimationClip[] clips = animator_poder.runtimeAnimatorController.animationClips;
+            corrutina = Terminar_animacion("mostrar_poder", clips[0].length - 0.5F, "ninguno", animator_poder);
+            StartCoroutine(corrutina);
+
             //VEMOS SI EL TRIGER QUE ACTIVARA LA ANIMACION ES PARA LA MAGIA O PARA EL DAÑO NORMAL
             if (poder_lanzado.atributo == "magia" || poder_lanzado.objetivos != "unico" || poder_lanzado.atributo == "defensa_magia")
             {
@@ -613,7 +629,7 @@ public class Combate : MonoBehaviour
             this.animator.SetBool(nombre_animacion, true); // justo aqui se activa la animacion
 
             //TOMAMOS TODOS LOS CLIPS Y BUSCAMOS EL ACTUAL PARA HALLAR SU TIEMPO DE DURACION
-            AnimationClip[] clips = this.animator.runtimeAnimatorController.animationClips;
+            clips = this.animator.runtimeAnimatorController.animationClips;
             int index_clip_actual = 0;
             foreach(AnimationClip clip in clips)
              {
@@ -627,14 +643,6 @@ public class Combate : MonoBehaviour
             //CORREMOS UNA SUB RUTINA PARA CERRAR LA ANIMACION, QUE SE EJECUTARA LUEGO DEL TIEMPO DE DURACION DE LA ANIMACION
             corrutina = Terminar_animacion(nombre_animacion, clips[index_clip_actual].length - 0.5F, bando, null);
             StartCoroutine(corrutina); // un hilo para terminar la animacion
-
-            //CORREMOS LA ANIMACION DEL PODER MOSTRADO EN PANTALLA
-            mostrar_poder.GetComponent<Image>().sprite = Resources.Load <Sprite>("poderes/" + poder_lanzado.imagen);
-            Animator animator_poder = mostrar_poder.GetComponent<Animator>();
-            animator_poder.SetBool("mostrar_poder", true); // se activa la animacion del poder en pantalla
-            clips = animator_poder.runtimeAnimatorController.animationClips;
-            corrutina = Terminar_animacion("mostrar_poder", clips[0].length - 0.5F, "ninguno", animator_poder);
-            StartCoroutine(corrutina);
     }
 
 
@@ -666,16 +674,25 @@ public class Combate : MonoBehaviour
         void Cambiar_texto_vida(Personajes target, int index_objetivo, bool aliado){
 
         if (aliado == false){
-            //MOSIFICAMOS LA VIDA DE TODOS LOS PERSONAJES SI NOS LLEGA (99 = TODOS LOS OBJETIVOS)
+            //MOSIFICAMOS LA VIDA DE TODOS LOS ENEMIGO SI NOS LLEGA (99 = TODOS LOS OBJETIVOS)
             if (index_objetivo == 99){
                 for(int i = 0; i < enemigos.Length; i++){
                     GameObject canvas_texto = GameObject.Find("vida_enemigo_"+i);
+                    Barra_vida barra_vida = GameObject.Find("barra_vida_enemigo_"+i).GetComponent<Barra_vida>();
+                    //FLOAT PARA TENER UN MEJOR CONTROL DEL SLIDER
+                    float saludFloat = (enemigos[i].atributos.salud > 0F) ? enemigos[i].atributos.salud : 0F;
+                    barra_vida.Set_salud(saludFloat);
+                    //INT PARA NO VER NUMEROS LARGOS EN LA PANTALLA
                     string salud = (Convert.ToInt32(enemigos[i].atributos.salud) > 0) ? Convert.ToInt32(enemigos[i].atributos.salud).ToString() : "0";
                     canvas_texto.GetComponent<Text>().text = salud + " / " + enemigos[i].atributos.vitalidad.ToString();
+
                 }
             }else{
-                //MODIFICAMOS LA VIDA DE 1 PERSONAJE ARRIBA EN PANTALLA
+                //MODIFICAMOS LA VIDA DE 1 ENEMIGO ARRIBA EN PANTALLA
                 GameObject canvas_texto = GameObject.Find("vida_enemigo_"+index_objetivo);
+                Barra_vida barra_vida = GameObject.Find("barra_vida_enemigo_"+index_objetivo).GetComponent<Barra_vida>();
+                float saludFloat = (target.atributos.salud > 0F) ? target.atributos.salud : 0F;
+                barra_vida.Set_salud(saludFloat);
                 string salud = (Convert.ToInt32(target.atributos.salud) > 0) ? Convert.ToInt32(target.atributos.salud).ToString() : "0";
                 canvas_texto.GetComponent<Text>().text = salud + " / " + target.atributos.vitalidad.ToString();
             }
@@ -684,12 +701,18 @@ public class Combate : MonoBehaviour
             if (index_objetivo == 99){
                 for(int i = 0; i < personajes.Length; i++){
                     GameObject canvas_texto = GameObject.Find("vida_"+i);
+                    Barra_vida barra_vida = GameObject.Find("barra_vida_"+i).GetComponent<Barra_vida>();
+                    float saludFloat = (personajes[i].atributos.salud > 0F) ? personajes[i].atributos.salud : 0F;
+                    barra_vida.Set_salud(saludFloat);
                     string salud = (Convert.ToInt32(personajes[i].atributos.salud) > 0) ? Convert.ToInt32(personajes[i].atributos.salud).ToString() : "0";
                     canvas_texto.GetComponent<Text>().text = salud + " / " + personajes[i].atributos.vitalidad.ToString();
                 }
             }else{
                 //MODIFICAMOS LA VIDA DE 1 PERSONAJE ARRIBA EN PANTALLA
                 GameObject canvas_texto = GameObject.Find("vida_"+index_objetivo);
+                Barra_vida barra_vida = GameObject.Find("barra_vida_"+index_objetivo).GetComponent<Barra_vida>();
+                float saludFloat = (target.atributos.salud > 0F) ? target.atributos.salud : 0F;
+                barra_vida.Set_salud(saludFloat);
                 string salud = (Convert.ToInt32(target.atributos.salud) > 0) ? Convert.ToInt32(target.atributos.salud).ToString() : "0";
                 canvas_texto.GetComponent<Text>().text = salud + " / " + target.atributos.vitalidad.ToString();
             }
@@ -851,7 +874,7 @@ public class Combate : MonoBehaviour
     public void Limpiar_mapa_gameobjects()
     {
         Destroy(GameObject.Find("personajes"));
-        Destroy(GameObject.Find("txt_vidas"));
+        Destroy(GameObject.Find("barra_vidas"));
     }
 
 
