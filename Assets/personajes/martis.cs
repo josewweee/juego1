@@ -8,7 +8,7 @@ public class martis : Personajes
     {
         nombre = "martis";
         nivel = 1;
-        nivel_maximo = 40;
+        nivel_maximo = 30;
         estrellas = 0;
         despertadas = 0;
         atributos = new Atributos(16f, 60f, 2f, 8f, 12f, 5f, 7f);

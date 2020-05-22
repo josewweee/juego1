@@ -8,7 +8,7 @@ public class roger : Personajes
     {
         nombre = "Roger";
         nivel = 1;
-        nivel_maximo = 40;
+        nivel_maximo = 30;
         estrellas = 0;
         despertadas = 0;
         atributos = new Atributos(7f, 200f, 7f, 7f, 10f, 10f, 5f);

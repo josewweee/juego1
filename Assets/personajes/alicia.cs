@@ -8,7 +8,7 @@ public class alicia : Personajes
     {
         nombre = "Alicia";
         nivel = 1;
-        nivel_maximo = 40;
+        nivel_maximo = 30;
         estrellas = 0;
         despertadas = 0;
         atributos = new Atributos(2f, 70f, 20f, 4f, 15f, 5f, 10f);

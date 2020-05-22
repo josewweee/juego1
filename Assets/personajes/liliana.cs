@@ -8,7 +8,7 @@ public class liliana : Personajes
     {
         nombre = "liliana";
         nivel = 1;
-        nivel_maximo = 40;
+        nivel_maximo = 30;
         estrellas = 0;
         despertadas = 0;
         atributos = new Atributos(3f, 100f, 15f, 6f, 8f, 5f, 7f);
