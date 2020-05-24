@@ -17,7 +17,7 @@ public class martis : Personajes
         poderes = new Poderes[8];
         poderesActivos = new Poderes[4];
         elemento = "trueno";
-        estado_alterado = new Dictionary<string, float[]>();
+        estado_alterado = new DiccionarioStringFloatArray();
         rareza = "mitico";
         fragmentos = 0;
         imagen_completa = new string[2]{"PackForest01","51"};

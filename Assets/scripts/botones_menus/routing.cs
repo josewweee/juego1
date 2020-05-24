@@ -14,22 +14,34 @@ public class routing : MonoBehaviour
     private Text energia_max;
     private Text energia;
 
-    // TRAEMOS LA INSTANCIA DEL USUARIO PARA PRUEBAS
+    // TRAEMOS LA INSTANCIA DEL USUARIO LLAMADA SINGLETON, EL CRUD PARA LA BD Y UN JUGADOR PARA ASIGNARLE LO DE LA BD
+    public Usuario singleton;
     public Usuario jugador;
+    private crud CRUD;
 
     // INSTANCIA DE STORAGE LOCAL
     public storage_script storage_singleton;
 
 
-    void Start()
+    private IEnumerator Start()
     {
         //HALLAMOS EL BOTON DEL MENU Y LO ACTIVAMOS
         boton_menu = GameObject.Find("contenedor");
         boton_menu.SetActive(false);
         menu_activo = false;
+        
+        singleton = Usuario.instancia;
+        
+        //TRAEMOS EL USUARIO DE LA BASE DE DATOS
+        CRUD = GameObject.Find("Crud").GetComponent<crud>();
+        var jugador_task = CRUD.GetComponent<crud>().Cargar_usuario();
+        yield return new WaitUntil( ()=> jugador_task.IsCompleted);
+        jugador = jugador_task.Result;
 
-        //CREAMOS EL USUARIO Y EL STORAGE LOCAL
-        jugador = Usuario.instancia;
+        //ACTUALIZAMOS EL SINGLETON LOCAL CON LOS DATOS DE LA BD
+        this.singleton.Actualizar_usuario(jugador);
+
+        //CREAMOS UN STORAGE LOCAL CON SINGLENTON, NO USAREMOS PLAYER PREFS.
         storage_singleton = storage_script.instancia;
 
         //ASIGNAMOS LOS TEXTOS DEL MENU
@@ -45,8 +57,8 @@ public class routing : MonoBehaviour
 
             energia_max = GameObject.Find("energia_valor_maximo").GetComponent<Text>();
             energia_max.text = " / " + jugador.energia_maxima.ToString();
-        }catch{
-            
+        }catch ( System.Exception ex){
+            Debug.Log("problemas mostrando el oro: " + ex);
         }
         
     }
@@ -54,10 +66,10 @@ public class routing : MonoBehaviour
     void Update()
     {
         try{
-            oro.text = jugador.monedas.oro.ToString();
-            diamantes.text = jugador.monedas.diamantes.ToString();
-            energia.text = jugador.energia.ToString();
-            energia_max.text = " / " + jugador.energia_maxima.ToString();
+            oro.text = singleton.monedas.oro.ToString();
+            diamantes.text = singleton.monedas.diamantes.ToString();
+            energia.text = singleton.energia.ToString();
+            energia_max.text = " / " + singleton.energia_maxima.ToString();
         }
         catch{
             
@@ -153,6 +165,10 @@ public class routing : MonoBehaviour
             if(jugador.energia >= 6 )
             {
                 jugador.energia -= 6;
+
+                //GUARDAMOS LOS CAMBIOS EN LA DB
+                Guardar_cambios(jugador);
+
                 SceneManager.LoadScene("menu_combate");
             }else{
                 Debug.Log("No hay energia suficiente");
@@ -161,6 +177,10 @@ public class routing : MonoBehaviour
             if ( jugador.energia_pvp >= 1)
             {
                 jugador.energia_pvp --;
+                
+                //GUARDAMOS LOS CAMBIOS EN LA DB
+                Guardar_cambios(jugador);
+
                 SceneManager.LoadScene("menu_combate");
             }else{
                  Debug.Log("No hay energia suficiente");
@@ -168,4 +188,12 @@ public class routing : MonoBehaviour
         }
         
     }
+
+
+    private void Guardar_cambios(Usuario nuevo_val)
+    {
+        this.CRUD.Guardar_usuario(nuevo_val);
+        this.singleton.Actualizar_usuario(nuevo_val);
+    }
+
 }

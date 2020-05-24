@@ -14,6 +14,9 @@ public class Recompenza : MonoBehaviour
     public Usuario jugador;
     public storage_script storage;
 
+    //TRAEMOS EL CRUD PARA MANEJO DE BD
+    private crud CRUD;
+
     //PREFABS CON ITEMS PARA MOSTRAR EN LA UI
     public GameObject prefab_item;
 
@@ -24,6 +27,9 @@ public class Recompenza : MonoBehaviour
 
        nivel_historia = storage.nivel_historia;
        tipo_combate = storage.tipo_combate;
+
+        //INICIALIZAMOS EL MANEJO DE DB
+        CRUD = GameObject.Find("Crud").GetComponent<crud>();
     }
 
 
@@ -174,6 +180,9 @@ public class Recompenza : MonoBehaviour
                 }
             }            
         }
+
+        //ENVIAMOS LA INFO NUEVA A LA DB
+        Guardar_cambios(jugador);
         
     }
 
@@ -234,6 +243,9 @@ public class Recompenza : MonoBehaviour
             jugador.monedas.puntos_pvp += puntos_pvp;
             jugador.monedas.diamantes += diamantes;
         }
+
+        //ENVIAMOS LA INFO NUEVA A LA DB
+        Guardar_cambios(jugador);
     }
 
     void Mostrar_item_UI(float x, float y, GameObject prefab, string item, int cantidad)
@@ -272,5 +284,11 @@ public class Recompenza : MonoBehaviour
         //LO PONEMOS COMO HIJO DE LA VENTANA DE FIN JUEGO
         item_ganado.transform.SetParent(GameObject.Find("Fin_juego").transform, false);
     }
+
+    private void Guardar_cambios(Usuario nuevo_val)
+    {
+        this.CRUD.Guardar_usuario(nuevo_val);
+    }
+
 
 }

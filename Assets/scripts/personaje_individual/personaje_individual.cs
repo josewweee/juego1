@@ -10,6 +10,7 @@ public class personaje_individual : MonoBehaviour
     // INSTANCIA DE PERSONA O EQUIPO A BUSCAR Y DEL USUARIO DUEÑO
     public storage_script storage;
     public Usuario jugador;
+    public crud CRUD;
     Personajes personaje_actual;
 
     // TRAEMOS LOS VALORES DE LA UI
@@ -62,10 +63,11 @@ public class personaje_individual : MonoBehaviour
     {
 
 
-        //TRAEMOS EL PERSONAJE DEL SINGLETON DE PERSONAJES A BUSCAR Y EL JUGADOR
+        //TRAEMOS EL PERSONAJE DEL SINGLETON DE PERSONAJES A BUSCAR, EL JUGADOR Y EL CRUD PARA MANEJO DE DB
         storage = storage_script.instancia;
         jugador = Usuario.instancia;
         personaje_actual = storage.personaje;
+        CRUD = GameObject.Find("Crud").GetComponent<crud>();
 
 
         //ASIGNAMOS VALORES A LA UI
@@ -169,6 +171,9 @@ public class personaje_individual : MonoBehaviour
                 nivel_max.text = " / " +  jugador.personajes[i].nivel_maximo.ToString();
                 costo_fragmentos.text = "x " + ((jugador.personajes[i].estrellas + 1) * 20).ToString();
                 fragmentos_poseidos.text = jugador.personajes[i].fragmentos.ToString();
+                
+                //GUARDAMOS LOS CAMBIOS EN LA DB Y EN EL SINGLETON
+                Guardar_cambios(this.jugador);
             }
         }
     }
@@ -194,6 +199,9 @@ public class personaje_individual : MonoBehaviour
             Debug.Log("poder quitado");
             marco_poder.SetActive(false);
         }
+        
+        //GUARDAMOS LOS CAMBIOS EN LA DB Y EN EL SINGLETON
+        Guardar_cambios(this.jugador);
     }
 
     void Marcos_poderes_elegidos(Personajes p_actual)
@@ -225,9 +233,8 @@ public class personaje_individual : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Guardar_cambios(Usuario nuevo_val)
     {
-
+        this.CRUD.Guardar_usuario(nuevo_val);
     }
 }

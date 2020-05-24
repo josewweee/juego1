@@ -11,6 +11,9 @@ public class defensa_pvp : MonoBehaviour
     public GameObject prefab_recuadro_personaje;
     private int cantidad_personajes;
 
+    //TRAEMOS EL CRUD PARA MANEJO DE BD
+    private crud CRUD;
+
     //VARIABLES PARA GUARDAR LOS PERSONAJES FAVORITOS QUE USAREMOS Y LOS DEL ENEMIGO
     private List<Personajes> favoritos;
 
@@ -31,6 +34,9 @@ public class defensa_pvp : MonoBehaviour
         // INICIALIZAMOS EL USUARIO, MIRAMOS CUANTOS PERSONAJES TIENE Y POPULAMOS LA UI CON LOS PREFABS
         jugador = Usuario.instancia;
         cantidad_personajes = jugador.personajes.Count;
+
+        //INICIALIZAMOS EL MANEJO DE DB
+        CRUD = GameObject.Find("Crud").GetComponent<crud>();
 
         favoritos = jugador.defensa_pvp;
             for(int i = 0; i < 4; i++){
@@ -77,7 +83,7 @@ public class defensa_pvp : MonoBehaviour
         float pos_inicial_y = 7.441475F; // POSICION DEL CUADRADO 1 EN Y
         if (favoritos[0] != null || favoritos[1] != null || favoritos[2] != null || favoritos[3] != null){
             for(int i = 0; i < favoritos.Count; i++){
-                if (favoritos[i] != null){
+                if (favoritos[i] != null && favoritos[i].nombre != "" ){
                     //...
                 GameObject recuadro_personaje = Instantiate(prefab, new Vector3(pos_inicial_x, pos_inicial_y, 0), Quaternion.identity);
                 recuadro_personaje.transform.SetParent(GameObject.Find("Panel_personaje_"+i).transform, false);
@@ -91,8 +97,8 @@ public class defensa_pvp : MonoBehaviour
                 //ENTRAMOS EN EL CHILD #0 DEL PREFAB Y CAMBIAMOS EL VALOR DE SU TEXTO
                 GameObject img_perfil = recuadro_personaje.transform.GetChild(0).gameObject;
                 GameObject texto_nivel = recuadro_personaje.transform.GetChild(1).gameObject;
-                img_perfil.GetComponent<Image>().sprite = Resources.Load <Sprite>("img_personajes/perfiles/" + this.jugador.personajes[i].foto_perfil);
-                texto_nivel.GetComponent<Text>().text = jugador.personajes[i].nivel.ToString();
+                img_perfil.GetComponent<Image>().sprite = Resources.Load <Sprite>("img_personajes/perfiles/" + favoritos[i].foto_perfil);
+                texto_nivel.GetComponent<Text>().text = favoritos[i].nivel.ToString();
                 }
             }
         //SI NO HAY NINGUN PERSONAJE EN FAVORITOS, PONEMOS EL PRIMER PERSONAJE QUE TENGA EL JUGADOR
@@ -104,7 +110,7 @@ public class defensa_pvp : MonoBehaviour
 
         
             jugador.Cambiar_personaje_batalla("defensa_pvp", 0, jugador.personajes[0]);
-           
+            this.favoritos = jugador.defensa_pvp;
 
             // AGREGAMOS UN BOTON PARA ELIMINAR EL PERSONAJE DE FAVORITOS
             Button btn = recuadro_personaje.GetComponent<Button>();
@@ -131,6 +137,7 @@ public class defensa_pvp : MonoBehaviour
         //BORRAMOS EL PERSONAJE DE FAVORITOS TANTO EN LA UI, COMO DEL USUARIO
         Destroy(personaje);
         this.jugador.Cambiar_personaje_batalla("defensa_pvp", index,  null);
+        this.favoritos = jugador.defensa_pvp;
 
         Borrar_personajes_lista();
         Popular_lista_personajes(cantidad_personajes, prefab_recuadro_personaje);
@@ -140,7 +147,7 @@ public class defensa_pvp : MonoBehaviour
         //MIRAMOS SI EN LA LISTA DE FAVORITOS DEL JUGADOR HAY UN ESPACIO LIBRE Y TOMAMOS ESE INDEX
         int i = 0;
         bool espacio_libre = true;
-        while (favoritos[i] != null){
+        while (i < 4 && favoritos[i] != null && favoritos[i].nombre != ""){
             i++;
             if (i >= 4 ){
                  espacio_libre = false;
@@ -148,6 +155,7 @@ public class defensa_pvp : MonoBehaviour
             }
         }
 
+        Debug.Log("metemos en pos: " + i);
         //COLOCAMOS EN EL ESPACIO VACIO TANTO EN LA UI COMO EN LA LISTA DE FAVORITOS DEL JUGADOR, ESE PERSONAJE
         if (espacio_libre){
             //...
@@ -162,6 +170,7 @@ public class defensa_pvp : MonoBehaviour
             btn.onClick.AddListener(delegate { Borrar_personaje(recuadro_personaje, i); });
 
             this.jugador.Cambiar_personaje_batalla("defensa_pvp", i, this.jugador.personajes[index]);
+            this.favoritos = jugador.defensa_pvp;
 
             Borrar_personajes_lista();
             Popular_lista_personajes(cantidad_personajes, prefab_recuadro_personaje);
@@ -171,6 +180,16 @@ public class defensa_pvp : MonoBehaviour
     public void Confirmar_defensa()
     {    
         favoritos.RemoveAll(item => item == null);
+        favoritos.RemoveAll(item => item.nombre == "");
+        this.jugador.defensa_pvp = favoritos;
+        //GUARDAMOS LOS CAMBIOS EN LA DB
+        Guardar_cambios(this.jugador);
+        
         _routing.ir_pvp();
+    }
+
+    private void Guardar_cambios(Usuario nuevo_val)
+    {
+        this.CRUD.Guardar_usuario(nuevo_val);
     }
 }

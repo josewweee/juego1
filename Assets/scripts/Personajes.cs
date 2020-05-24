@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+[Serializable]
 public class Personajes
 {
     public string nombre;
@@ -16,7 +17,8 @@ public class Personajes
     public Poderes[] poderes; // 9
     public Poderes[] poderesActivos; // 4
     public string elemento; // AGUA, FUEGO, TIERRA, TRUENO, LUZ, OSCURIDAD
-    public Dictionary<string, float[]> estado_alterado; // NOMBRE EFECTO -> [ DAÑO EFECTO, DURACION EFECTO ]
+    public DiccionarioStringFloatArray estado_alterado;
+    //public Dictionary<string, float[]> estado_alterado; // NOMBRE EFECTO -> [ DAÑO EFECTO, DURACION EFECTO ]
     public string rareza; // COMUN, RARO, MITICO, LEGENDARIO
     public int fragmentos;
     public string[] imagen_completa; // UBICACION SPRITE, POSICION SPRITE DENTRO DE LA LISTA DE SPRITES
@@ -291,6 +293,5 @@ public class Personajes
             poderesActivos[i].Reducir_reutilizacion();
         }
     }
-
 
 }

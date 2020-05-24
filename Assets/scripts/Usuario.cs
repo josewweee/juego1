@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
+[Serializable]
 public class Usuario
 {
 
@@ -46,6 +48,31 @@ public class Usuario
         }
     }
 
+    public void Actualizar_usuario(Usuario nuevo)
+    {
+        nombre = nuevo.nombre;
+        nivel = nuevo.nivel;
+        experiencia = nuevo.experiencia;
+        hermandad = nuevo.hermandad;
+        tutorial_completo = nuevo.tutorial_completo;
+        amigos = nuevo.amigos;
+        personajes = nuevo.personajes;
+        equipo = nuevo.equipo;
+        personajesFavoritos = nuevo.personajesFavoritos;
+        monedas = nuevo.monedas;
+        configuracion = nuevo.configuracion;
+        logros = nuevo.logros;
+        puntos_logro = nuevo.puntos_logro;
+        energia = nuevo.energia;
+        energia_maxima = nuevo.energia_maxima;
+        metodo_login = nuevo.metodo_login;
+        energia_pvp = nuevo.energia_pvp;
+        puntos_pvp = nuevo.puntos_pvp;
+        defensa_pvp = nuevo.defensa_pvp;
+        historial_pvp = nuevo.historial_pvp;
+        posicion_pvp = nuevo.posicion_pvp;
+        nivel_historia = nuevo.nivel_historia;
+    }
 
     // METODOS DE LA CLASE
     public bool Agregar_personaje(Personajes personaje)
@@ -122,21 +149,40 @@ public class Usuario
             case "personajes_favoritos":
                 try
                 {
+                    //RELLENAMOS LA LISTA CON NULLS, PARA EVITAR TENER INDEX OUT OF BOUNDS, ESTO PASA YA QUE
+                    //AL TRAER LA LISTA DE LA DB, ESTA VIENE MAS PEQUEÑA
+                    if(personajesFavoritos.Count < 4)
+                    {
+                        while(personajesFavoritos.Count < 4)
+                        {
+                            personajesFavoritos.Add(null);
+                        }
+                    }
                     personajesFavoritos[posicion_cambio] = personaje;
+                    Debug.Log(personajesFavoritos[posicion_cambio].nombre);
                 }
-                catch
+                catch  ( Exception ex)
                 {
-                    Debug.Log("error ocurrido con el cambio de personaje");
+                    Debug.Log("error ocurrido con el cambio de personaje: " + ex);
                 }
                 break;
             case "defensa_pvp":
                 try
                 {
+                    //RELLENAMOS LA LISTA CON NULLS, PARA EVITAR TENER INDEX OUT OF BOUNDS, ESTO PASA YA QUE
+                    //AL TRAER LA LISTA DE LA DB, ESTA VIENE MAS PEQUEÑA
+                    if(defensa_pvp.Count < 4)
+                    {
+                        while(defensa_pvp.Count < 4)
+                        {
+                            defensa_pvp.Add(null);
+                        }
+                    }
                     defensa_pvp[posicion_cambio] = personaje;
                 }
-                catch
+                catch ( Exception ex)
                 {
-                    Debug.Log("error ocurrido con el cambio de personaje");
+                    Debug.Log("error ocurrido con el cambio de personaje:" + ex);
                 }
                 break;
             default:

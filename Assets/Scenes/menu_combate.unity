@@ -879,6 +879,463 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a598554d0ea5fb63a3c0788e3b533df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jugador:
+    nombre: nuevo usuario
+    nivel: 1
+    experiencia: 0
+    hermandad: 
+    tutorial_completo: 0
+    amigos: []
+    personajes: []
+    equipo: []
+    personajesFavoritos:
+    - nombre: Roger
+      nivel: 1
+      nivel_maximo: 30
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 7
+        vitalidad: 200
+        magia: 7
+        velocidad: 7
+        critico: 10
+        defensa_fisica: 10
+        defensa_magica: 5
+        salud: 200
+        atributos_base:
+        - 7
+        - 200
+        - 7
+        - 7
+        - 10
+        - 10
+        - 5
+        - 200
+      equipamiento:
+      - nombre: 
+        estrellas: 0
+        atributos:
+          fuerza: 0
+          vitalidad: 0
+          magia: 0
+          velocidad: 0
+          critico: 0
+          defensa_fisica: 0
+          defensa_magica: 0
+          salud: 0
+          atributos_base: []
+        poderes: []
+        poderActivo:
+          nombre: 
+          descripcion: 
+          atributo: 
+          multiplicador: 0
+          multiplicador_efecto: 0
+          tipo_poder: 
+          tipo_elemento: 
+          reutilizacion: 0
+          reutilizacion_actual: 0
+          duracion_efecto: 0
+          objetivos: 
+          se_puede_usar: 0
+          habilidades: []
+          "da\xF1o_base": 0
+          imagen: 
+        nivel: 0
+        nivel_maximo: 0
+        experiencia: 0
+        experiencia_maxima: 0
+        costo_fragmentos: 0
+        fragmentos: 0
+        foto_perfil: 
+        imagen_completa: 
+        esta_equipada: 0
+      experiencia: 0
+      poderes:
+      - nombre: golpe
+        descripcion: roger golpea al enemigo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque
+        tipo_elemento: tierra
+        reutilizacion: 0
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - null
+        "da\xF1o_base": 10
+        imagen: golpe
+      - nombre: curar
+        descripcion: roger cura a los aliados
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 1
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 2
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - curacion
+        "da\xF1o_base": 10
+        imagen: curar
+      - nombre: noquear
+        descripcion: roger noquea el objetivo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque_debuff
+        tipo_elemento: tierra
+        reutilizacion: 5
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - aturdir
+        "da\xF1o_base": 10
+        imagen: noquear
+      - nombre: locura
+        descripcion: "roger aumenta mucho su da\xF1o y baja su defensa"
+        atributo: fuerza
+        multiplicador: 0
+        multiplicador_efecto: 2
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 6
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: propio
+        se_puede_usar: 1
+        habilidades:
+        - locura
+        "da\xF1o_base": 0
+        imagen: locura
+      - nombre: x1
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      - nombre: x2
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      - nombre: x3
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      - nombre: x4
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      poderesActivos:
+      - nombre: golpe
+        descripcion: roger golpea al enemigo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque
+        tipo_elemento: tierra
+        reutilizacion: 0
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - null
+        "da\xF1o_base": 10
+        imagen: golpe
+      - nombre: curar
+        descripcion: roger cura a los aliados
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 1
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 2
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - curacion
+        "da\xF1o_base": 10
+        imagen: curar
+      - nombre: noquear
+        descripcion: roger noquea el objetivo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque_debuff
+        tipo_elemento: tierra
+        reutilizacion: 5
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - aturdir
+        "da\xF1o_base": 10
+        imagen: noquear
+      - nombre: locura
+        descripcion: "roger aumenta mucho su da\xF1o y baja su defensa"
+        atributo: fuerza
+        multiplicador: 0
+        multiplicador_efecto: 2
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 6
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: propio
+        se_puede_usar: 1
+        habilidades:
+        - locura
+        "da\xF1o_base": 0
+        imagen: locura
+      elemento: tierra
+      rareza: comun
+      fragmentos: 0
+      imagen_completa:
+      - PackForest01
+      - 7
+      foto_perfil: roger_perfil
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    monedas:
+      oro: 0
+      diamantes: 0
+      puntos_pvp: 0
+    logros: []
+    puntos_logro: 0
+    energia: 30
+    energia_maxima: 30
+    metodo_login: 
+    energia_pvp: 15
+    puntos_pvp: 0
+    defensa_pvp:
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    historial_pvp: []
+    posicion_pvp: 99999
+    nivel_historia: 1
 --- !u!114 &135969409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19400,10 +19857,942 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32b4fdfe500b1394b9c5c635cfcb294c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  personajes: []
+  enemigos: []
   tipo_combate: 
+  poder_a_ser_lanzado:
+    nombre: 
+    descripcion: 
+    atributo: 
+    multiplicador: 0
+    multiplicador_efecto: 0
+    tipo_poder: 
+    tipo_elemento: 
+    reutilizacion: 0
+    reutilizacion_actual: 0
+    duracion_efecto: 0
+    objetivos: 
+    se_puede_usar: 0
+    habilidades: []
+    "da\xF1o_base": 0
+    imagen: 
   velocidades_personajes: []
   velocidades_enemigos: []
   recompenza: {fileID: 0}
+  ganador:
+    nombre: nuevo usuario
+    nivel: 1
+    experiencia: 0
+    hermandad: 
+    tutorial_completo: 0
+    amigos: []
+    personajes: []
+    equipo: []
+    personajesFavoritos:
+    - nombre: Roger
+      nivel: 1
+      nivel_maximo: 30
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 7
+        vitalidad: 200
+        magia: 7
+        velocidad: 7
+        critico: 10
+        defensa_fisica: 10
+        defensa_magica: 5
+        salud: 200
+        atributos_base:
+        - 7
+        - 200
+        - 7
+        - 7
+        - 10
+        - 10
+        - 5
+        - 200
+      equipamiento:
+      - nombre: 
+        estrellas: 0
+        atributos:
+          fuerza: 0
+          vitalidad: 0
+          magia: 0
+          velocidad: 0
+          critico: 0
+          defensa_fisica: 0
+          defensa_magica: 0
+          salud: 0
+          atributos_base: []
+        poderes: []
+        poderActivo:
+          nombre: 
+          descripcion: 
+          atributo: 
+          multiplicador: 0
+          multiplicador_efecto: 0
+          tipo_poder: 
+          tipo_elemento: 
+          reutilizacion: 0
+          reutilizacion_actual: 0
+          duracion_efecto: 0
+          objetivos: 
+          se_puede_usar: 0
+          habilidades: []
+          "da\xF1o_base": 0
+          imagen: 
+        nivel: 0
+        nivel_maximo: 0
+        experiencia: 0
+        experiencia_maxima: 0
+        costo_fragmentos: 0
+        fragmentos: 0
+        foto_perfil: 
+        imagen_completa: 
+        esta_equipada: 0
+      experiencia: 0
+      poderes:
+      - nombre: golpe
+        descripcion: roger golpea al enemigo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque
+        tipo_elemento: tierra
+        reutilizacion: 0
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - null
+        "da\xF1o_base": 10
+        imagen: golpe
+      - nombre: curar
+        descripcion: roger cura a los aliados
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 1
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 2
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - curacion
+        "da\xF1o_base": 10
+        imagen: curar
+      - nombre: noquear
+        descripcion: roger noquea el objetivo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque_debuff
+        tipo_elemento: tierra
+        reutilizacion: 5
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - aturdir
+        "da\xF1o_base": 10
+        imagen: noquear
+      - nombre: locura
+        descripcion: "roger aumenta mucho su da\xF1o y baja su defensa"
+        atributo: fuerza
+        multiplicador: 0
+        multiplicador_efecto: 2
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 6
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: propio
+        se_puede_usar: 1
+        habilidades:
+        - locura
+        "da\xF1o_base": 0
+        imagen: locura
+      - nombre: x1
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      - nombre: x2
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      - nombre: x3
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      - nombre: x4
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      poderesActivos:
+      - nombre: golpe
+        descripcion: roger golpea al enemigo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque
+        tipo_elemento: tierra
+        reutilizacion: 0
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - null
+        "da\xF1o_base": 10
+        imagen: golpe
+      - nombre: curar
+        descripcion: roger cura a los aliados
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 1
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 2
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - curacion
+        "da\xF1o_base": 10
+        imagen: curar
+      - nombre: noquear
+        descripcion: roger noquea el objetivo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque_debuff
+        tipo_elemento: tierra
+        reutilizacion: 5
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - aturdir
+        "da\xF1o_base": 10
+        imagen: noquear
+      - nombre: locura
+        descripcion: "roger aumenta mucho su da\xF1o y baja su defensa"
+        atributo: fuerza
+        multiplicador: 0
+        multiplicador_efecto: 2
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 6
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: propio
+        se_puede_usar: 1
+        habilidades:
+        - locura
+        "da\xF1o_base": 0
+        imagen: locura
+      elemento: tierra
+      rareza: comun
+      fragmentos: 0
+      imagen_completa:
+      - PackForest01
+      - 7
+      foto_perfil: roger_perfil
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    monedas:
+      oro: 0
+      diamantes: 0
+      puntos_pvp: 0
+    logros: []
+    puntos_logro: 0
+    energia: 30
+    energia_maxima: 30
+    metodo_login: 
+    energia_pvp: 15
+    puntos_pvp: 0
+    defensa_pvp:
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    historial_pvp: []
+    posicion_pvp: 99999
+    nivel_historia: 1
+  perdedor:
+    nombre: nuevo usuario
+    nivel: 1
+    experiencia: 0
+    hermandad: 
+    tutorial_completo: 0
+    amigos: []
+    personajes: []
+    equipo: []
+    personajesFavoritos:
+    - nombre: Roger
+      nivel: 1
+      nivel_maximo: 30
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 7
+        vitalidad: 200
+        magia: 7
+        velocidad: 7
+        critico: 10
+        defensa_fisica: 10
+        defensa_magica: 5
+        salud: 200
+        atributos_base:
+        - 7
+        - 200
+        - 7
+        - 7
+        - 10
+        - 10
+        - 5
+        - 200
+      equipamiento:
+      - nombre: 
+        estrellas: 0
+        atributos:
+          fuerza: 0
+          vitalidad: 0
+          magia: 0
+          velocidad: 0
+          critico: 0
+          defensa_fisica: 0
+          defensa_magica: 0
+          salud: 0
+          atributos_base: []
+        poderes: []
+        poderActivo:
+          nombre: 
+          descripcion: 
+          atributo: 
+          multiplicador: 0
+          multiplicador_efecto: 0
+          tipo_poder: 
+          tipo_elemento: 
+          reutilizacion: 0
+          reutilizacion_actual: 0
+          duracion_efecto: 0
+          objetivos: 
+          se_puede_usar: 0
+          habilidades: []
+          "da\xF1o_base": 0
+          imagen: 
+        nivel: 0
+        nivel_maximo: 0
+        experiencia: 0
+        experiencia_maxima: 0
+        costo_fragmentos: 0
+        fragmentos: 0
+        foto_perfil: 
+        imagen_completa: 
+        esta_equipada: 0
+      experiencia: 0
+      poderes:
+      - nombre: golpe
+        descripcion: roger golpea al enemigo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque
+        tipo_elemento: tierra
+        reutilizacion: 0
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - null
+        "da\xF1o_base": 10
+        imagen: golpe
+      - nombre: curar
+        descripcion: roger cura a los aliados
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 1
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 2
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - curacion
+        "da\xF1o_base": 10
+        imagen: curar
+      - nombre: noquear
+        descripcion: roger noquea el objetivo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque_debuff
+        tipo_elemento: tierra
+        reutilizacion: 5
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - aturdir
+        "da\xF1o_base": 10
+        imagen: noquear
+      - nombre: locura
+        descripcion: "roger aumenta mucho su da\xF1o y baja su defensa"
+        atributo: fuerza
+        multiplicador: 0
+        multiplicador_efecto: 2
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 6
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: propio
+        se_puede_usar: 1
+        habilidades:
+        - locura
+        "da\xF1o_base": 0
+        imagen: locura
+      - nombre: x1
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      - nombre: x2
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      - nombre: x3
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      - nombre: x4
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      poderesActivos:
+      - nombre: golpe
+        descripcion: roger golpea al enemigo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque
+        tipo_elemento: tierra
+        reutilizacion: 0
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - null
+        "da\xF1o_base": 10
+        imagen: golpe
+      - nombre: curar
+        descripcion: roger cura a los aliados
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 1
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 2
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - curacion
+        "da\xF1o_base": 10
+        imagen: curar
+      - nombre: noquear
+        descripcion: roger noquea el objetivo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque_debuff
+        tipo_elemento: tierra
+        reutilizacion: 5
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - aturdir
+        "da\xF1o_base": 10
+        imagen: noquear
+      - nombre: locura
+        descripcion: "roger aumenta mucho su da\xF1o y baja su defensa"
+        atributo: fuerza
+        multiplicador: 0
+        multiplicador_efecto: 2
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 6
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: propio
+        se_puede_usar: 1
+        habilidades:
+        - locura
+        "da\xF1o_base": 0
+        imagen: locura
+      elemento: tierra
+      rareza: comun
+      fragmentos: 0
+      imagen_completa:
+      - PackForest01
+      - 7
+      foto_perfil: roger_perfil
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    monedas:
+      oro: 0
+      diamantes: 0
+      puntos_pvp: 0
+    logros: []
+    puntos_logro: 0
+    energia: 30
+    energia_maxima: 30
+    metodo_login: 
+    energia_pvp: 15
+    puntos_pvp: 0
+    defensa_pvp:
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    historial_pvp: []
+    posicion_pvp: 99999
+    nivel_historia: 1
   prefab_personaje: {fileID: 6898063919603109581, guid: 0c8013fd95317a656b86786a4ed5d52a,
     type: 3}
   key_personaje_turno: 
@@ -19411,6 +20800,463 @@ MonoBehaviour:
   imagen_puntero: {fileID: 0}
   puntero_verde: {fileID: 21300000, guid: 9f5134564f0049fe394a22dbac783eb9, type: 3}
   puntero_rojo: {fileID: 21300000, guid: f4e6be4a210c96e21a1a0788625433a3, type: 3}
+  jugador:
+    nombre: nuevo usuario
+    nivel: 1
+    experiencia: 0
+    hermandad: 
+    tutorial_completo: 0
+    amigos: []
+    personajes: []
+    equipo: []
+    personajesFavoritos:
+    - nombre: Roger
+      nivel: 1
+      nivel_maximo: 30
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 7
+        vitalidad: 200
+        magia: 7
+        velocidad: 7
+        critico: 10
+        defensa_fisica: 10
+        defensa_magica: 5
+        salud: 200
+        atributos_base:
+        - 7
+        - 200
+        - 7
+        - 7
+        - 10
+        - 10
+        - 5
+        - 200
+      equipamiento:
+      - nombre: 
+        estrellas: 0
+        atributos:
+          fuerza: 0
+          vitalidad: 0
+          magia: 0
+          velocidad: 0
+          critico: 0
+          defensa_fisica: 0
+          defensa_magica: 0
+          salud: 0
+          atributos_base: []
+        poderes: []
+        poderActivo:
+          nombre: 
+          descripcion: 
+          atributo: 
+          multiplicador: 0
+          multiplicador_efecto: 0
+          tipo_poder: 
+          tipo_elemento: 
+          reutilizacion: 0
+          reutilizacion_actual: 0
+          duracion_efecto: 0
+          objetivos: 
+          se_puede_usar: 0
+          habilidades: []
+          "da\xF1o_base": 0
+          imagen: 
+        nivel: 0
+        nivel_maximo: 0
+        experiencia: 0
+        experiencia_maxima: 0
+        costo_fragmentos: 0
+        fragmentos: 0
+        foto_perfil: 
+        imagen_completa: 
+        esta_equipada: 0
+      experiencia: 0
+      poderes:
+      - nombre: golpe
+        descripcion: roger golpea al enemigo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque
+        tipo_elemento: tierra
+        reutilizacion: 0
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - null
+        "da\xF1o_base": 10
+        imagen: golpe
+      - nombre: curar
+        descripcion: roger cura a los aliados
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 1
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 2
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - curacion
+        "da\xF1o_base": 10
+        imagen: curar
+      - nombre: noquear
+        descripcion: roger noquea el objetivo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque_debuff
+        tipo_elemento: tierra
+        reutilizacion: 5
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - aturdir
+        "da\xF1o_base": 10
+        imagen: noquear
+      - nombre: locura
+        descripcion: "roger aumenta mucho su da\xF1o y baja su defensa"
+        atributo: fuerza
+        multiplicador: 0
+        multiplicador_efecto: 2
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 6
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: propio
+        se_puede_usar: 1
+        habilidades:
+        - locura
+        "da\xF1o_base": 0
+        imagen: locura
+      - nombre: x1
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      - nombre: x2
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      - nombre: x3
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      - nombre: x4
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      poderesActivos:
+      - nombre: golpe
+        descripcion: roger golpea al enemigo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque
+        tipo_elemento: tierra
+        reutilizacion: 0
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - null
+        "da\xF1o_base": 10
+        imagen: golpe
+      - nombre: curar
+        descripcion: roger cura a los aliados
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 1
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 2
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - curacion
+        "da\xF1o_base": 10
+        imagen: curar
+      - nombre: noquear
+        descripcion: roger noquea el objetivo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque_debuff
+        tipo_elemento: tierra
+        reutilizacion: 5
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - aturdir
+        "da\xF1o_base": 10
+        imagen: noquear
+      - nombre: locura
+        descripcion: "roger aumenta mucho su da\xF1o y baja su defensa"
+        atributo: fuerza
+        multiplicador: 0
+        multiplicador_efecto: 2
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 6
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: propio
+        se_puede_usar: 1
+        habilidades:
+        - locura
+        "da\xF1o_base": 0
+        imagen: locura
+      elemento: tierra
+      rareza: comun
+      fragmentos: 0
+      imagen_completa:
+      - PackForest01
+      - 7
+      foto_perfil: roger_perfil
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    monedas:
+      oro: 0
+      diamantes: 0
+      puntos_pvp: 0
+    logros: []
+    puntos_logro: 0
+    energia: 30
+    energia_maxima: 30
+    metodo_login: 
+    energia_pvp: 15
+    puntos_pvp: 0
+    defensa_pvp:
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    historial_pvp: []
+    posicion_pvp: 99999
+    nivel_historia: 1
   menu: {fileID: 135969406}
   _routing: {fileID: 0}
   cambiar_UI_poderes: 1
@@ -29172,6 +31018,463 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tipo_combate: 
+  jugador:
+    nombre: nuevo usuario
+    nivel: 1
+    experiencia: 0
+    hermandad: 
+    tutorial_completo: 0
+    amigos: []
+    personajes: []
+    equipo: []
+    personajesFavoritos:
+    - nombre: Roger
+      nivel: 1
+      nivel_maximo: 30
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 7
+        vitalidad: 200
+        magia: 7
+        velocidad: 7
+        critico: 10
+        defensa_fisica: 10
+        defensa_magica: 5
+        salud: 200
+        atributos_base:
+        - 7
+        - 200
+        - 7
+        - 7
+        - 10
+        - 10
+        - 5
+        - 200
+      equipamiento:
+      - nombre: 
+        estrellas: 0
+        atributos:
+          fuerza: 0
+          vitalidad: 0
+          magia: 0
+          velocidad: 0
+          critico: 0
+          defensa_fisica: 0
+          defensa_magica: 0
+          salud: 0
+          atributos_base: []
+        poderes: []
+        poderActivo:
+          nombre: 
+          descripcion: 
+          atributo: 
+          multiplicador: 0
+          multiplicador_efecto: 0
+          tipo_poder: 
+          tipo_elemento: 
+          reutilizacion: 0
+          reutilizacion_actual: 0
+          duracion_efecto: 0
+          objetivos: 
+          se_puede_usar: 0
+          habilidades: []
+          "da\xF1o_base": 0
+          imagen: 
+        nivel: 0
+        nivel_maximo: 0
+        experiencia: 0
+        experiencia_maxima: 0
+        costo_fragmentos: 0
+        fragmentos: 0
+        foto_perfil: 
+        imagen_completa: 
+        esta_equipada: 0
+      experiencia: 0
+      poderes:
+      - nombre: golpe
+        descripcion: roger golpea al enemigo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque
+        tipo_elemento: tierra
+        reutilizacion: 0
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - null
+        "da\xF1o_base": 10
+        imagen: golpe
+      - nombre: curar
+        descripcion: roger cura a los aliados
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 1
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 2
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - curacion
+        "da\xF1o_base": 10
+        imagen: curar
+      - nombre: noquear
+        descripcion: roger noquea el objetivo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque_debuff
+        tipo_elemento: tierra
+        reutilizacion: 5
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - aturdir
+        "da\xF1o_base": 10
+        imagen: noquear
+      - nombre: locura
+        descripcion: "roger aumenta mucho su da\xF1o y baja su defensa"
+        atributo: fuerza
+        multiplicador: 0
+        multiplicador_efecto: 2
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 6
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: propio
+        se_puede_usar: 1
+        habilidades:
+        - locura
+        "da\xF1o_base": 0
+        imagen: locura
+      - nombre: x1
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      - nombre: x2
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      - nombre: x3
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      - nombre: x4
+        descripcion: roger quema a los enemigos
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 0.1
+        tipo_poder: debuff
+        tipo_elemento: tierra
+        reutilizacion: 3
+        reutilizacion_actual: 0
+        duracion_efecto: 2
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - a
+        "da\xF1o_base": 0
+        imagen: revivir
+      poderesActivos:
+      - nombre: golpe
+        descripcion: roger golpea al enemigo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque
+        tipo_elemento: tierra
+        reutilizacion: 0
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - null
+        "da\xF1o_base": 10
+        imagen: golpe
+      - nombre: curar
+        descripcion: roger cura a los aliados
+        atributo: magia
+        multiplicador: 0
+        multiplicador_efecto: 1
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 2
+        reutilizacion_actual: 0
+        duracion_efecto: 0
+        objetivos: multiple
+        se_puede_usar: 1
+        habilidades:
+        - curacion
+        "da\xF1o_base": 10
+        imagen: curar
+      - nombre: noquear
+        descripcion: roger noquea el objetivo
+        atributo: fuerza
+        multiplicador: 1
+        multiplicador_efecto: 0
+        tipo_poder: ataque_debuff
+        tipo_elemento: tierra
+        reutilizacion: 5
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: unico
+        se_puede_usar: 1
+        habilidades:
+        - aturdir
+        "da\xF1o_base": 10
+        imagen: noquear
+      - nombre: locura
+        descripcion: "roger aumenta mucho su da\xF1o y baja su defensa"
+        atributo: fuerza
+        multiplicador: 0
+        multiplicador_efecto: 2
+        tipo_poder: buff
+        tipo_elemento: tierra
+        reutilizacion: 6
+        reutilizacion_actual: 0
+        duracion_efecto: 3
+        objetivos: propio
+        se_puede_usar: 1
+        habilidades:
+        - locura
+        "da\xF1o_base": 0
+        imagen: locura
+      elemento: tierra
+      rareza: comun
+      fragmentos: 0
+      imagen_completa:
+      - PackForest01
+      - 7
+      foto_perfil: roger_perfil
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    monedas:
+      oro: 0
+      diamantes: 0
+      puntos_pvp: 0
+    logros: []
+    puntos_logro: 0
+    energia: 30
+    energia_maxima: 30
+    metodo_login: 
+    energia_pvp: 15
+    puntos_pvp: 0
+    defensa_pvp:
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    - nombre: 
+      nivel: 0
+      nivel_maximo: 0
+      estrellas: 0
+      despertadas: 0
+      atributos:
+        fuerza: 0
+        vitalidad: 0
+        magia: 0
+        velocidad: 0
+        critico: 0
+        defensa_fisica: 0
+        defensa_magica: 0
+        salud: 0
+        atributos_base: []
+      equipamiento: []
+      experiencia: 0
+      poderes: []
+      poderesActivos: []
+      elemento: 
+      rareza: 
+      fragmentos: 0
+      imagen_completa: []
+      foto_perfil: 
+    historial_pvp: []
+    posicion_pvp: 99999
+    nivel_historia: 1
   prefab_item: {fileID: 1010286564003019100, guid: 580e77dce4832715480f60afb45add5c,
     type: 3}
 --- !u!1 &1281549063
@@ -30378,7 +32681,7 @@ ParticleSystem:
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 0
   useUnscaledTime: 0

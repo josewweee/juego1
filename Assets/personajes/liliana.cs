@@ -17,7 +17,7 @@ public class liliana : Personajes
         poderes = new Poderes[8];
         poderesActivos = new Poderes[4];
         elemento = "agua";
-        estado_alterado = new Dictionary<string, float[]>();
+        estado_alterado = new DiccionarioStringFloatArray();
         rareza = "legendario";
         fragmentos = 0;
         imagen_completa = new string[2]{"PackForest01","48"};

@@ -17,7 +17,7 @@ public class roger : Personajes
         poderes = new Poderes[8];
         poderesActivos = new Poderes[4]{null, null, null, null};
         elemento = "tierra";
-        estado_alterado = new Dictionary<string, float[]>();
+        estado_alterado = new DiccionarioStringFloatArray();
         rareza = "comun";
         fragmentos = 0;
         imagen_completa = new string[2]{"PackForest01","7"};

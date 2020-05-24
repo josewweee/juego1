@@ -7,6 +7,7 @@ public class invocar : MonoBehaviour
 {
     // INSTANCIAS DEL PERSONAJE Y DE LA FABRICA DE PERSONAJES
     public Usuario jugador;
+    public Usuario singleton;
     public Personajes fabrica_personajes;
     Personajes personaje_invocado;
 
@@ -21,12 +22,21 @@ public class invocar : MonoBehaviour
     GameObject txt_personaje_invocado;
     GameObject img_personaje_invocado;
 
+    //TRAEMOS INSTANCIA DEL CRUD PARA LAS OPERACIONES DE LA BASE DE DATOS
+    private crud CRUD;
 
-    void Start()
+    private IEnumerator Start()
     {
+        singleton = Usuario.instancia;
+        //TRAEMOS EL USUARIO DE LA BASE DE DATOS
+        CRUD = GameObject.Find("Crud").GetComponent<crud>();
+        var jugador_task = CRUD.GetComponent<crud>().Cargar_usuario();
+        yield return new WaitUntil( ()=> jugador_task.IsCompleted);
+        jugador = jugador_task.Result;
+
         //FABRICA PARA INVOCAR PERSONAJES Y SINGLETON USUARIO PARA AGREGARLE LOS PERSONAJES
         fabrica_personajes = new Personajes();
-        jugador = Usuario.instancia;
+        //jugador = Usuario.instancia;
 
         //COMENZAMOS A AGREGAR LOS PERSONAJES QUE SE PUEDEN INVOCAR
         comunes.Add("roger");
@@ -114,7 +124,7 @@ public class invocar : MonoBehaviour
             //ACTIVAMOS EL ITEM DEL PERSONAJE INVOCADO
             Abrir_item_personaje_invocado(true);
         }
-        Debug.Log(personaje_invocado.nombre);
+        Guardar_cambios(jugador);
     }
 
     public void Invocacion_especial()
@@ -182,6 +192,7 @@ public class invocar : MonoBehaviour
         
 
         Debug.Log(personaje_invocado.nombre);
+        Guardar_cambios(jugador);
     }
 
     public void Invocacion_Legendaria()
@@ -246,6 +257,7 @@ public class invocar : MonoBehaviour
         
 
         Debug.Log(personaje_invocado.nombre);
+        Guardar_cambios(jugador);
     }
 
     public void Abrir_item_personaje_invocado(bool fragmentos)
@@ -268,6 +280,12 @@ public class invocar : MonoBehaviour
     {
         //DESACTIVAMOS EL ITEM DEL PERSONAJE INVOCADO
         item_personaje_invocado.SetActive(false);
+    }
+
+    private void Guardar_cambios(Usuario nuevo_val)
+    {
+        this.CRUD.Guardar_usuario(nuevo_val);
+        this.singleton.Actualizar_usuario(nuevo_val);
     }
     
 }

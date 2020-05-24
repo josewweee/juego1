@@ -365,6 +365,7 @@ public class Combate : MonoBehaviour
             }
         }
 
+
         int contador_muertos = 0;
         for(int k = 0; k < personajes.Length; k++)
         {
