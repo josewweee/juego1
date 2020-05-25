@@ -65,18 +65,20 @@ public class menu_pvp : MonoBehaviour
             GameObject recuadro_pvp = Instantiate(prefab_lista, new Vector3(x, y, 0), Quaternion.identity);
             recuadro_pvp.transform.SetParent(GameObject.Find("contenido_arena").transform, false);
 
-            string output = JsonUtility.ToJson(u, true);
-            Debug.Log(output);
-
             //NOMBRE DEL OPONENTE
             Text nombre = recuadro_pvp.transform.GetChild(0).gameObject.GetComponent<Text>();
             nombre.text = u.nombre;
 
 
-            //LE ASIGNAMOS LOS PERSONAJES AL SINGLETON PARA SIGUIENTE ESCENA
-            Button btn = recuadro_pvp.GetComponent<Button>();
+            //LE ASIGNAMOS LOS PERSONAJES AL SINGLETON PARA SIGUIENTE ESCENA, Y VAMOS AL COMBATE PVP
+            Button btn = recuadro_pvp.transform.GetChild(1).gameObject.GetComponent<Button>();
             List<Personajes> defensa_enemiga = u.defensa_pvp;
             btn.onClick.AddListener(delegate { Ir_combate_pvp(u, defensa_enemiga); });
+
+            //AGREGAMOS EL USUARIO COMO AMIGO, CON SOLO SU NOMBRE.
+            Button btn_agregar_amigo = recuadro_pvp.transform.GetChild(2).gameObject.GetComponent<Button>();
+            Amigos nuevo_amigo = new Amigos(u.nombre);
+            btn.onClick.AddListener(delegate { Agrear_amigo(nuevo_amigo); });
 
             y -= 48F;
         }
@@ -91,10 +93,15 @@ public class menu_pvp : MonoBehaviour
         _routing.ir_seleccion_pre_combate();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Agrear_amigo(Amigos amigo)
     {
-        
+        jugador.AgregarAmigos(amigo);
+        Debug.Log("amigo agregado");
+        Guardar_DB(jugador);
+    }
+
+    public void Guardar_DB(Usuario nuevo_val){
+        this.CRUD.Guardar_usuario(nuevo_val);
     }
 
 

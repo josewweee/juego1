@@ -12,11 +12,11 @@ public class Usuario
     public int experiencia = 0;
     public string hermandad = "";
     public bool tutorial_completo = false;
-    public List<Usuario> amigos = new List<Usuario>();
+    public List<Amigos> amigos = new List<Amigos>();
     public List<Personajes> personajes = new List<Personajes>();
     public List<Equipo> equipo = new List<Equipo>();
     public List<Personajes> personajesFavoritos;
-    public Monedas monedas = new Monedas(0,0,0);
+    public Monedas monedas = new Monedas(0,0,0,0);
     public Configuracion configuracion = new Configuracion();
     public List<Logros> logros = new List<Logros>();
     public int puntos_logro = 0;
@@ -29,6 +29,7 @@ public class Usuario
     public string[] historial_pvp;
     public int posicion_pvp = 99999;
     public int nivel_historia = 1;
+    public bool regalo_enviado = false;
 
     // CONSTRUCTOR
     public Usuario() { 
@@ -72,6 +73,7 @@ public class Usuario
         historial_pvp = nuevo.historial_pvp;
         posicion_pvp = nuevo.posicion_pvp;
         nivel_historia = nuevo.nivel_historia;
+        regalo_enviado = nuevo.regalo_enviado;
     }
 
     // METODOS DE LA CLASE
@@ -114,9 +116,9 @@ public class Usuario
         }
     }
 
-    public bool AgregarAmigos(Usuario usuario)
+    public bool AgregarAmigos(Amigos amigo)
     {
-        amigos.Add(usuario);
+        amigos.Add(amigo);
         return true;
     }
 

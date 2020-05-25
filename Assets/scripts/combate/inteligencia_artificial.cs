@@ -713,7 +713,7 @@ public class inteligencia_artificial
     static Personajes[,] matriz_envio_personajes(Personajes[] personajes, Personajes[] enemigos)
     {
     
-        Personajes[,] matrix = new Personajes[2, personajes.Length];
+        Personajes[,] matrix = new Personajes[2, 4];
         //ALIADOS POS 0
         for(int i = 0; i < personajes.Length; i++)
         {

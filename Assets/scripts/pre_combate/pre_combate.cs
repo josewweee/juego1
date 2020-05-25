@@ -51,7 +51,7 @@ public class pre_combate : MonoBehaviour
                 if (favoritos.Count < 4) favoritos.Add(null);
             }
             pjs_enemigos = storage_enemigos.enemigos.ToList();
-        }else if (tipo_combate == "pvp"){
+        }else if (tipo_combate == "pvp" || tipo_combate == "amistoso" ){
             favoritos = jugador.defensa_pvp;
             for(int i = 0; i < 4; i++){
                 if (favoritos.Count < 4) favoritos.Add(null);
@@ -188,7 +188,7 @@ public class pre_combate : MonoBehaviour
             this.jugador.Cambiar_personaje_batalla("personajes_favoritos", index,  null);
             this.favoritos = jugador.personajesFavoritos;
         }
-        else if (this.tipo_combate == "pvp")
+        else if (this.tipo_combate == "pvp" || tipo_combate == "amistoso" )
         {
             this.jugador.Cambiar_personaje_batalla("defensa_pvp", index,  null);
             this.favoritos = jugador.defensa_pvp;
@@ -226,7 +226,7 @@ public class pre_combate : MonoBehaviour
                 this.jugador.Cambiar_personaje_batalla("personajes_favoritos", i, this.jugador.personajes[index]);
                 this.favoritos = jugador.personajesFavoritos;
             }
-            else if (this.tipo_combate == "pvp")
+            else if (this.tipo_combate == "pvp" || tipo_combate == "amistoso" )
             {
                 this.jugador.Cambiar_personaje_batalla("defensa_pvp", i, this.jugador.personajes[index]);
                 this.favoritos = jugador.defensa_pvp;

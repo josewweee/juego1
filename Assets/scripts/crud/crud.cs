@@ -22,7 +22,6 @@ public class crud : MonoBehaviour {
         try{
             usuario = JsonUtility.FromJson<Usuario>(PlayerPrefs.GetString(KEY_JUGADOR));
             KEY_JUGADOR = "KEY_JUGADOR/"+ usuario.nombre.ToString();
-            Debug.Log(KEY_JUGADOR);
         }catch{
             Debug.Log("nada en el localStorage");
             Debug.Log(KEY_JUGADOR);
@@ -34,11 +33,11 @@ public class crud : MonoBehaviour {
     //ENVIAMOS EL USUARIO QUE NOS MANDEN AL LOCAL STORAGE Y A LA DATABASE COMO UN JSON
     public void Guardar_usuario(Usuario jugador)
     {
-        Debug.Log("vamos a guardar en " + KEY_JUGADOR);
         PlayerPrefs.SetString(KEY_JUGADOR, JsonUtility.ToJson(jugador));
         _database.GetReference(KEY_JUGADOR).SetRawJsonValueAsync(JsonUtility.ToJson(jugador));
 
     }
+
 
     public void Guardar_personajes(Personajes pjs)
     {
@@ -92,9 +91,27 @@ public class crud : MonoBehaviour {
         //return PlayerPrefs.HasKey(KEY_JUGADOR);
     }
 
+    //BORRAMOS UN USUARIO
     public void Borrar_usuario()
     {
         //PlayerPrefs.DeleteKey(KEY_JUGADOR);
         _database.GetReference(KEY_JUGADOR).RemoveValueAsync();
+    }
+
+    public async Task<List<Amigos>> Cargar_amigos(string[] nombres)
+    {
+        List<Amigos> amigos = new List<Amigos>();
+        for(int i = 0; i < nombres.Length; i++){
+            string key = "KEY_JUGADOR/"+nombres[i];
+            var dataSnapshot = await _database.GetReference(key).GetValueAsync();
+            Usuario usuario_tomado = JsonUtility.FromJson<Usuario>(dataSnapshot.GetRawJsonValue());
+            List<Personajes> pjs = usuario_tomado.personajes;
+            List<Personajes> favoritos = usuario_tomado.personajesFavoritos;
+            List<Personajes> def_pvp = usuario_tomado.defensa_pvp;
+            bool regalo = usuario_tomado.regalo_enviado;
+            Amigos amigo_nuevo = new Amigos(nombres[i], favoritos, def_pvp, pjs, regalo);
+            amigos.Add(amigo_nuevo);
+        }
+        return amigos;  
     }
 }

@@ -124,7 +124,7 @@ public class Combate : MonoBehaviour
             personajes = jugador.personajesFavoritos.ToArray();
             enemigos = storage_enemigos.enemigos.ToArray();
         }
-        else if (tipo_combate == "pvp")
+        else if (tipo_combate == "pvp" || tipo_combate == "amistoso")
         {
             personajes = jugador.defensa_pvp.ToArray();
             enemigos = storage_enemigos.enemigos_pvp.ToArray();
@@ -999,6 +999,17 @@ public class Combate : MonoBehaviour
                 }
                 break;
             case "pvp":
+                foreach(Personajes pj in jugador.defensa_pvp)
+                {
+                    pj.Resetear_personaje();
+                }
+
+                foreach(Personajes pj in storage_enemigos.enemigos_pvp)
+                {
+                    pj.Resetear_personaje();
+                }
+                break;
+            case "amistoso":
                 foreach(Personajes pj in jugador.defensa_pvp)
                 {
                     pj.Resetear_personaje();

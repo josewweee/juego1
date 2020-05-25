@@ -63,7 +63,7 @@ public class Personajes
 
     public virtual void Subir_nivel(int niveles)
     {
-        
+        nivel ++;
     }
 
     public virtual void Ganar_exp(int exp)

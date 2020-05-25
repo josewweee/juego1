@@ -143,6 +143,11 @@ public class routing : MonoBehaviour
         SceneManager.LoadScene("menu_pvp");
     }
 
+    public void ir_amigos()
+    {
+        SceneManager.LoadScene("menu_amigos");
+    }
+
     public void ir_defensa_pvp()
     {
         SceneManager.LoadScene("menu_defensa_pvp");
@@ -185,6 +190,8 @@ public class routing : MonoBehaviour
             }else{
                  Debug.Log("No hay energia suficiente");
             }
+        }else if(tipoCombate == "amistoso"){
+            SceneManager.LoadScene("menu_combate");
         }
         
     }

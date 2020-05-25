@@ -63,12 +63,11 @@ public class Recompenza : MonoBehaviour
             int exp = (nivel_historia / 2) + 1;
             jugador.Sumar_experiencia(exp);
 
-            List<Personajes> pjs = jugador.personajesFavoritos;
-            for(int i = 0; i < pjs.Count; i++)
+            for(int i = 0; i < jugador.personajesFavoritos.Count; i++)
             {
-                if (pjs[i] != null)
+                if (jugador.personajesFavoritos[i] != null)
                 {
-                    pjs[i].Ganar_exp(exp);
+                    jugador.personajesFavoritos[i].Ganar_exp(exp);
                 }
             }
 
@@ -213,10 +212,9 @@ public class Recompenza : MonoBehaviour
             int exp = (nivel_historia / 3) + 1;
             jugador.Sumar_experiencia(exp);
 
-            List<Personajes> pjs = jugador.personajesFavoritos;
-            for(int i = 0; i < pjs.Count; i++)
+            for(int i = 0; i < jugador.personajesFavoritos.Count; i++)
             {
-                pjs[i].Ganar_exp(exp);
+                jugador.personajesFavoritos[i].Ganar_exp(exp);
             }
 
         }
