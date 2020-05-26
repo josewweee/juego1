@@ -30,6 +30,8 @@ public class Usuario
     public int posicion_pvp = 99999;
     public int nivel_historia = 1;
     public bool regalo_enviado = false;
+    public bool daily_reclamado = false;
+    public int login_diarios = 1;
 
     // CONSTRUCTOR
     public Usuario() { 
@@ -74,6 +76,8 @@ public class Usuario
         posicion_pvp = nuevo.posicion_pvp;
         nivel_historia = nuevo.nivel_historia;
         regalo_enviado = nuevo.regalo_enviado;
+        daily_reclamado = nuevo.daily_reclamado;
+        login_diarios = nuevo.login_diarios;
     }
 
     // METODOS DE LA CLASE
@@ -200,5 +204,19 @@ public class Usuario
     public void Cambiar_metodo_login(string metodo)
     {
 
+    }
+
+    public void Aumentar_login_reclamados()
+    {
+        this.login_diarios ++;
+        if (this.login_diarios >= 7)
+        {
+            this.login_diarios = 0;
+        }
+    }
+
+    public void Reiniciar_daily()
+    {
+        this.daily_reclamado = false;
     }
 }

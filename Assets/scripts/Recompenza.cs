@@ -62,14 +62,22 @@ public class Recompenza : MonoBehaviour
             //LE DAMOS EXP A LOS PERSONAJES Y AL USUARIO
             int exp = (nivel_historia / 2) + 1;
             jugador.Sumar_experiencia(exp);
-
-            for(int i = 0; i < jugador.personajesFavoritos.Count; i++)
+            
+            foreach(Personajes pj in jugador.personajesFavoritos)
             {
-                if (jugador.personajesFavoritos[i] != null)
-                {
-                    jugador.personajesFavoritos[i].Ganar_exp(exp);
+                if (pj != null){
+                    int index = jugador.personajes.FindIndex(item => item.nombre == pj.nombre);
+                    jugador.personajes[index].Ganar_exp(exp);
                 }
             }
+
+            // for(int i = 0; i < jugador.personajesFavoritos.Count; i++)
+            // {
+            //     if (jugador.personajesFavoritos[i] != null)
+            //     {
+            //         jugador.personajesFavoritos[i].Ganar_exp(exp);
+            //     }
+            // }
 
             //DAMOS FRAGMENTOS DE PERSONAJE, SEGUN LOS PERSONAJES QUE TENGA EL USUARIO
             List<Personajes> personajes = jugador.personajes;
@@ -212,10 +220,18 @@ public class Recompenza : MonoBehaviour
             int exp = (nivel_historia / 3) + 1;
             jugador.Sumar_experiencia(exp);
 
-            for(int i = 0; i < jugador.personajesFavoritos.Count; i++)
+            foreach(Personajes pj in jugador.personajesFavoritos)
             {
-                jugador.personajesFavoritos[i].Ganar_exp(exp);
+                if (pj != null){
+                    int index = jugador.personajes.FindIndex(item => item.nombre == pj.nombre);
+                    jugador.personajes[index].Ganar_exp(exp);
+                }
             }
+
+            // for(int i = 0; i < jugador.personajesFavoritos.Count; i++)
+            // {
+            //     jugador.personajesFavoritos[i].Ganar_exp(exp);
+            // }
 
         }
         else if (tipo_combate == "pvp")

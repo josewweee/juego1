@@ -5,6 +5,7 @@ using Firebase;
 using Firebase.Extensions;
 using Firebase.Database;
 using System.Threading.Tasks;
+using System;
 
 
 public class crud : MonoBehaviour {
@@ -14,19 +15,27 @@ public class crud : MonoBehaviour {
     
     //TRAEMOS LA BASE DE DATOS
     private FirebaseDatabase _database;
-    
+
+    //CREAMOS LA VARIABLE DONDE ALOJAREMOS EL USUARIO
+    Usuario usuario;
+
+    //PARA CREAR USUARIOS
+    private bool hilo = false;
 
     private void Start() {
+        //TRAEMOS EL NOMBRE DEL USUARIO EN EL DISPOSITIVO ACTUAL
         _database = FirebaseDatabase.DefaultInstance;
-        Usuario usuario;
+        KEY_JUGADOR ="KEY_JUGADOR";
+        Debug.Log("miremos si ya existe");
         try{
             usuario = JsonUtility.FromJson<Usuario>(PlayerPrefs.GetString(KEY_JUGADOR));
             KEY_JUGADOR = "KEY_JUGADOR/"+ usuario.nombre.ToString();
-        }catch{
-            Debug.Log("nada en el localStorage");
+        }catch (Exception e){
+            Debug.Log("nada en el localStorage" + e);
             Debug.Log(KEY_JUGADOR);
              KEY_JUGADOR = "null";
         }
+        //PARA NO DESTRUIR ESTO ENTRE ESCENAS
         DontDestroyOnLoad(this.gameObject);
     }
 
@@ -49,7 +58,6 @@ public class crud : MonoBehaviour {
     // REVISAMOS SI EL USUARIO EXISTE Y LO RETORNAMOS DEL LOCALSTORAGE PARSEAMOS DE JSON A TIPO USUARIO, SI NO EXISTE RETORNAMOS NULL
     public async Task<Usuario> Cargar_usuario()
     {
-        Debug.Log(KEY_JUGADOR);
         var dataSnapshot = await _database.GetReference(KEY_JUGADOR).GetValueAsync();
         if(!dataSnapshot.Exists)
         {
@@ -78,6 +86,8 @@ public class crud : MonoBehaviour {
             Debug.LogFormat("Key = {0}", u.Key);
             usuarios.Add( JsonUtility.FromJson<Usuario>(u.GetRawJsonValue()));
         }
+        //ELIMINAMOS EL USUARIO QUE SE LLAMA IGUAL QUE EL USUARIO ACTUAL
+        usuarios.RemoveAll(item => item.nombre == usuario.nombre);
         return usuarios;
     }
 
@@ -98,6 +108,7 @@ public class crud : MonoBehaviour {
         _database.GetReference(KEY_JUGADOR).RemoveValueAsync();
     }
 
+    //CARGAMOS TODOS LOS USUARIOS AMIGOS CON EL STRING ENVIADO ( ESTE VIENE DE LA LISTA DE AMIGOS DEL USUARIO ACTUAL)
     public async Task<List<Amigos>> Cargar_amigos(string[] nombres)
     {
         List<Amigos> amigos = new List<Amigos>();
@@ -113,5 +124,49 @@ public class crud : MonoBehaviour {
             amigos.Add(amigo_nuevo);
         }
         return amigos;  
+    }
+
+    //CREAMOS UN USUARIO NUEVO
+    public void Crear_usuario(string key, Usuario usuario_nuevo)
+    {
+        if (hilo == false){
+            hilo = true;
+            _database.GetReference(key).SetRawJsonValueAsync(JsonUtility.ToJson(usuario_nuevo)).ContinueWith(task => {
+                if (task.IsFaulted) {
+                    Debug.Log("Errores creando el usuario");
+                }
+                else if (task.IsCompleted) 
+                {
+                    Debug.Log("Usuario creado");
+                    //hilo = StartCoroutine(this.GetComponent<crear_personaje>().Cambiar_escena());
+                }
+            });
+        }
+    }
+
+
+    //ESTRUCTURA PARA TRAER LOS ITEMS DE LA RECOMEPNZA DEL DAILY LOGIN
+    public struct daily_item{
+        public string titulo;
+        public string nombre;
+        public string foto;
+        public int cantidad;
+    }
+
+    //TRAEMOS LA RECOMPENZA DEL DAILY LOGIN
+    public async Task<List<daily_item>> Cargar_dailys()
+    {
+        var dataSnapshot = await _database.GetReference("DAILY").GetValueAsync();
+        if(!dataSnapshot.Exists)
+        {
+            Debug.Log("NO ENCONTRAMOS NADA");
+            return null;
+        }
+        List<daily_item> daily_items = new List<daily_item>();
+        foreach(var d in dataSnapshot.Children){
+            daily_items.Add( JsonUtility.FromJson<daily_item>(d.GetRawJsonValue()));
+        }
+        //ELIMINAMOS EL USUARIO QUE SE LLAMA IGUAL QUE EL USUARIO ACTUAL
+        return daily_items;
     }
 }

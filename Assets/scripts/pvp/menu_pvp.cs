@@ -15,7 +15,6 @@ public class menu_pvp : MonoBehaviour
     private Text txt_energia_pvp;
     private Text txt_puntos_pvp;
     private Text txt_posicion_pvp;
-    private Personajes fabrica;
 
     //INSTANCIA DE LA DB
     private crud CRUD;
@@ -43,14 +42,6 @@ public class menu_pvp : MonoBehaviour
         txt_posicion_pvp = GameObject.Find("texto_numero_posicion").GetComponent<Text>();
         txt_puntos_pvp.text = jugador.posicion_pvp.ToString();
 
-
-        // fabrica = new Personajes();
-        // Usuario u1 = new Usuario();
-        // u1.defensa_pvp[0] = fabrica.Crear_personaje("roger");
-        // u1.defensa_pvp[1] = fabrica.Crear_personaje("alicia");
-        // u1.defensa_pvp[2] = fabrica.Crear_personaje("martis");
-        // u1.defensa_pvp[3] = fabrica.Crear_personaje("liliana");
-        // jugadores_DB = new Usuario[4]{u1, new Usuario(), new Usuario(), new Usuario()};
         Popular_lista_pvp(prefab_lista);
     }
 
@@ -78,13 +69,13 @@ public class menu_pvp : MonoBehaviour
             //AGREGAMOS EL USUARIO COMO AMIGO, CON SOLO SU NOMBRE.
             Button btn_agregar_amigo = recuadro_pvp.transform.GetChild(2).gameObject.GetComponent<Button>();
             Amigos nuevo_amigo = new Amigos(u.nombre);
-            btn.onClick.AddListener(delegate { Agrear_amigo(nuevo_amigo); });
+            btn_agregar_amigo.onClick.AddListener(delegate { Agrear_amigo(nuevo_amigo); });
 
             y -= 48F;
         }
     }
 
-
+    //ENVIAMOS LA DEFENSA DEL ENEMIGO A UN SINGLETON LOCAL, MODIFICAMOS EL TIPO DE COMBATE Y VAMOS A PRE COMBATE
     public void Ir_combate_pvp(Usuario enemigo, List<Personajes> pjs_enemigo)
     {
         storage_enemigos.enemigos_pvp = pjs_enemigo;
@@ -93,13 +84,19 @@ public class menu_pvp : MonoBehaviour
         _routing.ir_seleccion_pre_combate();
     }
 
+    //SI NO TENEMOS EL USUARIO EN AMIGOS, LO AGREGAMOS Y GUARDAMOS LOS CAMBIOS EN LA DB
     public void Agrear_amigo(Amigos amigo)
     {
-        jugador.AgregarAmigos(amigo);
-        Debug.Log("amigo agregado");
-        Guardar_DB(jugador);
+        if (!jugador.amigos.Exists(item => item.nombre == amigo.nombre ) ){
+            jugador.AgregarAmigos(amigo);
+            Debug.Log("amigo agregado");
+            Guardar_DB(jugador);
+        }else{
+            Debug.Log("Amigo ya agregado");
+        }
     }
 
+    //ACTUALIZAMOS EL USUARIO EN LA DB
     public void Guardar_DB(Usuario nuevo_val){
         this.CRUD.Guardar_usuario(nuevo_val);
     }

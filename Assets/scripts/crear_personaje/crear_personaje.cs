@@ -16,8 +16,12 @@ public class crear_personaje : MonoBehaviour
     private FirebaseDatabase _database;
     public InputField nombre_usuario;
 
+    //PARA MANEJAR EL ACCESO A LA DB
+    private crud CRUD;
+
     private void Start() {
         _database = FirebaseDatabase.DefaultInstance;
+        this.CRUD = GameObject.Find("Crud").GetComponent<crud>();
     }
 
 
@@ -29,12 +33,21 @@ public class crear_personaje : MonoBehaviour
         //ANTES HAY QUE REVISAR QUE EL NOMBRE NO EXISTA EN LA BASE DE DATOS CON UN IF AQUI
         usuario_nuevo.nombre = nombre_usuario.text.ToString();
         //LO GUARDAMOS EN LOCAL STORAGE
-        PlayerPrefs.SetString(KEY_JUGADOR, JsonUtility.ToJson(usuario_nuevo)); 
+        PlayerPrefs.SetString(KEY_JUGADOR, JsonUtility.ToJson(usuario_nuevo));
         //PONEMOS LA RUTA CON SU NOMBRE
         KEY_JUGADOR += "/" + usuario_nuevo.nombre;
         //LO GUARDAMOS EN LA BASE DE DATOS
-        _database.GetReference(KEY_JUGADOR).SetRawJsonValueAsync(JsonUtility.ToJson(usuario_nuevo));
-        //viajamos al menu principal
+        this.CRUD.GetComponent<crud>().Crear_usuario(KEY_JUGADOR, usuario_nuevo);
         SceneManager.LoadScene("menu_principal");
+        //this.CRUD.Crear_usuario(KEY_JUGADOR, usuario_nuevo);
+        
+    }
+
+    public IEnumerator Cambiar_escena()
+    {
+      Debug.Log("Cambiando de escena...");
+      AsyncOperation async = SceneManager.LoadSceneAsync("menu_principal");
+      yield return async;
+      Debug.Log("cambio?");
     }
 }
