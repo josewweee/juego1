@@ -435,6 +435,18 @@ public class Combate : MonoBehaviour
         btn_poder_3.transform.GetChild(1).GetChild(0).GetChild(0).gameObject.GetComponent<Text>().text = actual.poderesActivos[2].descripcion;
         btn_poder_4.transform.GetChild(1).GetChild(0).GetChild(0).gameObject.GetComponent<Text>().text = actual.poderesActivos[3].descripcion;
 
+        //ACTIVAMOS EL UI DE COOLDOWN EN LOS PODERES QUE LO TIENEN
+        Button btn_iteracion;
+        for(int i = 0; i < 4; i++){
+            btn_iteracion = (i == 0)? btn_poder_1 : (i == 1) ? btn_poder_2 : (i == 2) ? btn_poder_3 : btn_poder_4;
+            if(actual.poderesActivos[i].se_puede_usar == false){
+                btn_iteracion.transform.GetChild(2).gameObject.SetActive(true);
+                btn_iteracion.transform.GetChild(2).GetChild(1).gameObject.GetComponent<Text>().text = actual.poderesActivos[i].reutilizacion_actual.ToString();
+            }else{
+                btn_iteracion.transform.GetChild(2).gameObject.SetActive(false);
+            }
+        }
+
         //BUSCAMOS EL ID DEL PERSONAJE ACTUAL
         int index = 0;
         for(int i = 0; i < personajes.Length; i++)

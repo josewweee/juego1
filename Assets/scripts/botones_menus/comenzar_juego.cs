@@ -17,29 +17,17 @@ public class comenzar_juego : MonoBehaviour
 	private Coroutine hilo;
     void Start()
     {
-		PlayerPrefs.DeleteKey(KEY_JUGADOR);
-		Debug.Log("BOrrando key");
+		//PlayerPrefs.DeleteKey(KEY_JUGADOR);
+		//Debug.Log("BOrrando key");
     }
 
     public void ir_principal()
     {
-        
+        //UNA HILO SE ENCARGA DE ESPERAR EL RESULTADO DE LA DB Y CAMBIAR DE ESCENA
 		if (hilo == null)
 		{
 			hilo = StartCoroutine(Cargar_escena_hilo());
 		}
-
-		//creamos un usuario nuevo
-        // usuario_nuevo = Usuario.instancia;
-
-		// //si el jugador existe en el localstorage significa que ya ha jugado antes y lo enviamos al menu principal, si no
-		// //lo enviamos a crear un usuario
-		// if (PlayerPrefs.HasKey(KEY_JUGADOR)){
-		// 	//viajamos al menu principal
-        // 	SceneManager.LoadScene("menu_principal");
-		// }else{
-		// 	SceneManager.LoadScene("crear_personaje");
-		// }
     }
 
 	private IEnumerator Cargar_escena_hilo()

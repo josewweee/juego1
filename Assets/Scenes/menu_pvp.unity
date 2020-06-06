@@ -465,6 +465,8 @@ MonoBehaviour:
     posicion_pvp: 99999
     nivel_historia: 1
     regalo_enviado: 0
+    daily_reclamado: 0
+    login_diarios: 1
   jugador:
     nombre: nuevo usuario
     nivel: 1
@@ -700,6 +702,8 @@ MonoBehaviour:
     posicion_pvp: 99999
     nivel_historia: 1
     regalo_enviado: 0
+    daily_reclamado: 0
+    login_diarios: 1
 --- !u!114 &48444120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2508,7 +2512,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 48444119}
         m_MethodName: ir_defensa_pvp
         m_Mode: 1
         m_Arguments:
