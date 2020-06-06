@@ -35,17 +35,19 @@ public class daily_login : MonoBehaviour
         //ACTUALIZAMOS EL SINGLETON LOCAL CON LOS DATOS DE LA BD
         this.singleton.Actualizar_usuario(jugador);
 
+        //ACTUALIZAMOS LOS DAILY CON LA DB
+        Actualizar_dailys();
+
+        //ACTIVAMOS LOS DAILY QUE LE CORRESPONDEN AL USUAIRO, SEGUN LOS QUE LLEVE ACOMULADOR
+        Activar_botones();
+
         //SI YA RECLAMAMOS EL DAILY DEL DIA, CERRAR LA VENTANA
         if(this.singleton.daily_reclamado == true)
         {
             Cerrar_ventana();
         }
 
-        //ACTUALIZAMOS LOS DAILY CON LA DB
-        Actualizar_dailys();
 
-        //ACTIVAMOS LOS DAILY QUE LE CORRESPONDEN AL USUAIRO, SEGUN LOS QUE LLEVE ACOMULADOR
-        Activar_botones();
     }
 
     //CERRAMOS Y ABRIRMOS LA VENTANA DEL DAILY
