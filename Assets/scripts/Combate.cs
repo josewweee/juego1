@@ -253,6 +253,7 @@ public class Combate : MonoBehaviour
 
             //ASIGNAMOS EL PUNTERO
             Mover_puntero_personaje(index_personaje_en_turno);
+            Debug.Log("personaje en turno: " + personaje_en_turno.nombre);
 
             //EJECUTAMOS UNA ACCION DE LA IA DE ATAQUE Y RECIBIMOS UNA MATRIZ CON LAS LISTAS PERSONAJES Y ENEMIGOS
             matrix_envio_personajes = maquina.Ejecutar(enemigos, personajes, personaje_en_turno);
@@ -427,6 +428,12 @@ public class Combate : MonoBehaviour
         btn_poder_2.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[1]); });
         btn_poder_3.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[2]); });
         btn_poder_4.onClick.AddListener(delegate { AsignarPoder(actual.poderesActivos[3]); });
+
+        //AGREGAMOS UN TEXTO DESCRIPTIVO A CADA BOTON
+        btn_poder_1.transform.GetChild(1).GetChild(0).GetChild(0).gameObject.GetComponent<Text>().text = actual.poderesActivos[0].descripcion;
+        btn_poder_2.transform.GetChild(1).GetChild(0).GetChild(0).gameObject.GetComponent<Text>().text = actual.poderesActivos[1].descripcion;
+        btn_poder_3.transform.GetChild(1).GetChild(0).GetChild(0).gameObject.GetComponent<Text>().text = actual.poderesActivos[2].descripcion;
+        btn_poder_4.transform.GetChild(1).GetChild(0).GetChild(0).gameObject.GetComponent<Text>().text = actual.poderesActivos[3].descripcion;
 
         //BUSCAMOS EL ID DEL PERSONAJE ACTUAL
         int index = 0;

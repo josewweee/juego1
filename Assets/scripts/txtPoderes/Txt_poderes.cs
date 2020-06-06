@@ -11,9 +11,7 @@ public class Txt_poderes : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public float holdTime = 1f;
     
     //TEXTO UI
-   // [SerializeField]
     private GameObject UI_texto;
-    private bool activarTexto = false;
  
     private bool held = false;
     public UnityEvent onClick = new UnityEvent();

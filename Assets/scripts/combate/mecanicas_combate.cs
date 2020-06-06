@@ -614,8 +614,9 @@ public static void debuffear(Personajes[] target, int index_objetivo, Personajes
         }
     }
     //SI ES PARA SOLO UN OJETIVO LO MODIFICAMOS EN EL ARREGLO DE PERSONAJES
-    if(target.Length < 2 && chequeando_debuffos == false) enemigos[index_objetivo] = target[0];
-    else if (target.Length < 2 && chequeando_debuffos == true){
+    if(target.Length < 2 && chequeando_debuffos == false && index_objetivo != 99) enemigos[index_objetivo] = target[0];
+    else if(target.Length < 2 && chequeando_debuffos == false && index_objetivo != 99) enemigos[0] = target[0];
+    else if (target.Length < 2 && chequeando_debuffos == true && index_objetivo != 99){
         personajes[index_objetivo] = target[0];
     } 
 }
