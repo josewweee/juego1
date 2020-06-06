@@ -26,14 +26,16 @@ public class crud : MonoBehaviour {
         //TRAEMOS EL NOMBRE DEL USUARIO EN EL DISPOSITIVO ACTUAL
         _database = FirebaseDatabase.DefaultInstance;
         KEY_JUGADOR ="KEY_JUGADOR";
-        Debug.Log("miremos si ya existe");
+        Debug.Log("Comenzando el crud, buscando key del jugador...");
         try{
+            Debug.Log("key..");
             usuario = JsonUtility.FromJson<Usuario>(PlayerPrefs.GetString(KEY_JUGADOR));
             KEY_JUGADOR = "KEY_JUGADOR/"+ usuario.nombre.ToString();
+            Debug.Log("Tu Key es: " + KEY_JUGADOR);
         }catch (Exception e){
-            Debug.Log("nada en el localStorage" + e);
+            Debug.Log("nada en el localStorage, " + e);
             Debug.Log(KEY_JUGADOR);
-             KEY_JUGADOR = "null";
+            KEY_JUGADOR = "null";
         }
         //PARA NO DESTRUIR ESTO ENTRE ESCENAS
         DontDestroyOnLoad(this.gameObject);
@@ -61,7 +63,7 @@ public class crud : MonoBehaviour {
         var dataSnapshot = await _database.GetReference(KEY_JUGADOR).GetValueAsync();
         if(!dataSnapshot.Exists)
         {
-            Debug.Log("NO ENCONTRAMOS NADA");
+            Debug.Log("No encontramos el usuario " +  KEY_JUGADOR +  ", en la DB");
             return null;
         }
         return JsonUtility.FromJson<Usuario>(dataSnapshot.GetRawJsonValue());
@@ -87,7 +89,14 @@ public class crud : MonoBehaviour {
             usuarios.Add( JsonUtility.FromJson<Usuario>(u.GetRawJsonValue()));
         }
         //ELIMINAMOS EL USUARIO QUE SE LLAMA IGUAL QUE EL USUARIO ACTUAL
-        usuarios.RemoveAll(item => item.nombre == usuario.nombre);
+        try{
+            usuarios.RemoveAll(item => item.nombre == usuario.nombre);
+        }
+        catch{
+            Start();
+            usuarios.RemoveAll(item => item.nombre == usuario.nombre);
+        }
+
         return usuarios;
     }
 
@@ -129,6 +138,7 @@ public class crud : MonoBehaviour {
     //CREAMOS UN USUARIO NUEVO
     public void Crear_usuario(string key, Usuario usuario_nuevo)
     {
+        UnityEngine.UI.Button btn_continuar = GameObject.Find("btn_continuar").GetComponent<UnityEngine.UI.Button>();
         if (hilo == false){
             hilo = true;
             _database.GetReference(key).SetRawJsonValueAsync(JsonUtility.ToJson(usuario_nuevo)).ContinueWith(task => {
@@ -138,7 +148,9 @@ public class crud : MonoBehaviour {
                 else if (task.IsCompleted) 
                 {
                     Debug.Log("Usuario creado");
-                    //hilo = StartCoroutine(this.GetComponent<crear_personaje>().Cambiar_escena());
+                    this.KEY_JUGADOR = "KEY_JUGADOR/" + usuario_nuevo.nombre;
+                    btn_continuar.interactable = true;
+                    //this.GetComponent<crear_personaje>().ActivarCambioEscena();
                 }
             });
         }

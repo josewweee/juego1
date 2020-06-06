@@ -17,8 +17,8 @@ public class comenzar_juego : MonoBehaviour
 	private Coroutine hilo;
     void Start()
     {
-		//PlayerPrefs.DeleteKey(KEY_JUGADOR);
-		//Debug.Log("BOrrando key");
+		PlayerPrefs.DeleteKey(KEY_JUGADOR);
+		Debug.Log("BOrrando key");
     }
 
     public void ir_principal()

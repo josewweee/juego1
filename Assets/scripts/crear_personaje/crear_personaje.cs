@@ -18,10 +18,12 @@ public class crear_personaje : MonoBehaviour
 
     //PARA MANEJAR EL ACCESO A LA DB
     private crud CRUD;
+    private Button btn_continuar;
 
     private void Start() {
         _database = FirebaseDatabase.DefaultInstance;
         this.CRUD = GameObject.Find("Crud").GetComponent<crud>();
+        this.btn_continuar = GameObject.Find("btn_continuar").GetComponent<Button>();
     }
 
 
@@ -38,16 +40,19 @@ public class crear_personaje : MonoBehaviour
         KEY_JUGADOR += "/" + usuario_nuevo.nombre;
         //LO GUARDAMOS EN LA BASE DE DATOS
         this.CRUD.GetComponent<crud>().Crear_usuario(KEY_JUGADOR, usuario_nuevo);
-        SceneManager.LoadScene("menu_principal");
-        //this.CRUD.Crear_usuario(KEY_JUGADOR, usuario_nuevo);
+        //SceneManager.LoadScene("menu_principal");
         
     }
 
-    public IEnumerator Cambiar_escena()
+    //ACTIVAMOS EL BOTON PARA CAMBIAR DE ESCENA
+    public void ActivarCambioEscena()
     {
-      Debug.Log("Cambiando de escena...");
-      AsyncOperation async = SceneManager.LoadSceneAsync("menu_principal");
-      yield return async;
-      Debug.Log("cambio?");
+        btn_continuar.interactable = true;
+    }
+
+    //CAMBIAMOS DE ESCENA
+    public void CambiarEscena()
+    {
+        SceneManager.LoadScene("menu_principal");
     }
 }
