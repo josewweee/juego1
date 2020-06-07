@@ -38,9 +38,17 @@ public class defensa_pvp : MonoBehaviour
         //INICIALIZAMOS EL MANEJO DE DB
         CRUD = GameObject.Find("Crud").GetComponent<crud>();
 
-        favoritos = jugador.defensa_pvp;
-            for(int i = 0; i < 4; i++){
-                if (favoritos.Count < 4) favoritos.Add(null);
+        //ACTUALIZAMOS LOS PERSONAJES CON LA DEFENSA
+        favoritos = new List<Personajes>();
+        foreach(Personajes pj in jugador.defensa_pvp)
+        {
+            if (pj != null){
+                int index = jugador.personajes.FindIndex(item => item.nombre == pj.nombre);
+                favoritos.Add(jugador.personajes[index]);
+            }
+        }
+        for(int i = 0; i < 4; i++){
+            if (favoritos.Count < 4) favoritos.Add(null);
         }
         
         Popular_personajes_favoritos(jugador, prefab_recuadro_personaje);

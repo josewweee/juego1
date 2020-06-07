@@ -44,15 +44,32 @@ public class pre_combate : MonoBehaviour
 
         //MIRAMOS SI ESTAMOS EN PRE COMBATE PVP O HISTORIA
         tipo_combate = storage_enemigos.tipo_combate;
+
+        favoritos = new List<Personajes>();
         if(tipo_combate == "historia")
         {
-            favoritos = jugador.personajesFavoritos;
+            //ACTUALIZAMOS LOS PERSONAJES CON LOS FAVORITOS
+            foreach(Personajes pj in  jugador.personajesFavoritos)
+            {
+                if (pj != null){
+                    int index = jugador.personajes.FindIndex(item => item.nombre == pj.nombre);
+                    favoritos.Add(jugador.personajes[index]);
+                }
+            }
             for(int i = 0; i < 4; i++){
                 if (favoritos.Count < 4) favoritos.Add(null);
             }
             pjs_enemigos = storage_enemigos.enemigos.ToList();
         }else if (tipo_combate == "pvp" || tipo_combate == "amistoso" ){
-            favoritos = jugador.defensa_pvp;
+
+            //ACTUALIZAMOS LOS PERSONAJES CON LA DEFENSA
+            foreach(Personajes pj in   jugador.defensa_pvp)
+            {
+                if (pj != null){
+                    int index = jugador.personajes.FindIndex(item => item.nombre == pj.nombre);
+                    favoritos.Add(jugador.personajes[index]);
+                }
+            }
             for(int i = 0; i < 4; i++){
                 if (favoritos.Count < 4) favoritos.Add(null);
             }

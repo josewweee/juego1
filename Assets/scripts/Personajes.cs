@@ -63,7 +63,18 @@ public class Personajes
 
     public virtual void Subir_nivel(int niveles)
     {
-        nivel ++;
+       nivel += niveles;
+         for(int i = 0; i < niveles; i++)
+        {
+            experiencia = 0;
+            atributos.fuerza += 1F;
+            atributos.vitalidad += 10F;
+            atributos.magia += 1F;
+            atributos.velocidad += 1F;
+            atributos.critico += 0.5F;
+            atributos.defensa_fisica += 0.5F;
+            atributos.defensa_magica += 0.5F;
+        }
     }
 
     public virtual void Ganar_exp(int exp)
