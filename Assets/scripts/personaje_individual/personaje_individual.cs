@@ -58,6 +58,8 @@ public class personaje_individual : MonoBehaviour
     GameObject marco_poder_7;
     GameObject marco_poder_8;
 
+    barra_exp barra_exp;
+
 
     void Start()
     {
@@ -68,6 +70,7 @@ public class personaje_individual : MonoBehaviour
         jugador = Usuario.instancia;
         personaje_actual = storage.personaje;
         CRUD = GameObject.Find("Crud").GetComponent<crud>();
+        barra_exp = GameObject.Find("Barra_exp").GetComponent<barra_exp>();
 
 
         //ASIGNAMOS VALORES A LA UI
@@ -75,7 +78,9 @@ public class personaje_individual : MonoBehaviour
         nivel.text = personaje_actual.nivel.ToString();
         nivel_max.text = " / " +  personaje_actual.nivel_maximo.ToString();
         exp.text = personaje_actual.experiencia.ToString();
-        exp_max.text = "/ " +  Math.Pow(personaje_actual.nivel, 2).ToString();
+        barra_exp.Set_exp(personaje_actual.experiencia);
+        exp_max.text = Math.Pow(personaje_actual.nivel, 2).ToString();
+        barra_exp.Set_exp_maxima(Convert.ToInt32(Math.Pow(personaje_actual.nivel, 2)));
         vitalidad.text = personaje_actual.atributos.vitalidad.ToString();
         fuerza.text = personaje_actual.atributos.fuerza.ToString();
         magia.text = personaje_actual.atributos.magia.ToString();
