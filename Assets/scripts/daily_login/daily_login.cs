@@ -90,16 +90,16 @@ public class daily_login : MonoBehaviour
         int cantidad_daily = int.Parse(txt_cantidad.Substring(1));
 
         if(item_recompenza.Contains("oro")){
-            this.singleton.monedas.oro += cantidad_daily;
+            this.singleton.Sumar_monedas("oro", cantidad_daily);
         }
         else if(item_recompenza.Contains("diamante")){
-            this.singleton.monedas.diamantes += cantidad_daily;
+            this.singleton.Sumar_monedas("diamantes", cantidad_daily);
         }
         else if(item_recompenza.Contains("pvp")){
-            this.singleton.monedas.puntos_pvp += cantidad_daily;
+            this.singleton.Sumar_monedas("puntos_pvp", cantidad_daily);
         }
         else if(item_recompenza.Contains("amigo")){
-            this.singleton.monedas.monedas_amigos += cantidad_daily;
+            this.singleton.Sumar_monedas("monedas_amigos", cantidad_daily);
         }
         else if(item_recompenza.Contains("invocar")){
             //this.singleton.monedas.monedas_amigos += cantidad_daily;
@@ -148,5 +148,6 @@ public class daily_login : MonoBehaviour
     private void Guardar_cambios(Usuario nuevo_val)
     {
         this.CRUD.Guardar_usuario(nuevo_val);
+        this.singleton.Actualizar_usuario(nuevo_val);
     }
 }

@@ -55,6 +55,9 @@ public class Combate : MonoBehaviour
     public GameObject menu;
     public routing _routing;
     private GameObject menu_configuracion;
+    
+    //TRAEMOS LOS LOGROS
+    private mecanicas_logros LOGROS;
 
     //UI DE LOS PODERES PARA MAXIMO 4 PERSONAJES
     public bool cambiar_UI_poderes = true;
@@ -163,6 +166,9 @@ public class Combate : MonoBehaviour
             Objs_barras_vidas.Add(b_vida);
             Objs_barras_vidas.Add(b_vida_enemigo); 
         }
+
+        //INICIAMOS LOS LOGROS
+        LOGROS = new mecanicas_logros(jugador, personajes, enemigos);
 
         
         //LLENAMOS EL CAMPO CON LOS PERSONAJES COPIADOS
@@ -878,6 +884,7 @@ public class Combate : MonoBehaviour
         }
         //LIMPIAMOS EL MAPA
         turno.Clear();
+
         //AGREGAMOS TODOS LOS ALIADOS Y ENEMIGOS AL MAPA
         for(int i = 0; i < personajes.Length; i++){
             turno["aliado"+i] = personajes[i];
@@ -888,6 +895,10 @@ public class Combate : MonoBehaviour
         }
         //ORDENAMOS EL MAPA EN ORDEN DE VELOCIDADES
         turno = turno.OrderByDescending(key => key.Value.atributos.velocidad).ToDictionary(x => x.Key, x => x.Value);
+        
+        //REVISAMOS SI CUMPLIMOS ALGUN LOGRO
+        this.LOGROS.RevisarLogrosCombate(personajes, enemigos);
+        
         //ACTIVAMOS EL BOOLEANO DE TURNO FINALIZADO
         turno_finalizado = true;
         //LIMPIAMOS LOS BOTONES DE TURNO
@@ -983,6 +994,7 @@ public class Combate : MonoBehaviour
     //FUNCIONES AL TERMINAR EL JUEGO Y IR A LA VENTANA DE RECOMPENZAS
     public void Agregar_recompenzas(bool Gane)
     {
+        if(Gane) LOGROS.RevisarLogrosFinCombate(personajes, enemigos, this.storage_enemigos.nivel_historia, this.tipo_combate);
         //RESETEAMOS EL JUGADOR Y LOS ENEMIGOS
         Resetear_jugador();
 

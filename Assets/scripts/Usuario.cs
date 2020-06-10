@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 [Serializable]
 public class Usuario
@@ -16,9 +17,11 @@ public class Usuario
     public List<Personajes> personajes = new List<Personajes>();
     public List<Equipo> equipo = new List<Equipo>();
     public List<Personajes> personajesFavoritos;
-    public Monedas monedas = new Monedas(0,0,0,0);
+    public Monedas monedas = new Monedas(0,0,0,0,0,0,0,0);
     public Configuracion configuracion = new Configuracion();
-    public List<Logros> logros = new List<Logros>();
+    //public List<Logros> logros = new List<Logros>();
+    public Dictionary<int, Logros> logros = new Dictionary<int, Logros>();
+    public string logrosComprimidos = "";
     public int puntos_logro = 0;
     public int energia = 30;
     public int energia_maxima;
@@ -65,6 +68,7 @@ public class Usuario
         monedas = nuevo.monedas;
         configuracion = nuevo.configuracion;
         logros = nuevo.logros;
+        logrosComprimidos = nuevo.logrosComprimidos;
         puntos_logro = nuevo.puntos_logro;
         energia = nuevo.energia;
         energia_maxima = nuevo.energia_maxima;
@@ -101,18 +105,38 @@ public class Usuario
         experiencia = 0;
     }
 
+    public void SubirNivelHistoria(int nivel)
+    {
+        if (nivel > this.nivel_historia)
+        {
+            this.nivel_historia +=1;
+        }
+    }
+
     public void Sumar_monedas(string tipo_moneda, int cantidad)
     {
         switch (tipo_moneda)
         {
             case "oro":
-                monedas.oro += cantidad;
+                this.monedas.oro += cantidad;
                 break;
             case "diamantes":
-                monedas.diamantes += cantidad;
+                this.monedas.diamantes += cantidad;
                 break;
             case "puntos_pvp":
-                monedas.puntos_pvp += cantidad;
+                this.monedas.puntos_pvp += cantidad;
+                break;
+            case "invocaciones_normales":
+                this.monedas.invocaciones_normales += cantidad;
+                break;
+            case "invocaciones_raras":
+                this.monedas.invocaciones_raras += cantidad;
+                break;
+            case "invocaciones_miticas":
+                this.monedas.invocaciones_miticas += cantidad;
+                break;
+            case "invocaciones_legendarias":
+                this.monedas.invocaciones_legendarias += cantidad;
                 break;
             default:
                 Debug.Log("no existe el tipo de moneda: " + tipo_moneda + ", revisa bien");
@@ -126,10 +150,35 @@ public class Usuario
         return true;
     }
 
-    public void Logro_completado(Logros logro)
+    //AUMENTAMOS EL PROGRESO ACTUAL DE UN LOGRO EN 1 UNIDAD
+    public void AumentarLogro(int codigoLogro, int objetivoLogro)
     {
-        logros.Add(logro);
-        puntos_logro += logro.puntos;
+        if (logros.ContainsKey(codigoLogro))
+        {
+           Logros logroActual = logros[codigoLogro];
+           logroActual.progreso_actual += 1;
+           logros[codigoLogro] = logroActual;
+        }
+        else
+        {
+            logros[codigoLogro] = new Logros(codigoLogro,1,1,false);
+        }
+
+        if(logros[codigoLogro].progreso_actual >= objetivoLogro)
+        {
+             Debug.Log("Logro #" + codigoLogro +  ", completado, Felicidades");
+        }
+    }
+
+    //PONEMOS UN LOGRO COMO COMPLETADO
+    public void LogroCompletado(int codigoLogro)
+    {
+        if (logros.ContainsKey(codigoLogro))
+        {
+           Logros logroActual = logros[codigoLogro];
+           logroActual.reclamado = true;
+           logros[codigoLogro] = logroActual;
+        }
     }
 
     public void Recargar_energia(string tipo_energia, int cantidad)

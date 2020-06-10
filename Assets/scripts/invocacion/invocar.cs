@@ -25,6 +25,9 @@ public class invocar : MonoBehaviour
     //TRAEMOS INSTANCIA DEL CRUD PARA LAS OPERACIONES DE LA BASE DE DATOS
     private crud CRUD;
 
+    //TRAEMOS LA MECANICA DE LOS LOGROS
+    private mecanicas_logros LOGROS;
+
     private IEnumerator Start()
     {
         singleton = Usuario.instancia;
@@ -36,7 +39,9 @@ public class invocar : MonoBehaviour
 
         //FABRICA PARA INVOCAR PERSONAJES Y SINGLETON USUARIO PARA AGREGARLE LOS PERSONAJES
         fabrica_personajes = new Personajes();
-        //jugador = Usuario.instancia;
+        
+        //LOGROS
+        LOGROS = new mecanicas_logros(jugador);
 
         //COMENZAMOS A AGREGAR LOS PERSONAJES QUE SE PUEDEN INVOCAR
         comunes.Add("roger");
@@ -57,7 +62,16 @@ public class invocar : MonoBehaviour
 
     public void Invocacion_normal()
     {
-        jugador.monedas.oro -= 1000;
+        if (jugador.monedas.invocaciones_normales < 1 && jugador.monedas.oro - 1000 <= 0) return;
+        if (jugador.monedas.invocaciones_normales >= 1)
+        {
+            jugador.monedas.invocaciones_normales -= 1;
+        }
+        else
+        {
+            jugador.monedas.oro -= 1000;
+        }
+
         var rand = new System.Random();
         int tipo_invocacion = rand.Next(1001);
         
@@ -80,6 +94,9 @@ public class invocar : MonoBehaviour
             int pj_invocacion = rand.Next(num_pj_rareza);
             personaje_invocado = fabrica_personajes.Crear_personaje(comunes[pj_invocacion]);
         }
+
+        //REVISAMOS LOGROS DE INVOCACIONES
+        LOGROS.RevisarOtros(personaje_invocado, false);
 
         //REVISAMOS SI EL JUGADOR YA TIENE EL PERSONAJE
         Personajes ya_obtenido = null;
@@ -129,7 +146,16 @@ public class invocar : MonoBehaviour
 
     public void Invocacion_especial()
     {
-        jugador.monedas.diamantes -= 100;
+        if (jugador.monedas.invocaciones_normales < 1 && jugador.monedas.diamantes - 100 <= 0) return;
+        if (jugador.monedas.invocaciones_normales >= 1)
+        {
+            jugador.monedas.invocaciones_raras -= 1;
+        }
+        else
+        {
+            jugador.monedas.diamantes -= 100;
+        }
+        
         var rand = new System.Random();
         int tipo_invocacion = rand.Next(1001);
         
@@ -148,6 +174,10 @@ public class invocar : MonoBehaviour
             int pj_invocacion = rand.Next(num_pj_rareza);
             personaje_invocado = fabrica_personajes.Crear_personaje(raros[pj_invocacion]);
         }
+
+        //REVISAMOS LOGROS DE INVOCACIONES
+        LOGROS.RevisarOtros(personaje_invocado, false);
+
          //AGREGAMOS EL PERSONAJE INVOCADO AL JUGADOR
         Personajes ya_obtenido = null;
         ya_obtenido = jugador.personajes.Find( x => x.nombre == personaje_invocado.nombre );
@@ -197,7 +227,16 @@ public class invocar : MonoBehaviour
 
     public void Invocacion_Legendaria()
     {
-        jugador.monedas.diamantes -= 1000;
+        if (jugador.monedas.invocaciones_normales < 1 && jugador.monedas.diamantes - 1000 <= 0) return;
+        if (jugador.monedas.invocaciones_legendarias >= 1)
+        {
+            jugador.monedas.invocaciones_legendarias -= 1;
+        }
+        else
+        {
+            jugador.monedas.diamantes -= 1000;
+        }
+
         var rand = new System.Random();
         int tipo_invocacion = rand.Next(1001);
         
@@ -212,6 +251,9 @@ public class invocar : MonoBehaviour
             int pj_invocacion = rand.Next(num_pj_rareza);
             personaje_invocado = fabrica_personajes.Crear_personaje(miticos[pj_invocacion]);
         }
+
+        //REVISAMOS LOGROS DE INVOCACIONES
+        LOGROS.RevisarOtros(personaje_invocado, false);
 
          //AGREGAMOS EL PERSONAJE INVOCADO AL JUGADOR
         Personajes ya_obtenido = null;

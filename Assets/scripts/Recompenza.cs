@@ -71,13 +71,8 @@ public class Recompenza : MonoBehaviour
                 }
             }
 
-            // for(int i = 0; i < jugador.personajesFavoritos.Count; i++)
-            // {
-            //     if (jugador.personajesFavoritos[i] != null)
-            //     {
-            //         jugador.personajesFavoritos[i].Ganar_exp(exp);
-            //     }
-            // }
+            //SUMAMOS EL NIVEL DE HISTORIA
+            jugador.SubirNivelHistoria(nivel_historia);
 
             //DAMOS FRAGMENTOS DE PERSONAJE, SEGUN LOS PERSONAJES QUE TENGA EL USUARIO
             List<Personajes> personajes = jugador.personajes;

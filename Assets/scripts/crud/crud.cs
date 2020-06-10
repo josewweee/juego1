@@ -43,7 +43,18 @@ public class crud : MonoBehaviour {
 
     //ENVIAMOS EL USUARIO QUE NOS MANDEN AL LOCAL STORAGE Y A LA DATABASE COMO UN JSON
     public void Guardar_usuario(Usuario jugador)
-    {
+    {   
+        //pasamos los logros a 1 solo string comprimido
+        string logrosComprimidos = "";
+        foreach(KeyValuePair<int, Logros> l in jugador.logros)
+        {
+            logrosComprimidos += l.Value.codigo_logro.ToString() + ',';
+            logrosComprimidos += l.Value.progreso_actual.ToString() + ',';
+            logrosComprimidos += l.Value.puntos.ToString() + ',';
+            logrosComprimidos += (l.Value.reclamado == true) ? "1;" : "0;";
+        }
+
+        jugador.logrosComprimidos = logrosComprimidos;
         PlayerPrefs.SetString(KEY_JUGADOR, JsonUtility.ToJson(jugador));
         _database.GetReference(KEY_JUGADOR).SetRawJsonValueAsync(JsonUtility.ToJson(jugador));
 
@@ -66,7 +77,53 @@ public class crud : MonoBehaviour {
             Debug.Log("No encontramos el usuario " +  KEY_JUGADOR +  ", en la DB");
             return null;
         }
-        return JsonUtility.FromJson<Usuario>(dataSnapshot.GetRawJsonValue());
+        //descomprimimos los logros de string a un objeto
+        Usuario jugador = JsonUtility.FromJson<Usuario>(dataSnapshot.GetRawJsonValue());
+        int lastComaIndex = 0;
+        int i = 0;
+        string l;
+        Logros logroDescomprimido;
+        int codigo_logro = 0;
+        int progreso_actual = 0;
+        int puntos = 0;
+        bool reclamado = false;
+        while(i < jugador.logrosComprimidos.Length - 1)
+        {
+            int comaPosition = jugador.logrosComprimidos.Substring(i).IndexOf(",");
+            if(lastComaIndex == 3) comaPosition = jugador.logrosComprimidos.Substring(i).IndexOf(";");
+            l = jugador.logrosComprimidos.Substring(i, comaPosition);
+            switch(lastComaIndex)
+            {
+                case 0:
+                    codigo_logro = int.Parse(l);
+                    i += l.Length;
+                    lastComaIndex ++;
+                    break;
+                case 1:
+                    progreso_actual = int.Parse(l);
+                    i += l.Length;
+                    lastComaIndex ++;
+                    break;
+                case 2:
+                    puntos = int.Parse(l);
+                    i += l.Length;
+                    lastComaIndex ++;
+                    break;
+                case 3:
+                    reclamado = (l == "1") ? true : false;
+                    i++;
+                    lastComaIndex = 0;
+                    logroDescomprimido = new Logros(codigo_logro, progreso_actual, puntos, reclamado);
+                    jugador.logros[codigo_logro] = logroDescomprimido;
+                    break;
+                default:
+                    break;
+            }
+            i++;
+        }
+        jugador.logrosComprimidos = "";
+        //return JsonUtility.FromJson<Usuario>(dataSnapshot.GetRawJsonValue());
+        return jugador;
         // if (Existe_jugador()){
         //     return JsonUtility.FromJson<Usuario>(PlayerPrefs.GetString(KEY_JUGADOR));
         // }
