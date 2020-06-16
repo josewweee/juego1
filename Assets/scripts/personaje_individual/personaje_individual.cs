@@ -245,6 +245,7 @@ public class personaje_individual : MonoBehaviour
 
     private void Guardar_cambios(Usuario nuevo_val)
     {
+        this.jugador.Actualizar_usuario(nuevo_val);
         this.CRUD.Guardar_usuario(nuevo_val);
     }
 }

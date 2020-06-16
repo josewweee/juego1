@@ -76,11 +76,16 @@ public class Combate : MonoBehaviour
     private Sprite[] img_poderes_personaje_3;
     private Sprite[] img_poderes_personaje_4;
 
+    private Sprite[] img_debuffs;
+
     //UI CON TEXTO DE SELECCIONAR OBJETIVO / OBJETIVOS
     public GameObject objetivo_unico_txt;
     public GameObject multiple_objetivo_txt;
     public GameObject propio_objetivo_txt;
-    
+
+    //UI DE LOS BUFFOS
+    private List <GameObject> Objs_buffs = new List <GameObject>();
+    private debuffs mapa_debuffs;
 
     //VARIABLES DE ANIMACION
     Animator animator;
@@ -97,7 +102,7 @@ public class Combate : MonoBehaviour
         this.fixedDeltaTime = Time.fixedDeltaTime;
     }
 
-    void Start()
+    private void Start()
     {
         
         //TRAEMOS LAS INSTANCIAS DEL JUGADOR Y LOS ENEMIGOS
@@ -166,6 +171,20 @@ public class Combate : MonoBehaviour
             Objs_barras_vidas.Add(b_vida);
             Objs_barras_vidas.Add(b_vida_enemigo); 
         }
+
+        //DESACTIVAMOS LOS BUFFOS PARA NO USAR LOS QUE NO NECESITAMOS, 8 EN TOTAL
+        for (int w = 0; w < 4; w++) {
+            GameObject buff_aliado = GameObject.Find("Buffs_"+w);
+            GameObject buff_enemigo = GameObject.Find("Buffs_enemigo_"+w);
+            buff_aliado.SetActive(false);
+            buff_enemigo.SetActive(false);
+            Objs_buffs.Add(buff_aliado);
+            Objs_buffs.Add(buff_enemigo); 
+        }
+        //INICIAMOS LAS IMGENES Y TEXTOS DE DEBUFFS
+        mapa_debuffs = new debuffs();
+        
+        img_debuffs = Resources.LoadAll<Sprite>("buff_iconos/iconos");
 
         //INICIAMOS LOS LOGROS
         LOGROS = new mecanicas_logros(jugador, personajes, enemigos);
@@ -307,7 +326,8 @@ public class Combate : MonoBehaviour
                 //Y REVISAMOS SI TOCA MODIFICARLE LOS BUFFOS / DEBUFFOS
                 mecanicas_combate.buffear(personaje_para_revisar_buffos, index_personaje_en_turno, enemigos);
                 mecanicas_combate.debuffear(personaje_para_revisar_buffos, index_personaje_en_turno, personajes, enemigos);
-
+                //MODIFICAMOS LA UI DE BUFFOS
+                this.ActivarBuffs(index_personaje_en_turno, false);
                 //EN CASO DE ESTAR NOQUEADO, PASAR TURNO
                 if(personaje_en_turno.estado_alterado.ContainsKey("dormir") || personaje_en_turno.estado_alterado.ContainsKey("congelar") || personaje_en_turno.estado_alterado.ContainsKey("aturdir")){
                     Debug.Log(personaje_en_turno.nombre +  " esta con estado alterado o muerto y pasara turno");
@@ -354,7 +374,9 @@ public class Combate : MonoBehaviour
                 //Y REVISAMOS SI TOCA MODIFICARLE LOS BUFFOS / DEBUFFOS
                 mecanicas_combate.buffear(personaje_para_revisar_buffos, index_personaje_en_turno, personajes);
                 mecanicas_combate.debuffear(personaje_para_revisar_buffos, index_personaje_en_turno, enemigos, personajes);
-
+                
+                //MODIFICAMOS LA UI DE BUFFOS
+                this.ActivarBuffs(index_personaje_en_turno, true);
                 //EN CASO DE ESTAR NOQUEADO, PASAR TURNO
                 if(personaje_en_turno.estado_alterado.ContainsKey("dormir") || personaje_en_turno.estado_alterado.ContainsKey("congelar") || personaje_en_turno.estado_alterado.ContainsKey("aturdir") ){
                     Debug.Log(personaje_en_turno.nombre +  " esta con estado alterado y pasara turno");
@@ -522,12 +544,19 @@ public class Combate : MonoBehaviour
                 //LE CAMBIAMOS EL NOMBRE
                 personaje_creado.name = personajes_jugador[i].nombre + "_aliado";
 
+                //RESETEAMOS EL PERSONAJE
+                personajes_jugador[i].atributos.salud = personajes_jugador[i].atributos.vitalidad;
+
                 //ACITVAMOS LA BARRA DE VIDA CORRESPONDIENTE Y LE SETEAMOS LA SALUD MAXIMA
                 GameObject objeto_barra_vida = this.Objs_barras_vidas.Find(x => x.name == "barra_vida_"+i);
                 objeto_barra_vida.SetActive(true);
 
                 Barra_vida barra_vida = objeto_barra_vida.GetComponent<Barra_vida>();
                 barra_vida.Set_salud_maxima(personajes_jugador[i].atributos.vitalidad);
+
+                //ACTIVAMOS LA VENTANA DE BUFFOS CORRESPONDIENTE
+                GameObject contenedor_buffos = this.Objs_buffs.Find(x => x.name == "Buffs_"+i);
+                contenedor_buffos.SetActive(true);
 
                 //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
                 Text txt_vida = GameObject.Find("vida_"+i).GetComponent<Text>();
@@ -556,12 +585,19 @@ public class Combate : MonoBehaviour
                 //LE CAMBIAMOS EL NOMBRE
                 personaje_creado.name = enemigos[i].nombre + "_enemigo";
 
+                //RESETEAMOS EL PERSONAJE
+                enemigos[i].atributos.salud = enemigos[i].atributos.vitalidad;
+
                 //ACITVAMOS LA BARRA DE VIDA CORRESPONDIENTE Y LE SETEAMOS LA SALUD MAXIMA
                 GameObject objeto_barra_vida = this.Objs_barras_vidas.Find(x => x.name == "barra_vida_enemigo_"+i);
                 objeto_barra_vida.SetActive(true);
 
                 Barra_vida barra_vida = objeto_barra_vida.GetComponent<Barra_vida>();
                 barra_vida.Set_salud_maxima(enemigos[i].atributos.vitalidad);
+
+                //ACTIVAMOS LA VENTANA DE BUFFOS CORRESPONDIENTE
+                GameObject contenedor_buffos = this.Objs_buffs.Find(x => x.name == "Buffs_enemigo_"+i);
+                contenedor_buffos.SetActive(true);
                 
                 //MOSTRAMOS LA VIDA DEL PERSONAJE ARRIBA EN PANTALLA
                 Text txt_vida = GameObject.Find("vida_enemigo_"+i).GetComponent<Text>();
@@ -734,12 +770,16 @@ public class Combate : MonoBehaviour
                 //ACTUALIZAMOS LAS VIDAS DE TODOS EN EL MAPA
                 Cambiar_texto_vida(null, 99, true);
                 Cambiar_texto_vida(null, 99, false);
+                //MODIFICAMOS LA UI DE BUFFOS
+                this.ActivarBuffs(99, true);
+                //MODIFICAMOS LA UI DE BUFFOS
+                this.ActivarBuffs(99, false);
             }
 
             //DETENEMOS LA ANIMACION
             anim.SetBool(nombre_animacion, false);
-        }catch{
-                Debug.Log("acabamos el juego");
+        }catch (Exception e){
+                Debug.Log("acabamos el juego" + e);
         }   
 
          //ESPERAMOS 0,7 SEGUNDOS MAS, PARA QUE TEMRINE LA ANIMACION SI NO LO HA HECHO Y PASAMOS TURNO
@@ -800,7 +840,8 @@ public class Combate : MonoBehaviour
      }
 
 
-        void Cambiar_texto_vida(Personajes target, int index_objetivo, bool aliado){
+    void Cambiar_texto_vida(Personajes target, int index_objetivo, bool aliado)
+    {
 
         if (aliado == false){
             //MOSIFICAMOS LA VIDA DE TODOS LOS ENEMIGO SI NOS LLEGA (99 = TODOS LOS OBJETIVOS)
@@ -847,6 +888,78 @@ public class Combate : MonoBehaviour
             }
         }
         
+    }
+
+    void ActivarBuffs(int targetIndex, bool aliado)
+    {
+        Personajes[] target = (!aliado)? enemigos : personajes;
+        string lbl_buffs = (!aliado)? "Buffs_enemigo_" : "Buffs_";
+        //MOSIFICAMOS LA VIDA DE TODOS LOS ENEMIGO SI NOS LLEGA (99 = TODOS LOS OBJETIVOS)
+        if (targetIndex == 99)
+        {
+            GameObject contenedorBufos;
+            for(int i = 0; i < target.Length; i++)
+            {
+                contenedorBufos = GameObject.Find(lbl_buffs+i);
+                int j = 0;
+                for(j = 0; j < 9; j++)
+                {
+                    GameObject child = contenedorBufos.transform.GetChild(j).gameObject;
+                    if(child.activeSelf) child.SetActive(false);
+                    else break;
+                }
+                j = 0;
+                foreach(KeyValuePair <string,float[]> e in target[i].estado_alterado)
+                {
+                    string descripcion_buff = mapa_debuffs.mapaDebuffs[e.Key][0];
+                    int indexImgBuff = int.Parse(mapa_debuffs.mapaDebuffs[e.Key][1]);
+                    string duracionBuff = (e.Value[1]).ToString();
+                    for(j = j; j < 9; j++)
+                    {
+                        GameObject child = contenedorBufos.transform.GetChild(j).gameObject;
+                        if(!child.activeSelf)
+                        {
+                            Debug.Log(e.Key);
+                            child.SetActive(true);
+                            child.transform.GetChild(0).GetChild(0).gameObject.GetComponent<Text>().text = duracionBuff;
+                            child.transform.GetChild(1).GetChild(0).GetChild(0).gameObject.GetComponent<Text>().text = descripcion_buff;
+                            child.GetComponent<Image>().sprite = img_debuffs[indexImgBuff];
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            GameObject contenedorBufos = GameObject.Find(lbl_buffs+targetIndex);
+            int j = 0;
+            for(j = j; j < 9; j++)
+            {
+                GameObject child = contenedorBufos.transform.GetChild(j).gameObject;
+                if(child.activeSelf) child.SetActive(false);
+                else break;
+            }
+            j = 0;
+            foreach(KeyValuePair <string,float[]> e in target[targetIndex].estado_alterado)
+            {
+                string descripcion_buff = mapa_debuffs.mapaDebuffs[e.Key][0];
+                int indexImgBuff = int.Parse(mapa_debuffs.mapaDebuffs[e.Key][1]);
+                string duracionBuff = (e.Value[1]).ToString();
+                for(j = j; j < 9; j++)
+                {
+                    GameObject child = contenedorBufos.transform.GetChild(j).gameObject;
+                    if(!child.activeSelf)
+                    {
+                        child.SetActive(true);
+                        child.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = duracionBuff;
+                        child.transform.GetChild(1).GetChild(0).GetChild(0).GetComponent<Text>().text = descripcion_buff;
+                        child.GetComponent<Image>().sprite = img_debuffs[indexImgBuff];
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     void pasar_turno(){
@@ -916,7 +1029,7 @@ public class Combate : MonoBehaviour
         RectTransform dragArea;
         if (imagen_puntero != null){
             if (key_personaje_turno.Contains("enemigo")){
-                imagen_puntero. GetComponent<Image>().sprite = puntero_rojo;
+                imagen_puntero.GetComponent<Image>().sprite = puntero_rojo;
                 switch(index_personaje_en_turno){
                     case 0:
                         dragArea = imagen_puntero.GetComponent<RectTransform>();
@@ -1011,6 +1124,7 @@ public class Combate : MonoBehaviour
     {
         Destroy(GameObject.Find("personajes"));
         Destroy(GameObject.Find("barra_vidas"));
+        Destroy(GameObject.Find("Buffs"));
     }
 
 

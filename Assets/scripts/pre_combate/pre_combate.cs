@@ -8,6 +8,7 @@ public class pre_combate : MonoBehaviour
 {
     //TRAEMOS INSTANCIA DEL USUARIO, PREFAB DEL RECUADRO DE LOS PERSONAJES, OBJETO DEL MENU Y SCRIPT DE ROUTING
     public Usuario jugador;
+    public Usuario singleton;
     public GameObject prefab_recuadro_personaje;
     private int cantidad_personajes;
     private routing _routing;
@@ -30,17 +31,24 @@ public class pre_combate : MonoBehaviour
         _routing = menu.GetComponent<routing>();
     }
 
-    void Start()
-    {   
+     private IEnumerator Start()
+    {
+        singleton = Usuario.instancia;
+        //TRAEMOS EL USUARIO DE LA BASE DE DATOS
+        CRUD = GameObject.Find("Crud").GetComponent<crud>();
+        var jugador_task = CRUD.GetComponent<crud>().Cargar_usuario();
+        yield return new WaitUntil( ()=> jugador_task.IsCompleted);
+        jugador = jugador_task.Result;
+
         //INICIALIZAMOS LOS ENEMIGOS CON LOS QUE PELEAREMOS
         storage_enemigos = storage_script.instancia;
 
         // INICIALIZAMOS EL USUARIO, MIRAMOS CUANTOS PERSONAJES TIENE Y POPULAMOS LA UI CON LOS PREFABS
-        jugador = Usuario.instancia;
+        //jugador = Usuario.instancia;
         cantidad_personajes = jugador.personajes.Count;
 
         //INICIALIZAMOS EL MANEJO DE DB
-        CRUD = GameObject.Find("Crud").GetComponent<crud>();
+        //CRUD = GameObject.Find("Crud").GetComponent<crud>();
 
         //MIRAMOS SI ESTAMOS EN PRE COMBATE PVP O HISTORIA
         tipo_combate = storage_enemigos.tipo_combate;
@@ -86,8 +94,8 @@ public class pre_combate : MonoBehaviour
         float pos_inicial_y = 70F; // POSICION DEL CUADRADO 1 EN Y
         for (int i = 0; i < numero_personajes; i++){
             
-            string output = JsonUtility.ToJson(favoritos[i], true);
-            Debug.Log(output);
+            //string output = JsonUtility.ToJson(favoritos[i], true);
+            //Debug.Log(output);
 
             // NOS MOVEMOS 17F A LA DERECHA CADA PREFAB Y PONEMOS EL OBJETO COMO CHILD DEL CANVAS - CONTENT_SCROLL
             GameObject recuadro_personaje = Instantiate(prefab, new Vector3(pos_inicial_x, pos_inicial_y, 0), Quaternion.identity);
@@ -162,7 +170,7 @@ public class pre_combate : MonoBehaviour
             GameObject recuadro_personaje = Instantiate(prefab, new Vector3(pos_inicial_x, pos_inicial_y, 0), Quaternion.identity);
             recuadro_personaje.transform.SetParent(GameObject.Find("Panel_personaje_0").transform, false);
             recuadro_personaje.transform.localScale = new Vector3(4.386893F, 14.56672F, 5.55976F);
-
+            Debug.Log("como asi?");
             //AGREGAMOS EL PERSONAJE A FAVORITOS
             if (this.tipo_combate == "historia")
             {
@@ -238,6 +246,7 @@ public class pre_combate : MonoBehaviour
             // AGREGAMOS UN BOTON PARA ELIMINAR EL PERSONAJE DE FAVORITOS
             Button btn = recuadro_personaje.GetComponent<Button>();
             btn.onClick.AddListener(delegate { Borrar_personaje(recuadro_personaje, i); });
+            Debug.Log("La cagamos");
             if (this.tipo_combate == "historia")
             {
                 this.jugador.Cambiar_personaje_batalla("personajes_favoritos", i, this.jugador.personajes[index]);
@@ -262,13 +271,14 @@ public class pre_combate : MonoBehaviour
         else jugador.defensa_pvp = favoritos;
 
         //GUARDAMOS LOS CAMBIOS EN LA DB
-        Guardar_cambios(this.jugador);
+        Guardar_cambios(jugador);
 
         _routing.ir_combate(this.tipo_combate);
     }
 
     private void Guardar_cambios(Usuario nuevo_val)
     {
+        this.singleton.Actualizar_usuario(nuevo_val);
         this.CRUD.Guardar_usuario(nuevo_val);
     }
 

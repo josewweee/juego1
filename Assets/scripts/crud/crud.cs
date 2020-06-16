@@ -61,7 +61,7 @@ public class crud : MonoBehaviour {
     }
 
 
-    public void Guardar_personajes(Personajes pjs)
+    public void Guardar_personajes(List<Personajes> pjs)
     {
         Debug.Log("enviando: " + JsonUtility.ToJson(pjs) );
         _database.GetReference(KEY_JUGADOR).Child("personajes").SetRawJsonValueAsync(JsonUtility.ToJson(pjs));
@@ -237,5 +237,81 @@ public class crud : MonoBehaviour {
         }
         //ELIMINAMOS EL USUARIO QUE SE LLAMA IGUAL QUE EL USUARIO ACTUAL
         return daily_items;
+    }
+
+    //ENVIAMOS UN MENSAJE AL CHAT GLOBAL
+    public void EnviarMensaje(string mensaje)
+    {
+        //ARMAMOS EL MENSAJE CON EL NOMBRE DEL USUARIO
+        string nombre = this.usuario.nombre;
+        string mensajeCompuesto = nombre + " : " + mensaje;
+
+        //SI EL MENSAJE ESTA EN BLANCO, NO LO ENVIAMOS
+        if(mensaje.Length < 2) return;
+
+        //ENVIAMOS EL MENSAJE
+        _database.GetReference("CHAT").Child("GLOBAL").Push().SetValueAsync(mensajeCompuesto);
+    }
+
+    //MOSTRAMOS MENSAJES DEL CHAT GLOBAL
+    public void MostrarMensajes()
+    {
+        _database.GetReference("CHAT").Child("GLOBAL").ValueChanged += HandleValueChanged;
+    }
+   
+ 
+    //ACTUALIZAMOS EL CHAT GLOBAL CON CUALQUIER CAMBIO
+    void HandleValueChanged(object sender, ValueChangedEventArgs args) {
+        if (args.DatabaseError != null) {
+            Debug.LogError(args.DatabaseError.Message);
+            return;
+        }
+        try{
+            //ITERAMOS POR CADA HIJO DEL CHAT Y METEMOS SU VALOR EN UNA LISTA DE STRINGS
+            UnityEngine.UI.Text panelText;
+            panelText = GameObject.Find("textoChat").GetComponent<UnityEngine.UI.Text>();
+            var jsonText = args.Snapshot.Children;
+            List<string> mensajes = new List<string>();
+            foreach(var h in jsonText)
+            {
+                mensajes.Add(h.Value.ToString());
+            }
+            //PONEMOS CADA VALOR DE LA LISTA DE STRINGS EN LA UI
+            panelText.text = "";
+            for(int i = 0; i < mensajes.Count; i++)
+            {
+                panelText.text += mensajes[i] + "\n";
+            }
+           
+            //SI TENEMOS MAS DE 30 MENSAJES, BORRAMOS EL ULTIMO
+            if(mensajes.Count >= 10)
+            {
+                BorrarMensajes();
+            }
+        }
+        //UN CATCH PARA CUANDO NO ESTEMOS EN LA PANTALLA PRINCIPAL
+        catch (Exception e){
+            Debug.Log("Chat no disponible: " +  e);
+        }
+    }
+
+    //BORRAMOS EL ULTIMO MENSAJE ESCRITO
+    public void BorrarMensajes()
+    {
+        //VAMOS A CHAT / GLOBAL Y SOLO RETORNAMOS EL PRIMER CHILD
+        _database.GetReference("CHAT").Child("GLOBAL").LimitToFirst(1).GetValueAsync().ContinueWith(task => {
+                    if (task.IsFaulted) {
+                    Debug.Log("ERRORES BORRANDO MENSAJE");
+                    }
+                    else if (task.IsCompleted) {
+                        //BORRAMOS EL PRIMER CHILD Y PARAMOS EL CICLO DE BORRAR
+                        DataSnapshot snapshot = task.Result;
+                        foreach(var child in snapshot.Children)
+                        {
+                            _database.GetReference("CHAT").Child("GLOBAL").Child(child.Key).RemoveValueAsync();
+                            break;
+                        }
+                    }
+        });
     }
 }

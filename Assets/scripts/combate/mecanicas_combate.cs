@@ -559,6 +559,13 @@ public static void debuffear(Personajes[] target, int index_objetivo, Personajes
                         target[i].Daño(efecto);
                         if(target[i].estado_alterado["quemar"][1] <= 0) target[i].estado_alterado.Remove("quemar");
                         break;
+                case "veneno":
+                Debug.Log("veneno");
+                    if (target[i].estado_alterado.ContainsKey("veneno")) target[i].estado_alterado.Remove("veneno");
+                        target[i].estado_alterado["veneno"] = new float[]{efecto, duracion_efecto};
+                        target[i].Daño(efecto);
+                        if(target[i].estado_alterado["veneno"][1] <= 0) target[i].estado_alterado.Remove("quemar");
+                        break;
                 case "quemar_grave":
                     if (target[i].estado_alterado.ContainsKey("quemar_grave")) target[i].estado_alterado.Remove("quemar_grave");
                         target[i].estado_alterado["quemar_grave"] = new float[]{efecto, duracion_efecto};
